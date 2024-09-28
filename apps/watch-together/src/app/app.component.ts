@@ -11,4 +11,5 @@ import { NxWelcomeComponent } from './nx-welcome.component';
 })
 export class AppComponent {
   title = 'watch-together';
+  content = 'Something went wrong';
 }
