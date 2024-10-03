@@ -7,11 +7,19 @@
   input[type="text"] {
     flex: 1;
     padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #b4d2f3;
   }
 }
 
 .form {
   margin-top: 10px;
+}
+
+.btn {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #b4d2f3;
 }
 
 .text-chat-container {

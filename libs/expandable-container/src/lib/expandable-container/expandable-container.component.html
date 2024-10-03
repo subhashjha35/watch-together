@@ -1,0 +1,11 @@
+<div class="expandable-container">
+  <div class="header">
+    <div class="title">{{ title | uppercase }}</div>
+    <button (click)="toggleSlideUpDown($event)" class="toggle-expansion">
+      {{ isOpen ? '-' : '+' }}
+    </button>
+  </div>
+  <div [@slideUpDown]="isOpen ? 'open' : 'closed'" class="content">
+    <ng-content></ng-content>
+  </div>
+</div>

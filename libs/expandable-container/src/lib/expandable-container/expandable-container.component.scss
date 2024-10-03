@@ -1,0 +1,26 @@
+.expandable-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    background: #175c7a;
+    color: #b4d2f3;
+    height: 32px;
+    padding-left: 8px;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+
+    .toggle-expansion {
+      border: 0;
+      display: block;
+      font-size: 24px;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+    }
+  }
+}

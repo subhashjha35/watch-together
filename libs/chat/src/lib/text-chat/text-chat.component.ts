@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChatService, IChatData, IChatDataExtended } from '../chat.service';
 import { Observable, of, Subject } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ExpandableContainerComponent } from '@watch-together/expandable-container';
 
 const userColor: Record<string, string> = {
   'subhashjha35': '#da4141',
@@ -33,7 +34,7 @@ const mockData: IChatData[] = [
 @Component({
   selector: 'lib-text-chat',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ExpandableContainerComponent],
   templateUrl: './text-chat.component.html',
   styleUrl: './text-chat.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -78,5 +79,7 @@ export class TextChatComponent implements OnInit {
     };
     this.chatSubject.next(data);
     this.chatService.emit('chat', data);
+
+    this.chatForm.controls['textMessage'].reset();
   }
 }
