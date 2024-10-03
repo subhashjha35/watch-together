@@ -1,0 +1,36 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+
+  .chat-container {
+    min-width: 500px;
+    height: 500px;
+    background: #b4d2f3;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    .chat-video {
+      height: 150px;
+      aspect-ratio: 16/9;
+      resize: vertical;
+      overflow: auto;
+      background: #1f4165;
+    }
+  }
+}
+
+@media (width < '900px') {
+  .container {
+    flex-direction: column;
+  }
+}

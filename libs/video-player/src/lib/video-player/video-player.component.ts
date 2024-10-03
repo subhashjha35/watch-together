@@ -68,7 +68,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
           video.pause();
           break;
         case 'videoLoaded':
-          video.style.width = '800px';
+          video.width = 800;
           console.warn('Video loaded');
           break;
       }

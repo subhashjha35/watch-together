@@ -1,4 +1,9 @@
 <div class="video-container">
-  <input (change)="onFileSelected($event)" accept="video/*" type="file" />
-  <video #videoPlayer controls width="600"></video>
+  <video #videoPlayer controls width="100%"></video>
+  <div>
+    <label class="custom-file-upload" for="fileUpload">
+      Upload File
+    </label>
+    <input (change)="onFileSelected($event)" accept="video/*" class="file-picker" id="fileUpload" type="file" />
+  </div>
 </div>

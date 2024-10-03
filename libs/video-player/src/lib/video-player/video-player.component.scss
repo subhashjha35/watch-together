@@ -1,4 +1,19 @@
-.video-container:fullscreen video {
-  height: 70vh;
-  width: 70vw;
+.video-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  video {
+    min-width: 40vw;
+  }
+
+  .file-picker {
+    display: none;
+  }
+
+  .custom-file-upload {
+    display: block;
+    border: 2px solid #c2c2c2;
+    padding: 5px;
+  }
 }
