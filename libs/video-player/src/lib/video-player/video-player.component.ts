@@ -8,7 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IVideoEvent, SocketService } from './socket.service';
+import { IVideoEvent, SocketService } from '../socket.service';
 
 
 @Component({

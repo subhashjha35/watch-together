@@ -1,0 +1,23 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  column-gap: 10px;
+
+  input[type="text"] {
+    flex: 1;
+    padding: 4px;
+  }
+}
+
+.form {
+  margin-top: 10px;
+}
+
+.text-chat-container {
+  width: 300px;
+  background: #c2c2c2;
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}

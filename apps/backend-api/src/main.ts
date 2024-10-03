@@ -23,6 +23,11 @@ io.on('connection', (socket: Socket) => {
     socket.broadcast.emit('video', data);
   });
 
+  socket.on('chat', (data: { user: string; message: string }) => {
+    console.log('chat', data);
+    socket.broadcast.emit('chat', data);
+  });
+
   // Handle disconnection
   socket.on('disconnect', () => {
     console.log('A user disconnected:', socket.id);

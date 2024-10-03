@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@watch-together/chat": ["libs/chat/src/index.ts"],
       "@watch-together/video-player": ["libs/video-player/src/index.ts"]
     }
   },

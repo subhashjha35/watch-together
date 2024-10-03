@@ -27,6 +27,12 @@
       background: #1f4165;
     }
   }
+
+  .text-chat-container {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+  }
 }
 
 @media (width < '900px') {

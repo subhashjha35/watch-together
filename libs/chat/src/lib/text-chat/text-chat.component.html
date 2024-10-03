@@ -1,0 +1,12 @@
+<div class="text-chat-container">
+  <div *ngFor="let chat of chatHistory$ | async" class="row">
+    <div [ngStyle]="{color: chat.color}">{{ chat.user }}:</div>
+    <div>{{ chat.text }}</div>
+  </div>
+</div>
+<form [formGroup]="chatForm" class="form">
+  <div class="row">
+    <input formControlName="textMessage" type="text">
+    <input (click)="sendMessage($event)" type="submit">
+  </div>
+</form>
