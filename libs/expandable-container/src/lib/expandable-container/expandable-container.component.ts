@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, Renderer2 } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
@@ -32,18 +32,8 @@ export class ExpandableContainerComponent {
   @Input()
   public title: string | null = null;
   public isOpen = false;
-  private renderer = inject(Renderer2);
 
-  // Update the toggle function to make sure it only toggles when clicked properly.
-  toggleSlideUpDown(event: MouseEvent): void {
-    // Check if the event originated from the intended button or the header.
-    const targetElement = event.target as HTMLElement;
-
-    if (
-      targetElement.classList.contains('toggle-expansion') ||
-      targetElement.classList.contains('header')
-    ) {
-      this.isOpen = !this.isOpen;
-    }
+  toggleSlideUpDown(): void {
+    this.isOpen = !this.isOpen;
   }
 }

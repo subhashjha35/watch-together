@@ -19,6 +19,8 @@
       "@watch-together/expandable-container": [
         "libs/expandable-container/src/index.ts"
       ],
+      "@watch-together/libs": ["libs/index.ts"],
+      "@watch-together/movie-room": ["libs/room/src/index.ts"],
       "@watch-together/video-player": ["libs/video-player/src/index.ts"]
     }
   },
