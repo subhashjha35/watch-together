@@ -34,3 +34,12 @@
     flex-direction: column;
   }
 }
+
+@media screen and (width < '500px') {
+  .text-chat-container {
+    position: absolute;
+    //right: 0;
+    bottom: 0;
+    width: 100vw;
+  }
+}

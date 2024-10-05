@@ -2,10 +2,10 @@
   <div class="header">
     <div class="title">{{ title | uppercase }}</div>
     <button (click)="toggleSlideUpDown()" class="toggle-expansion">
-      {{ isOpen ? '-' : '+' }}
+      {{ (isOpen$ | async) ? '-' : '+' }}
     </button>
   </div>
-  <div [@slideUpDown]="isOpen ? 'open' : 'closed'" class="content">
+  <div [@slideUpDown]="(isOpen$ | async) ? 'open' : 'closed'" class="content">
     <ng-content></ng-content>
   </div>
 </div>

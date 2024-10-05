@@ -1,14 +1,24 @@
-<lib-expandable-container [title]="'Chat'">
-  <div class="text-chat-container">
-    <div *ngFor="let chat of chatHistory$ | async" class="row">
-      <div [ngStyle]="{color: chat.color}">{{ chat.user }}:</div>
-      <div>{{ chat.text }}</div>
+<lib-expandable-container #expandableContainerComponent [title]="'Chat'">
+  @if (name$ | async) {
+    <div class="text-chat-container" #scrollFrame>
+      <div *ngFor="let chat of chatHistory$ | async" class="row" #item>
+        <div [ngStyle]="{color: chat.color}">{{ chat.user }}:</div>
+        <div>{{ chat.text }}</div>
+      </div>
     </div>
-  </div>
-  <form [formGroup]="chatForm" class="form">
-    <div class="row">
-      <input formControlName="textMessage" type="text">
-      <button (click)="sendMessage($event)" class="btn btn-submit" type="submit">Send</button>
-    </div>
-  </form>
+    <form [formGroup]="chatForm" class="form">
+      <div class="row">
+        <input formControlName="textMessage" type="text">
+        <button (click)="sendMessage($event)" class="btn btn-submit" type="submit">Send</button>
+      </div>
+    </form>
+  } @else {
+    <form [formGroup]="registrationForm" class="form">
+      <div class="row">
+        <input formControlName="username" type="text" placeholder="Enter your name">
+        <button (click)="setName()" [disabled]="!registrationForm.valid" class="btn btn-submit" type="submit">Submit
+        </button>
+      </div>
+    </form>
+  }
 </lib-expandable-container>

@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { BehaviorSubject } from 'rxjs';
 
 
 export const slideUpDown = trigger('slideUpDown', [
@@ -28,12 +29,16 @@ export const slideUpDown = trigger('slideUpDown', [
   animations: [slideUpDown],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExpandableContainerComponent {
+export class ExpandableContainerComponent implements OnInit {
   @Input()
   public title: string | null = null;
-  public isOpen = false;
+  public isOpen$ = new BehaviorSubject<boolean>(false);
 
   toggleSlideUpDown(): void {
-    this.isOpen = !this.isOpen;
+    this.isOpen$.next(!this.isOpen$.value);
+  }
+
+  ngOnInit() {
+    this.isOpen$.subscribe((isOpen) => console.warn('isOpen', isOpen));
   }
 }
