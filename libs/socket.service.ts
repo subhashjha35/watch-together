@@ -1,17 +1,14 @@
 import { Injectable } from '@angular/core';
-import { io, Socket } from 'socket.io-client';
-import { ISocket, IVideo } from '@watch-together/libs';
+import { CommonSocketService, ISocket, IVideo } from '@watch-together/libs';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class SocketService implements ISocket<IVideo> {
-
-  private socket: Socket;
+export class SocketService extends CommonSocketService implements ISocket<IVideo> {
 
   constructor() {
-    this.socket = io('http://localhost:3000'); // Connect to the backend server
+    super();
   }
 
   // Emit events to the server
