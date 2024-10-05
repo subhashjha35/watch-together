@@ -8,7 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IVideoEvent, SocketService } from '../socket.service';
+import { IVideo, SocketService } from '@watch-together/utils';
 
 
 @Component({
@@ -29,7 +29,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     // Listen for play, pause, and seek events from server and synchronize
-    this.socketService.on('video', (data: IVideoEvent) => {
+    this.socketService.on('video', (data: IVideo['dataType']) => {
       // console.warn('video', data);
 
       // Avoid infinite loop by setting the isSyncing flag
@@ -48,7 +48,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
     });
   }
 
-  performVideoActionOnEvent(event: IVideoEvent['event'], time: IVideoEvent['time']) {
+  performVideoActionOnEvent(event: IVideo['dataType']['event'], time: IVideo['dataType']['time']) {
     console.warn('performVideoActionOnEvent', event, time);
     const video = this.videoPlayer.nativeElement;
 

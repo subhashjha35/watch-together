@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TextChatComponent } from '@watch-together/chat';
-import { SocketService, VideoPlayerComponent } from '@watch-together/video-player';
+import { VideoPlayerComponent } from '@watch-together/video-player';
 import { ActivatedRoute } from '@angular/router';
+import { filter } from 'rxjs';
+import { CommonSocketService } from '@watch-together/utils';
 
 @Component({
   selector: 'lib-movie-room',
@@ -14,14 +16,16 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class MovieRoomComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private socketService = inject(SocketService<any>);
+  private socketService = inject(CommonSocketService);
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      console.warn('params', params);
-      this.socketService.emit('createRoom', () => {
-
-      });
+    this.route.params.pipe(filter((params) => !!params)).subscribe(params => {
+      console.log('params', params);
+      // this.emit('createRoom', params['roomId']);
     });
   }
+
+  // emit(eventGroup: 'createRoom', data: string): void {
+  //   // this.socketService.emit(eventGroup, data);
+  // }
 }

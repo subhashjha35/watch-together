@@ -7,11 +7,6 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/angular:ng-packagr-lite",
-      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
-      "options": {
-        "project": "libs/video-player/ng-package.json"
-      },
       "configurations": {
         "production": {
           "tsConfig": "libs/video-player/tsconfig.lib.prod.json"
@@ -24,7 +19,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "libs/video-player/jest.config.ts"
       }

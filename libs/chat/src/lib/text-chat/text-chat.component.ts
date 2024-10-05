@@ -1,35 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChatService, IChatData, IChatDataExtended } from '../chat.service';
+import { ChatService, IChatDataExtended } from '../chat.service';
 import { Observable, of, Subject } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ExpandableContainerComponent } from '@watch-together/expandable-container';
+import { mockChatData, userColor } from './mock.data';
+import { IChat } from '@watch-together/utils';
 
-const userColor: Record<string, string> = {
-  'subhashjha35': '#da4141',
-  'rukhsarnaqvi': '#489801',
-  'vikaspandey': '#175c7a'
-};
-const mockData: IChatData[] = [
-  { user: 'subhashjha35', text: 'hello' },
-  { user: 'rukhsarnaqvi', text: 'hi' },
-  { user: 'vikaspandey', text: 'How are you doing?' },
-  { user: 'subhashjha35', text: 'hello' },
-  { user: 'rukhsarnaqvi', text: 'hi' },
-  { user: 'vikaspandey', text: 'How are you doing?' },
-  { user: 'subhashjha35', text: 'hello' },
-  { user: 'rukhsarnaqvi', text: 'hi' },
-  { user: 'vikaspandey', text: 'How are you doing?' },
-  { user: 'subhashjha35', text: 'hello' },
-  { user: 'rukhsarnaqvi', text: 'hi' },
-  { user: 'vikaspandey', text: 'How are you doing?' },
-  { user: 'subhashjha35', text: 'hello' },
-  { user: 'rukhsarnaqvi', text: 'hi' },
-  { user: 'vikaspandey', text: 'How are you doing?' },
-  { user: 'subhashjha35', text: 'hello' },
-  { user: 'rukhsarnaqvi', text: 'hi' },
-  { user: 'vikaspandey', text: 'How are you doing?' }
-];
+const mockData: IChat['dataType'][] = mockChatData;
 
 @Component({
   selector: 'lib-text-chat',
@@ -46,8 +24,8 @@ export class TextChatComponent implements OnInit {
   );
   private chatService = inject(ChatService);
   private formBuilder = inject(FormBuilder);
-  private chatSubject = new Subject<IChatData>();
-  public chat$: Observable<IChatData> = this.chatSubject.asObservable();
+  private chatSubject = new Subject<IChat['dataType']>();
+  public chat$: Observable<IChat['dataType']> = this.chatSubject.asObservable();
 
   ngOnInit() {
     // this.chatHistory$ = this.chat$.pipe(
@@ -73,7 +51,7 @@ export class TextChatComponent implements OnInit {
 
   sendMessage(event: Event): void {
     event.preventDefault();
-    const data: IChatData = {
+    const data: IChat['dataType'] = {
       user: 'subhashjha35',
       text: this.chatForm.controls['textMessage'].value
     };

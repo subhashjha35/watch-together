@@ -1,26 +1,19 @@
 {
   "compilerOptions": {
     "target": "es2022",
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "outDir": "../../dist/out-tsc",
-    "declaration": true,
-    "declarationMap": true,
-    "inlineSources": true,
-    "types": []
+    "noFallthroughCasesInSwitch": true
   },
   "files": [],
   "include": [],
-  "exclude": [
-    "src/**/*.spec.ts",
-    "src/test-setup.ts",
-    "jest.config.ts",
-    "src/**/*.test.ts"
-  ],
   "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    },
     {
       "path": "./tsconfig.spec.json"
     }

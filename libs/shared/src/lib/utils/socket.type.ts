@@ -19,3 +19,8 @@ export type IChat = {
   event: 'chat';
   dataType: IChatData;
 }
+
+export type ICreateRoom = {
+  event: 'createRoom';
+  dataType: { roomId: string };
+}

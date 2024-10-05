@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CommonSocketService, ISocket, IVideo } from '@watch-together/libs';
+import { CommonSocketService, ISocket, IVideo } from '../../index';
 
 
 @Injectable({
