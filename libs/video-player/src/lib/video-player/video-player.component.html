@@ -1,8 +1,8 @@
-<div class="video-container">
-  <video #videoPlayer controls width="100%"></video>
+<div class="video-container d-flex flex-column row-gap-2">
+  <video #videoPlayer controls preload="none" width="100%"></video>
   <div>
-    <label class="custom-file-upload" for="fileUpload">
-      Upload File
+    <label class="form-control" for="fileUpload">
+      {{ selectedFile || 'Upload File' }}
     </label>
     <input (change)="onFileSelected($event)" accept="video/*" class="file-picker" id="fileUpload" type="file" />
   </div>

@@ -22,6 +22,8 @@ import { IVideo, SocketService } from '@watch-together/utils';
 export class VideoPlayerComponent implements OnInit, AfterViewInit {
   @ViewChild('videoPlayer', { static: true }) videoPlayer!: ElementRef<HTMLVideoElement>;
 
+  public selectedFile: string | undefined = undefined;
+
   private socketService = inject(SocketService);
   private isSyncing = false; // Flag to prevent looping
   private forwardTime = 5; // Time to fast forward in seconds
@@ -92,6 +94,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
+    this.selectedFile = file?.name;
     if (file) {
       this.videoPlayer.nativeElement.src = URL.createObjectURL(file);
       this.performVideoActionOnEvent('videoLoaded', 0);

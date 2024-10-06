@@ -1,22 +1,23 @@
-<lib-expandable-container #expandableContainerComponent [title]="'Chat'">
+<lib-expandable-container #expandableContainerComponent [title]="'Chat'" class="text-chat-container">
   @if (name$ | async) {
-    <div class="text-chat-container" #scrollFrame>
-      <div *ngFor="let chat of chatHistory$ | async" class="row" #item>
+    <div class="p-2 chat-history" #scrollFrame>
+      <div *ngFor="let chat of chatHistory$ | async" class="d-flex gap-2" #item>
         <div [ngStyle]="{color: chat.color}">{{ chat.user }}:</div>
         <div>{{ chat.text }}</div>
       </div>
     </div>
-    <form [formGroup]="chatForm" class="form">
-      <div class="row">
-        <input formControlName="textMessage" type="text">
-        <button (click)="sendMessage($event)" class="btn btn-submit" type="submit">Send</button>
+    <form [formGroup]="chatForm" class="form position-absolute">
+      <div class="d-flex p-2 gap-2 d-flex">
+        <input formControlName="textMessage" type="text" class="form-control border-r-1">
+        <button (click)="sendMessage($event)" class="btn btn-primary" type="submit">Send</button>
       </div>
     </form>
   } @else {
-    <form [formGroup]="registrationForm" class="form">
-      <div class="row">
-        <input formControlName="username" type="text" placeholder="Enter your name">
-        <button (click)="setName()" [disabled]="!registrationForm.valid" class="btn btn-submit" type="submit">Submit
+    <form [formGroup]="registrationForm">
+      <div class="d-flex p-2 gap-2">
+        <input class="form-control form-control-sm border-r-1" formControlName="username" type="search"
+               placeholder="Enter your name">
+        <button (click)="setName()" [disabled]="!registrationForm.valid" class="btn btn-primary" type="submit">Submit
         </button>
       </div>
     </form>
