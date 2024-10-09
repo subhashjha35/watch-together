@@ -59,6 +59,8 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     this.chatService.on('chat', (data) => {
       console.log('chat', data);
       this.chatSubject.next(data);
+      const audio: HTMLAudioElement = new Audio('assets/pop-sound.wav');
+      audio.play();
     });
 
     this.chatForm = this.formBuilder.group({

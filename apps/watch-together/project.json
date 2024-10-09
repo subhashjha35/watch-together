@@ -24,6 +24,11 @@
           {
             "glob": "**/*",
             "input": "apps/watch-together/public"
+          },
+          {
+            "glob": "**/*",
+            "input": "dist/libs/chat/assets",
+            "output": "assets/chat"
           }
         ],
         "styles": [
