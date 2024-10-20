@@ -1,22 +1,27 @@
-import http from 'http';
-import express, { Application, Request, Response } from 'express';
+import express, { Application } from 'express';
 import { Server, Socket } from 'socket.io';
+import * as https from 'node:https';
+import * as fs from 'node:fs';
+import path from 'node:path';
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 const app: Application = express();
-const server = http.createServer(app);
 
-const io = new Server(server, {
+const privateKey = fs.readFileSync(path.join(process.cwd(), 'apps/backend-api/src/certs/key.pem'), 'utf8');
+const certificate = fs.readFileSync(path.join(process.cwd(), 'apps/backend-api/src/certs/cert.pem'), 'utf8');
+
+const credentials = { key: privateKey, cert: certificate };
+
+const httpsServer = https.createServer(credentials, app);
+
+const io = new Server(httpsServer, {
   cors: {
     origin: '*', // Allow requests from any origin (or restrict to your front-end URL)
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
 
-app.get('/hi', (req: Request, res: Response) => {
-  return res.status(200).send('welcome to the backend');
-});
 
 const createRoom = (socket: Socket, roomId = 'movie room') => {
   socket.join(roomId);
@@ -46,9 +51,24 @@ io.on('connection', (socket: Socket, roomIdText = '') => {
   socket.on('disconnect', () => {
     console.log('A user disconnected:', socket.rooms);
   });
+
+  // Handle WebRTC offer
+  socket.on('offer', (roomId, offer) => {
+    socket.to(roomId).emit('offer', socket.id, offer);
+  });
+
+  // Handle WebRTC answer
+  socket.on('answer', (roomId, answer) => {
+    socket.to(roomId).emit('answer', socket.id, answer);
+  });
+
+  // Handle ICE candidate
+  socket.on('ice-candidate', (roomId, candidate) => {
+    socket.to(roomId).emit('ice-candidate', socket.id, candidate);
+  });
 });
 
 // Start the server
-server.listen(port, '0.0.0.0', () => {
-  console.log(`Server is running on http://0.0.0.0:${port}`);
+httpsServer.listen(port, '192.168.178.88', () => {
+  console.log(`Server is running on https://192.168.178.88:${port}`);
 });

@@ -94,7 +94,6 @@ export class TextChatComponent implements OnInit, AfterViewInit {
       startWith(false)
     )
       .subscribe((isOpen) => {
-        console.warn('subscriptions', isOpen);
         if (isOpen) {
           this.scrollContainer = this.scrollFrame.nativeElement;
           this.itemElements.changes.subscribe(() => this.onItemElementsChanged());
