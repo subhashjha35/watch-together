@@ -2,8 +2,12 @@
   <div class="row d-flex flex-row justify-content-center gx-0 row-gap-2 column-gap-lg-5 gx-0">
     <lib-video-player class="col-lg-6"></lib-video-player>
     <div class="chat-container d-flex row-gap-2 column-gap-1 col-lg-5 col-md-12 justify-content-around">
-      <div class="chat-video col-10 col-sm-5 col-md-3 col-lg-5"></div>
-      <div class="chat-video col-10 col-sm-5 col-md-3 col-lg-5"></div>
+      <div class="chat-video my-video">
+        <Video #localVideo autoplay muted playsinline width="100%"></Video>
+      </div>
+      <div class="chat-video col-10 col-sm-5 col-md-3 col-lg-5">
+        <video #remoteVideo autoplay height="180" muted playsinline width="320"></video>
+      </div>
       <div class="chat-video col-10 col-sm-5 col-md-3 col-lg-5"></div>
       <div class="chat-video col-10 col-sm-5 col-md-3 col-lg-5"></div>
       <div class="chat-video col-10 col-sm-5 col-md-3 col-lg-5"></div>

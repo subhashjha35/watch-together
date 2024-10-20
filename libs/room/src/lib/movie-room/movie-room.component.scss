@@ -5,10 +5,14 @@
     flex-wrap: wrap;
 
     .chat-video {
-      aspect-ratio: 16/9;
       resize: horizontal;
-      overflow: auto;
       background: #1f4165;
+
+      &.my-video {
+        padding: 0;
+        width: 100%;
+        transform: scale(-1, 1);
+      }
     }
   }
 
