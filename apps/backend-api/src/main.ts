@@ -69,6 +69,6 @@ io.on('connection', (socket: Socket, roomIdText = '') => {
 });
 
 // Start the server
-httpsServer.listen(port, '192.168.178.88', () => {
-  console.log(`Server is running on https://192.168.178.88:${port}`);
+httpsServer.listen(port, '192.168.1.38', () => {
+  console.log(`Server is running on https://192.168.1.38:${port}`);
 });

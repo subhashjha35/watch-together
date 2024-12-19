@@ -1,0 +1,31 @@
+:host {
+  .video-container {
+    position: relative;
+
+    .video-setting {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      display: none;
+
+    }
+
+    &:hover {
+      .video-setting {
+        display: inline-block;
+      }
+    }
+
+    .video {
+      transform: scale(-1, 1);
+    }
+  }
+
+}
+
+//.modal-dismiss {
+//  position: absolute;
+//  right: 10px;
+//  top: 10px;
+//}

@@ -14,17 +14,19 @@ import { ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
 import { CommonSocketService, MediaService } from '@watch-together/utils';
 import { Socket } from 'socket.io-client';
+import { VideoComponent } from '../video/video.component';
 
 
 @Component({
   selector: 'lib-movie-room',
   standalone: true,
-  imports: [CommonModule, TextChatComponent, VideoPlayerComponent],
+  imports: [CommonModule, TextChatComponent, VideoPlayerComponent, VideoComponent],
   templateUrl: './movie-room.component.html',
   styleUrl: './movie-room.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MovieRoomComponent implements OnInit, AfterViewInit {
+  @ViewChild('video') videoComponent!: VideoComponent;
   @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
   @ViewChild('remoteVideo') remoteVideo!: ElementRef<HTMLVideoElement>;
   private route = inject(ActivatedRoute);
@@ -56,21 +58,21 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
   }
 
   async ngAfterViewInit() {
+    console.error(this.videoComponent);
     try {
 
-      this.mediaService.getCameraSettings().subscribe(async (devices) => {
+      this.mediaService.selectedVideoDevice$.subscribe(async (deviceId) => {
         const constraints: MediaStreamConstraints = {
           video: {
             aspectRatio: 1.77778,
             width: { exact: 320 },
-            deviceId: { exact: devices[1].deviceId || undefined }
+            deviceId: { exact: deviceId || undefined }
           },
           audio: { noiseSuppression: true }
         };
 
         const stream = await this.mediaService.getUserMediaStream(constraints);
-        const videoElement = this.localVideo.nativeElement;
-        videoElement.srcObject = stream;
+        this.videoComponent.setVideo(stream);
 
       });
     } catch (error) {
@@ -111,7 +113,7 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
 
     // Add local stream
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-      this.localVideo.nativeElement.srcObject = stream;
+      this.videoComponent.setVideo(stream);
       stream.getTracks().forEach((track) => {
         this.peerConnection.addTrack(track, stream);
       });

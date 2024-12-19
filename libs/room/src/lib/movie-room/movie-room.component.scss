@@ -11,7 +11,6 @@
       &.my-video {
         padding: 0;
         width: 100%;
-        transform: scale(-1, 1);
       }
     }
   }
@@ -22,7 +21,6 @@
   position: fixed;
   right: 10px;
   bottom: 10px;
-  //min-height: 300px;
   min-width: 320px;
 }
 

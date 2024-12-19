@@ -1,0 +1,17 @@
+<div class="form-group">
+  <label for="videoInputSelect">Video Input</label>
+  <select (change)="changeVideo($event)" class="form-control" id="videoInputSelect">
+    <option *ngFor="let device of videoDevices"
+            [value]="device.deviceId">{{ device.label || 'Video Device' }}
+    </option>
+  </select>
+</div>
+
+<div class="form-group mt-3">
+  <label for="audioInputSelect">Audio Input</label>
+  <select (change)="changeAudio($event)" class="form-control" id="audioInputSelect">
+    <option *ngFor="let device of audioDevices"
+            [value]="device.deviceId">{{ device.label || 'Audio Device' }}
+    </option>
+  </select>
+</div>
