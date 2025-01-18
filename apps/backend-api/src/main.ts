@@ -3,8 +3,13 @@ import { Server, Socket } from 'socket.io';
 import * as https from 'node:https';
 import * as fs from 'node:fs';
 import path from 'node:path';
+import dotenv from 'dotenv';
 
-const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+// Load environment variables from .local.env file
+dotenv.config({ path: path.join(process.cwd(), '.local.env') });
+
+const port = Number(process.env.BACKEND_PORT) || 3000;
+const ip = process.env.IP || '127.0.0.1';
 
 const app: Application = express();
 
@@ -22,11 +27,11 @@ const io = new Server(httpsServer, {
   }
 });
 
-
 const createRoom = (socket: Socket, roomId = 'movie room') => {
   socket.join(roomId);
-  return [...socket.rooms][1];
+  return [...socket.rooms][0];
 };
+
 // Handle Socket.IO connections
 io.on('connection', (socket: Socket, roomIdText = '') => {
   const roomId = createRoom(socket, roomIdText);
@@ -68,7 +73,14 @@ io.on('connection', (socket: Socket, roomIdText = '') => {
   });
 });
 
+app.get('/env', (req, res) => {
+  res.json({
+    BACKEND_PORT: process.env.BACKEND_PORT
+    // Add other environment variables as needed
+  });
+});
+
 // Start the server
-httpsServer.listen(port, '192.168.1.38', () => {
-  console.log(`Server is running on https://192.168.1.38:${port}`);
+httpsServer.listen(port, ip, () => {
+  console.log(`Server is running on https://${ip}:${port}`);
 });
