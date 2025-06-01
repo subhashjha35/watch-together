@@ -5,7 +5,7 @@ import {
   ElementRef,
   inject,
   OnInit,
-  ViewChild
+  viewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TextChatComponent } from '@watch-together/chat';
@@ -26,9 +26,9 @@ import { VideoComponent } from '../video/video.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MovieRoomComponent implements OnInit, AfterViewInit {
-  @ViewChild('video') videoComponent!: VideoComponent;
-  @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
-  @ViewChild('remoteVideo') remoteVideo!: ElementRef<HTMLVideoElement>;
+  readonly videoComponent = viewChild.required<VideoComponent>('video');
+  readonly localVideo = viewChild.required<ElementRef<HTMLVideoElement>>('localVideo');
+  readonly remoteVideo = viewChild.required<ElementRef<HTMLVideoElement>>('remoteVideo');
   private route = inject(ActivatedRoute);
   private commonSocketService = inject(CommonSocketService);
   private mediaService = inject(MediaService);
@@ -58,7 +58,7 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
   }
 
   async ngAfterViewInit() {
-    console.error(this.videoComponent);
+    console.error(this.videoComponent());
     try {
 
       this.mediaService.selectedVideoDevice$.subscribe(async (deviceId) => {
@@ -72,7 +72,7 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
         };
 
         const stream = await this.mediaService.getUserMediaStream(constraints);
-        this.videoComponent.setVideo(stream);
+        this.videoComponent().setVideo(stream);
 
       });
     } catch (error) {
@@ -113,7 +113,7 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
 
     // Add local stream
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-      this.videoComponent.setVideo(stream);
+      this.videoComponent().setVideo(stream);
       stream.getTracks().forEach((track) => {
         this.peerConnection.addTrack(track, stream);
       });
@@ -122,7 +122,7 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
     // Handle remote stream
     this.peerConnection.ontrack = (event) => {
       console.error(event.streams);
-      this.remoteVideo.nativeElement.srcObject = event.streams[0];
+      this.remoteVideo().nativeElement.srcObject = event.streams[0];
     };
 
     // ICE candidate exchange

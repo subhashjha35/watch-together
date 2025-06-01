@@ -6,8 +6,8 @@ import {
   inject,
   OnInit,
   QueryList,
-  ViewChild,
-  ViewChildren
+  ViewChildren,
+  viewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatService, IChatDataExtended } from '../chat.service';
@@ -28,10 +28,10 @@ import { IChat } from '@watch-together/utils';
 })
 export class TextChatComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('scrollFrame', { static: false }) scrollFrame!: ElementRef<HTMLDivElement>;
+  readonly scrollFrame = viewChild.required<ElementRef<HTMLDivElement>>('scrollFrame');
   @ViewChildren('item') itemElements!: QueryList<any>;
 
-  @ViewChild('expandableContainerComponent') ecComponent!: ExpandableContainerComponent;
+  readonly ecComponent = viewChild.required<ExpandableContainerComponent>('expandableContainerComponent');
 
   public chatForm!: FormGroup;
   public registrationForm!: FormGroup;
@@ -89,13 +89,13 @@ export class TextChatComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.ecComponent.isOpen$.pipe(
+    this.ecComponent().isOpen$.pipe(
       tap(() => console.error()),
       startWith(false)
     )
       .subscribe((isOpen) => {
         if (isOpen) {
-          this.scrollContainer = this.scrollFrame.nativeElement;
+          this.scrollContainer = this.scrollFrame().nativeElement;
           this.itemElements.changes.subscribe(() => this.onItemElementsChanged());
         }
       });

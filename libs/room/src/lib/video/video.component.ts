@@ -5,7 +5,7 @@ import {
   ElementRef,
   inject,
   TemplateRef,
-  ViewChild
+  viewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
@@ -26,7 +26,7 @@ import { Observable } from 'rxjs';
 })
 export class VideoComponent implements AfterViewInit {
 
-  @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
+  readonly localVideo = viewChild.required<ElementRef<HTMLVideoElement>>('localVideo');
   public audioDevices$!: Observable<MediaDeviceInfo[]>;
   public videoDevices$!: Observable<MediaDeviceInfo[]>;
   protected readonly faEdit = faEdit;
@@ -40,7 +40,7 @@ export class VideoComponent implements AfterViewInit {
   }
 
   public setVideo(stream: MediaStream): void {
-    const videoElement = this.localVideo.nativeElement;
+    const videoElement = this.localVideo().nativeElement;
     videoElement.srcObject = stream;
   }
 

@@ -5,7 +5,7 @@ import {
   ElementRef,
   inject,
   OnInit,
-  ViewChild
+  viewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IVideo, SocketService } from '@watch-together/utils';
@@ -20,7 +20,7 @@ import { IVideo, SocketService } from '@watch-together/utils';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VideoPlayerComponent implements OnInit, AfterViewInit {
-  @ViewChild('videoPlayer', { static: true }) videoPlayer!: ElementRef<HTMLVideoElement>;
+  readonly videoPlayer = viewChild.required<ElementRef<HTMLVideoElement>>('videoPlayer');
 
   public selectedFile: string | undefined = undefined;
 
@@ -40,7 +40,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
       this.performVideoActionOnEvent(data.event, data.time);
     });
 
-    this.videoPlayer.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
+    this.videoPlayer().nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
       event.preventDefault();
       if (event.key === 'ArrowRight') {
         this.forward();
@@ -52,7 +52,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
 
   performVideoActionOnEvent(event: IVideo['dataType']['event'], time: IVideo['dataType']['time']) {
     console.warn('performVideoActionOnEvent', event, time);
-    const video = this.videoPlayer.nativeElement;
+    const video = this.videoPlayer().nativeElement;
 
     if (!this.isSyncing) {
       console.error('emit true');
@@ -78,13 +78,13 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
   }
 
   forward() {
-    const video = this.videoPlayer.nativeElement;
+    const video = this.videoPlayer().nativeElement;
     video.currentTime += this.forwardTime; // Move forward by the defined time
     this.performVideoActionOnEvent('seek', video.currentTime);
   }
 
   rewind() {
-    const video = this.videoPlayer.nativeElement;
+    const video = this.videoPlayer().nativeElement;
     video.currentTime -= this.rewindTime; // Move backward by the defined time
     this.performVideoActionOnEvent('seek', video.currentTime);
   }
@@ -96,7 +96,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
     const file = input.files?.[0];
     this.selectedFile = file?.name;
     if (file) {
-      this.videoPlayer.nativeElement.src = URL.createObjectURL(file);
+      this.videoPlayer().nativeElement.src = URL.createObjectURL(file);
       this.performVideoActionOnEvent('videoLoaded', 0);
       console.log('video loaded');
     }
@@ -104,7 +104,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
 
   // Bind event listeners after video is loaded
   ngAfterViewInit(): void {
-    const video = this.videoPlayer.nativeElement;
+    const video = this.videoPlayer().nativeElement;
 
     video.addEventListener('play', () => {
       if (!this.isSyncing) {
