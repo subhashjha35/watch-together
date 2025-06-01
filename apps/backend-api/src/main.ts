@@ -73,10 +73,12 @@ io.on('connection', (socket: Socket, roomIdText = '') => {
   });
 });
 
-app.get('/env', (req, res) => {
+// Create a GET route to serve environment variables
+app.get('/config', (_req, res) => {
   res.json({
-    BACKEND_PORT: process.env.BACKEND_PORT
-    // Add other environment variables as needed
+    IP: process.env.IP,
+    BACKEND_PORT: process.env.BACKEND_PORT,
+    FRONTEND_PORT: process.env.FRONTEND_PORT
   });
 });
 

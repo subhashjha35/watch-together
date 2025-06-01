@@ -35,8 +35,6 @@ export class VideoComponent implements AfterViewInit {
   private modalService = inject(BsModalService);
 
   ngAfterViewInit(): void {
-    console.error('AfterViewInit');
-
     this.audioDevices$ = this.mediaService.getAudioSettings();
     this.videoDevices$ = this.mediaService.getCameraSettings();
   }

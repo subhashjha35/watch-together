@@ -1,13 +1,22 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, InjectionToken } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
+
+export const ENV_DATA = new InjectionToken<Env>('ENV_DATA');
+type Env = {
+  IP: string;
+  BACKEND_PORT: number;
+  FRONTEND_PORT: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonSocketService {
-  public socket: Socket;
+  public socket!: Socket;
+  private envData = inject(ENV_DATA);
 
   constructor() {
-    this.socket = io('https://192.168.178.88:3000'); // Connect to the backend server
+    const envData = this.envData;
+    this.socket = io(`${envData.IP}:${envData.BACKEND_PORT}`); // Connect to the backend server
   }
 }
