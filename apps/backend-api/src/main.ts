@@ -53,7 +53,7 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('video', (data: { event: string; time: number; roomId: string }) => {
-    console.log('Video MILLvideo event:', data);
+    console.log('Video MILLvideo event:', data, data.roomId);
     socket.to(data.roomId).emit('video', data);
   });
 

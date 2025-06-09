@@ -54,6 +54,10 @@ export class CallService {
     this.roomId = roomId.trim(); // Trim to avoid whitespace issues
   }
 
+  public getRoomId(): string | null {
+    return this.roomId;
+  }
+
   public async initializeStreams(remoteVideo: ElementRef, constraints?: MediaStreamConstraints): Promise<void> {
     this.remoteVideoRef = remoteVideo;
     await this._getStreams(remoteVideo, constraints);

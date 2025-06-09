@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IVideo, SocketService } from '@watch-together/utils';
+import { CallService } from '../../../../room/src';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
   readonly videoPlayer = viewChild.required<ElementRef<HTMLVideoElement>>('videoPlayer');
 
   public selectedFile: string | undefined = undefined;
-
+  private callService = inject(CallService);
   private socketService = inject(SocketService<IVideo>);
   private isSyncing = false; // Flag to prevent looping
   private forwardTime = 5; // Time to fast forward in seconds
@@ -56,7 +57,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
 
     if (!this.isSyncing) {
       console.error('emit true');
-      this.socketService.emit('video', { event, time });
+      this.socketService.emit('video', { event, time, roomId: this.callService.getRoomId() });
     } else {
       switch (event) {
         case 'play':

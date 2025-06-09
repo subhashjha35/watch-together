@@ -6,8 +6,8 @@ import {
   inject,
   OnInit,
   QueryList,
-  ViewChildren,
-  viewChild
+  viewChild,
+  ViewChildren
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatService, IChatDataExtended } from '../chat.service';
@@ -56,11 +56,11 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     );
 
 
-    this.chatService.on('chat', (data) => {
+    this.chatService.on('chat', async (data) => {
       console.log('chat', data);
       this.chatSubject.next(data);
-      const audio: HTMLAudioElement = new Audio('assets/pop-sound.wav');
-      audio.play();
+      const audio: HTMLAudioElement = new Audio('./assets/pop-sound.wav');
+      await audio.play();
     });
 
     this.chatForm = this.formBuilder.group({

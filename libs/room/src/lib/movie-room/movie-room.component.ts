@@ -14,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
 import { ICall, IRoom, MediaService, SocketService } from '@watch-together/utils';
 import { VideoComponent } from '../video/video.component';
-import { CallService } from './call.service';
+import { CallService } from '../../call.service';
 
 @Component({
   selector: 'lib-movie-room',
