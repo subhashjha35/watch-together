@@ -22,58 +22,56 @@ const httpsServer = https.createServer(credentials, app);
 
 const io = new Server(httpsServer, {
   cors: {
-    origin: '*', // Allow requests from any origin (or restrict to your front-end URL)
+    origin: '*', // Restrict to your frontend URL in production
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
 
-const createRoom = (socket: Socket, roomId = 'movie room') => {
-  socket.join(roomId);
-  return [...socket.rooms][0];
-};
-
-// Handle Socket.IO connections
-io.on('connection', (socket: Socket, roomIdText = '') => {
-  const roomId = createRoom(socket, roomIdText);
-  console.log(roomId);
-  socket.emit('room', { roomId: roomId });
-
+io.on('connection', (socket: Socket) => {
   console.log('A user connected:', socket.id);
-  console.log(socket.data);
-  socket.broadcast.emit('user', { userId: socket.id });
 
-  socket.on('video', (data: { event: string; time: number }) => {
-    console.log('video', data);
-    socket.broadcast.emit('video', data);
+  socket.on('room', (data: { event: string; roomId: string }) => {
+    console.log(`Received room event: ${data.event}, roomId: ${data.roomId}, socketId: ${socket.id}`);
+    if (data.event === 'join') {
+      socket.join(data.roomId);
+      console.log(`User ${socket.id} joined room: ${data.roomId}`);
+      // Notify other users in the room
+      socket.to(data.roomId).emit('room', { event: 'join', socketId: socket.id });
+      // Send room confirmation to the joining user
+      socket.emit('room', { event: 'join', roomId: data.roomId });
+    }
   });
 
-  socket.on('chat', (data: { user: string; message: string }) => {
-    console.log('chat', data, socket.id);
-    socket.broadcast.emit('chat', data);
+  socket.on('call', (data: { event: 'offer' | 'answer' | 'candidate'; data: any; roomId: string }) => {
+    console.log(`Received call event from ${socket.id}:`, JSON.stringify(data));
+    socket.to(data.roomId).emit('call', {
+      event: data.event,
+      data: data.data,
+      socketId: socket.id,
+      roomId: data.roomId // Include roomId
+    });
   });
 
-  // Handle disconnection
+  socket.on('video', (data: { event: string; time: number; roomId: string }) => {
+    console.log('Video MILLvideo event:', data);
+    socket.to(data.roomId).emit('video', data);
+  });
+
+  socket.on('chat', (data: { user: string; message: string; roomId: string }) => {
+    console.log('Chat message:', data);
+    socket.to(data.roomId).emit('chat', data);
+  });
+
   socket.on('disconnect', () => {
-    console.log('A user disconnected:', socket.rooms);
-  });
-
-  // Handle WebRTC offer
-  socket.on('offer', (roomId, offer) => {
-    socket.to(roomId).emit('offer', socket.id, offer);
-  });
-
-  // Handle WebRTC answer
-  socket.on('answer', (roomId, answer) => {
-    socket.to(roomId).emit('answer', socket.id, answer);
-  });
-
-  // Handle ICE candidate
-  socket.on('ice-candidate', (roomId, candidate) => {
-    socket.to(roomId).emit('ice-candidate', socket.id, candidate);
+    console.log('User disconnected:', socket.id);
+    socket.rooms.forEach(room => {
+      if (room !== socket.id) {
+        socket.to(room).emit('room', { event: 'leave', socketId: socket.id });
+      }
+    });
   });
 });
 
-// Create a GET route to serve environment variables
 app.get('/config', (_req, res) => {
   res.json({
     IP: process.env.IP,
@@ -82,7 +80,6 @@ app.get('/config', (_req, res) => {
   });
 });
 
-// Start the server
 httpsServer.listen(port, ip, () => {
   console.log(`Server is running on https://${ip}:${port}`);
 });

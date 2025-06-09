@@ -1,5 +1,6 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
+import { IAllSocketEventTypes } from './socket.type';
 
 export const ENV_DATA = new InjectionToken<Env>('ENV_DATA');
 type Env = {
@@ -7,12 +8,19 @@ type Env = {
   BACKEND_PORT: number;
   FRONTEND_PORT: number;
 }
+type ServerToClientEvents = {
+  [key in IAllSocketEventTypes['event']]: any;
+};
+
+type ClientToServerEvents = {
+  [key in IAllSocketEventTypes['event']]: any;
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonSocketService {
-  public socket!: Socket;
+  public socket!: Socket<ServerToClientEvents, ClientToServerEvents>;
   private envData = inject(ENV_DATA);
 
   constructor() {
