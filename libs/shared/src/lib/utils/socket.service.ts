@@ -1,22 +1,48 @@
 import { Injectable } from '@angular/core';
-import { CommonSocketService, ISocket, IVideo } from '../../index';
+import {
+  IAllSocketEventTypes,
+  ICallEvent,
+  IChatEventData,
+  IRoomEventData,
+  ISocket,
+  IVideoEventData
+} from './socket.type';
+import { CommonSocketService } from './common-socket.service';
+import { Socket } from 'socket.io-client';
 
+type ClientToServerEvents = {
+  video: IVideoEventData;
+  chat: IChatEventData;
+  call: {
+    event: ICallEvent;
+    data: RTCSessionDescriptionInit | RTCIceCandidateInit;
+  };
+  room: IRoomEventData
+};
+
+type ServerToClientEvents = {
+  video: IVideoEventData;
+  chat: IChatEventData;
+  call: {
+    event: ICallEvent;
+    data: RTCSessionDescriptionInit | RTCIceCandidateInit;
+  };
+  room: IRoomEventData
+};
 
 @Injectable({
   providedIn: 'root'
 })
-export class SocketService extends CommonSocketService implements ISocket<IVideo> {
-
+export class SocketService<T extends IAllSocketEventTypes> extends CommonSocketService implements ISocket<T> {
   constructor() {
     super();
   }
 
-  // Emit events to the server
-  emit(eventGroup: 'video', data: IVideo['dataType']) {
-    this.socket.emit(eventGroup, data);
+  emit(eventGroup: T['event'], data: T['dataType']) {
+    return this.socket.emit(eventGroup satisfies keyof ClientToServerEvents, data);
   }
 
-  on(eventGroup: 'video', listener: (data: IVideo['dataType']) => void) {
-    this.socket.on(eventGroup, listener);
+  on(eventGroup: T['event'], listener: (data: T['dataType']) => void): Socket<ServerToClientEvents, ClientToServerEvents> {
+    return this.socket.on(eventGroup satisfies keyof ServerToClientEvents, listener as (data: ServerToClientEvents[T['event']]) => void);
   }
 }
