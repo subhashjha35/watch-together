@@ -24,7 +24,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
 
   public selectedFile: string | undefined = undefined;
 
-  private socketService = inject(SocketService);
+  private socketService = inject(SocketService<IVideo>);
   private isSyncing = false; // Flag to prevent looping
   private forwardTime = 5; // Time to fast forward in seconds
   private rewindTime = 5; // Time to rewind in seconds
