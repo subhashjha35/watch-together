@@ -73,6 +73,12 @@
       "options": {
         "jestConfig": "apps/backend-api/jest.config.ts"
       }
+    },
+    "docker:build": {
+      "dependsOn": [
+        "build",
+        "prune"
+      ]
     }
   }
 }

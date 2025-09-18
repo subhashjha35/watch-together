@@ -106,6 +106,12 @@
         "staticFilePath": "dist/apps/watch-together/browser",
         "spa": true
       }
+    },
+    "docker:build": {
+      "dependsOn": [
+        "build",
+        "prune"
+      ]
     }
   }
 }
