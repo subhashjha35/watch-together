@@ -12,7 +12,6 @@ export const appRoutes: Route[] = [
       { path: 'room/:roomId', component: MovieRoomComponent },
       { path: '*', redirectTo: '' },
       { path: '**', redirectTo: '' }
-
     ]
   }
 ];

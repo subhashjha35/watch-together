@@ -1,6 +1,6 @@
 {
   "/config": {
-    "target": "https://192.168.178.164:3000",
+    "target": "https://localhost:3000",
     "secure": false
   }
 }

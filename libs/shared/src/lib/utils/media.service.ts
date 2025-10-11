@@ -7,12 +7,7 @@ import { BehaviorSubject, from, map } from 'rxjs';
 export class MediaService {
   public selectedVideoDevice$ = new BehaviorSubject<string | undefined>(undefined);
   public selectedAudioDevice$ = new BehaviorSubject<string | undefined>(undefined);
-  private mediaDevices$ = from(navigator.mediaDevices.enumerateDevices());
-
-  getMediaSettings() {
-    return this.mediaDevices$;
-  }
-
+  private readonly mediaDevices$ = from(navigator.mediaDevices.enumerateDevices());
 
   getCameraSettings() {
     return this.mediaDevices$.pipe(
