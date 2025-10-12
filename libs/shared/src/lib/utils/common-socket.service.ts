@@ -3,27 +3,23 @@ import { io, Socket } from 'socket.io-client';
 import { IAllSocketEventTypes } from './socket.type';
 
 export const ENV_DATA = new InjectionToken<Env>('ENV_DATA');
+
 type Env = {
   IP: string;
   BACKEND_PORT: number;
   FRONTEND_PORT: number;
 }
-type ServerToClientEvents = {
-  [key in IAllSocketEventTypes['event']]: any;
-};
-
-type ClientToServerEvents = {
-  [key in IAllSocketEventTypes['event']]: any;
-};
+type ServerToClientEvents = Record<IAllSocketEventTypes['event'], any>;
+type ClientToServerEvents = Record<IAllSocketEventTypes['event'], any>;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class CommonSocketService {
+export abstract class CommonSocketService {
   public socket!: Socket<ServerToClientEvents, ClientToServerEvents>;
-  private envData = inject(ENV_DATA);
+  private readonly envData = inject(ENV_DATA);
 
-  constructor() {
+  protected constructor() {
     const envData = this.envData;
     this.socket = io(`${envData.IP}:${envData.BACKEND_PORT}`); // Connect to the backend server
   }
