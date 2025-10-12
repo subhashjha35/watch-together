@@ -1,10 +1,12 @@
 <shared-expandable-container #expandableContainerComponent [title]="'Chat'" class="text-chat-container">
-  @if (name$ | async) {
+  @if (name()) {
     <div class="p-2 chat-history" #scrollFrame>
-      <div *ngFor="let chat of chatHistory$ | async" class="d-flex gap-2" #item>
-        <div [ngStyle]="{color: chat.color}">{{ chat.user }}:</div>
-        <div>{{ chat.text }}</div>
-      </div>
+      @for (chat of chatHistory(); track chat.text) {
+        <div class="d-flex gap-2" #item>
+          <div [ngStyle]="{color: chat.color}">{{ chat.user }}:</div>
+          <div>{{ chat.text }}</div>
+        </div>
+      }
     </div>
     <form [formGroup]="chatForm" class="form position-absolute">
       <div class="d-flex p-2 gap-2 d-flex">
@@ -23,3 +25,4 @@
     </form>
   }
 </shared-expandable-container>
+

@@ -58,9 +58,9 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
       const constraints: MediaStreamConstraints = {
         video: {
           aspectRatio: 1.77778,
-          width: { exact: 320 },
+          width: { ideal: 1280 },
           deviceId: {
-            exact: this.mediaService.selectedVideoDevice$.value || undefined,
+            exact: this.mediaService.selectedVideoDevice() || undefined,
           },
         },
         audio: { noiseSuppression: true },

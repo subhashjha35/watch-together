@@ -2,19 +2,27 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  effect,
   ElementRef,
   inject,
   Injector,
   OnInit,
   QueryList,
   runInInjectionContext,
+  signal,
   viewChild,
-  ViewChildren
+  ViewChildren,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatService, IChatDataExtended } from '../chat.service';
-import { BehaviorSubject, filter, map, Observable, of, startWith, Subject, tap, withLatestFrom } from 'rxjs';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { startWith, Subject, tap } from 'rxjs';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ExpandableContainerComponent, IChat } from '@watch-together/shared';
 import { toObservable } from '@angular/core/rxjs-interop';
 
@@ -37,29 +45,28 @@ export class TextChatComponent implements OnInit, AfterViewInit {
 
   public chatForm!: FormGroup;
   public registrationForm!: FormGroup;
-  public chatHistory$: Observable<IChatDataExtended[]> = of([]);
-  public name$ = new BehaviorSubject<string | undefined>(undefined);
+  public chatHistory = signal<IChatDataExtended[]>([]);
+  public chat = signal<IChat['dataType'] | null>(null);
+  public name = signal<string | undefined>(undefined);
 
   private readonly injector = inject(Injector);
   private scrollContainer!: HTMLDivElement;
   private readonly chatService = inject(ChatService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly chatSubject = new Subject<IChat['dataType']>();
-  public chat$: Observable<IChat['dataType']> = this.chatSubject.asObservable();
+
+  constructor() {
+    effect(() => {
+      const data = this.chat();
+      if (data?.text) {
+        this.chatHistory.update((history) => [...history, data]);
+      }
+    });
+  }
 
   ngOnInit() {
-    this.chatHistory$ = this.chat$.pipe(
-      withLatestFrom(this.chatHistory$),
-      filter(([data]) => !!data.text),
-      map(([data, chatHistory]) => {
-        chatHistory.push(data);
-        return chatHistory;
-      }),
-    );
-
     this.chatService.on('chat', async (data) => {
-      console.log('chat', data);
-      this.chatSubject.next(data);
+      this.chat.update(() => data);
       const audio: HTMLAudioElement = new Audio('./assets/pop-sound.wav');
       await audio.play();
     });
@@ -76,7 +83,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
   sendMessage(event: Event): void {
     event.preventDefault();
     const data: IChat['dataType'] = {
-      user: this.name$.value || 'Anonymous',
+      user: this.name() ?? 'Anonymous',
       text: this.chatForm.controls['textMessage'].value,
     };
     this.chatSubject.next(data);
@@ -86,7 +93,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
   }
 
   setName(): void {
-    this.name$.next(
+    this.name.set(
       this.registrationForm.controls['username'].value || 'Anonymous',
     );
   }

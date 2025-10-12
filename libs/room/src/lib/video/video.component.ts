@@ -1,7 +1,7 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
   inject,
   TemplateRef,
@@ -12,7 +12,6 @@ import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { MediaConfigurationComponent } from '../media-configuration';
 import { MediaService } from '@watch-together/shared';
-import { Observable } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
@@ -24,21 +23,17 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   styleUrl: './video.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class VideoComponent implements AfterViewInit {
+export class VideoComponent {
   readonly localVideo =
     viewChild.required<ElementRef<HTMLVideoElement>>('localVideo');
-  public audioDevices$!: Observable<MediaDeviceInfo[]>;
-  public videoDevices$!: Observable<MediaDeviceInfo[]>;
+  public audioDevices = computed(() => this.mediaService.audioDevices());
+  public videoDevices = computed(() => this.mediaService.videoDevices());
+
   protected readonly faEdit = faEdit;
 
   private readonly mediaService = inject(MediaService);
   private modalRef = inject(BsModalRef);
   private readonly modalService = inject(BsModalService);
-
-  ngAfterViewInit(): void {
-    this.audioDevices$ = this.mediaService.getAudioSettings();
-    this.videoDevices$ = this.mediaService.getCameraSettings();
-  }
 
   public setVideo(stream: MediaStream): void {
     const videoElement = this.localVideo().nativeElement;

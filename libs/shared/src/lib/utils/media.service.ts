@@ -1,47 +1,39 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, map } from 'rxjs';
+import { computed, Injectable, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MediaService {
-  public selectedVideoDevice$ = new BehaviorSubject<string | undefined>(
-    undefined,
-  );
-  public selectedAudioDevice$ = new BehaviorSubject<string | undefined>(
-    undefined,
-  );
-  private readonly mediaDevices$ = from(
-    navigator.mediaDevices.enumerateDevices(),
+  public selectedVideoDevice = signal<string | undefined>(undefined);
+  public selectedAudioDevice = signal<string | undefined>(undefined);
+  public videoDevices = computed(() =>
+    this.mediaDevices().filter((device) => device.kind === 'videoinput'),
   );
 
-  getCameraSettings() {
-    return this.mediaDevices$.pipe(
-      map((devices) =>
-        devices.filter((device) => device.kind === 'videoinput'),
-      ),
-    );
-  }
+  public audioDevices = computed(() =>
+    this.mediaDevices().filter((device) => device.kind === 'audioinput'),
+  );
 
-  getAudioSettings() {
-    return this.mediaDevices$.pipe(
-      map((devices) =>
-        devices.filter((device) => device.kind === 'audioinput'),
-      ),
-    );
+  private readonly mediaDevices = signal<MediaDeviceInfo[]>([]);
+
+  public constructor() {
+    this.loadDevices();
   }
 
   getUserMediaStream(constraints: MediaStreamConstraints) {
     return navigator.mediaDevices.getUserMedia(constraints);
   }
 
-  changeVideoDeviceTo(deviceId: string) {
-    console.error(deviceId);
-    this.selectedVideoDevice$.next(deviceId);
+  public changeVideoDeviceTo(deviceId: string) {
+    this.selectedVideoDevice.set(deviceId);
   }
 
-  changeAudioDeviceTo(deviceId: string) {
-    console.error(deviceId);
-    this.selectedAudioDevice$.next(deviceId);
+  public changeAudioDeviceTo(deviceId: string) {
+    this.selectedAudioDevice.set(deviceId);
+  }
+
+  private async loadDevices() {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    this.mediaDevices.set(devices);
   }
 }

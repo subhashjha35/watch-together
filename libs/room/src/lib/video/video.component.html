@@ -16,8 +16,8 @@
   </div>
 
   <div class="modal-body">
-    <lib-media-configuration [audioDevices]="audioDevices$ | async"
-                             [videoDevices]="videoDevices$ | async"></lib-media-configuration>
+    <lib-media-configuration [audioDevices]="audioDevices()"
+                             [videoDevices]="videoDevices()"></lib-media-configuration>
   </div>
 
   <div class="modal-footer">
