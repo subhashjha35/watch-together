@@ -3,10 +3,10 @@
     <div class="title p-2 ">{{ title | titlecase }}</div>
     <button (click)="toggleSlideUpDown()"
             class="toggle-expansion d-flex align-items-center justify-content-center border-0">
-      {{ (isOpen$ | async) ? '-' : '+' }}
+      {{ isOpen() ? '-' : '+' }}
     </button>
   </div>
-  <div [@slideUpDown]="(isOpen$ | async) ? 'open' : 'closed'" class="content position-relative">
+  <div [class] = "isOpen() ? 'open' : 'closed'" class="content position-relative">
     <ng-content></ng-content>
   </div>
 </div>

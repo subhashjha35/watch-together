@@ -1,1 +1,1 @@
-export * from './lib/expandable-container/expandable-container.component';
+export * from './lib/expandable-container';

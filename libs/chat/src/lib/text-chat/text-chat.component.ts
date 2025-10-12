@@ -15,8 +15,10 @@ import { BehaviorSubject, filter, map, Observable, of, startWith, Subject, tap, 
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ExpandableContainerComponent } from '@watch-together/expandable-container';
 import { IChat } from '@watch-together/utils';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { mockChatData, userColor } from './mock.data';
 
-// const mockData: IChat['dataType'][] = mockChatData;
+const mockData: IChat['dataType'][] = mockChatData;
 
 @Component({
   selector: 'lib-text-chat',
@@ -24,27 +26,30 @@ import { IChat } from '@watch-together/utils';
   imports: [CommonModule, ReactiveFormsModule, ExpandableContainerComponent],
   templateUrl: './text-chat.component.html',
   styleUrl: './text-chat.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextChatComponent implements OnInit, AfterViewInit {
-
-  readonly scrollFrame = viewChild.required<ElementRef<HTMLDivElement>>('scrollFrame');
+  readonly scrollFrame =
+    viewChild.required<ElementRef<HTMLDivElement>>('scrollFrame');
   @ViewChildren('item') itemElements!: QueryList<any>;
 
-  readonly ecComponent = viewChild.required<ExpandableContainerComponent>('expandableContainerComponent');
+  readonly ecComponent = viewChild.required<ExpandableContainerComponent>(
+    'expandableContainerComponent',
+  );
 
   public chatForm!: FormGroup;
   public registrationForm!: FormGroup;
   public chatHistory$: Observable<IChatDataExtended[]> = of([]);
   public name$ = new BehaviorSubject<string | undefined>(undefined);
+
   private scrollContainer!: HTMLDivElement;
-  private chatService = inject(ChatService);
-  private formBuilder = inject(FormBuilder);
-  private chatSubject = new Subject<IChat['dataType']>();
+  private readonly chatService = inject(ChatService);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly chatSubject = new Subject<IChat['dataType']>();
   public chat$: Observable<IChat['dataType']> = this.chatSubject.asObservable();
 
   ngOnInit() {
-    // this.chatHistory$ = of(mockData.map((d) => ({ ...d, color: userColor[d.user] || '#000' })));
+    this.chatHistory$ = of(mockData.map((d) => ({ ...d, color: userColor[d.user] || '#000' })));
 
     this.chatHistory$ = this.chat$.pipe(
       withLatestFrom(this.chatHistory$),
@@ -52,9 +57,8 @@ export class TextChatComponent implements OnInit, AfterViewInit {
       map(([data, chatHistory]) => {
         chatHistory.push(data);
         return chatHistory;
-      })
+      }),
     );
-
 
     this.chatService.on('chat', async (data) => {
       console.log('chat', data);
@@ -64,11 +68,11 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     });
 
     this.chatForm = this.formBuilder.group({
-      'textMessage': new FormControl(null, [Validators.required])
+      textMessage: new FormControl(null, [Validators.required]),
     });
 
     this.registrationForm = this.formBuilder.group({
-      'username': new FormControl(null, [Validators.required])
+      username: new FormControl(null, [Validators.required]),
     });
   }
 
@@ -76,7 +80,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     event.preventDefault();
     const data: IChat['dataType'] = {
       user: this.name$.value || 'Anonymous',
-      text: this.chatForm.controls['textMessage'].value
+      text: this.chatForm.controls['textMessage'].value,
     };
     this.chatSubject.next(data);
     this.chatService.emit('chat', data);
@@ -85,18 +89,23 @@ export class TextChatComponent implements OnInit, AfterViewInit {
   }
 
   setName(): void {
-    this.name$.next(this.registrationForm.controls['username'].value || 'Anonymous');
+    this.name$.next(
+      this.registrationForm.controls['username'].value || 'Anonymous',
+    );
   }
 
   ngAfterViewInit() {
-    this.ecComponent().isOpen$.pipe(
-      tap(() => console.error()),
-      startWith(false)
-    )
+    toObservable(this.ecComponent().isOpen)
+      .pipe(
+        tap(() => console.error()),
+        startWith(false),
+      )
       .subscribe((isOpen) => {
         if (isOpen) {
           this.scrollContainer = this.scrollFrame().nativeElement;
-          this.itemElements.changes.subscribe(() => this.onItemElementsChanged());
+          this.itemElements.changes.subscribe(() =>
+            this.onItemElementsChanged(),
+          );
         }
       });
   }
@@ -109,7 +118,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     this.scrollContainer?.scroll({
       top: this.scrollContainer.scrollHeight,
       left: 0,
-      behavior: 'instant'
+      behavior: 'instant',
     });
   }
 }
