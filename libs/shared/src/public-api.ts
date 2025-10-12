@@ -1,4 +1,21 @@
-export * from './lib/utils/common-socket.service';
-export * from './lib/utils/socket.type';
-export * from './lib/utils/socket.service';
-export * from './lib/utils/media.service';
+export {
+  CallService,
+  SocketService,
+  ICall,
+  IRoom,
+  MediaService,
+  IVideo,
+  ISocket,
+  IVideoEventData,
+  IChatEventData,
+  IRoomEventData,
+  CommonSocketService,
+  IChat,
+  ENV_DATA,
+  ICallEvent,
+  IRoomEvent,
+  IAllSocketEventTypes,
+  ISocketOnMethod,
+  ISocketEmitMethod,
+} from './lib/utils';
+export * from './lib/expandable-container';

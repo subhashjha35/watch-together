@@ -1,6 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  Input,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MediaService } from '@watch-together/utils';
+import { MediaService } from '@watch-together/shared';
 
 @Component({
   selector: 'lib-media-configuration',
@@ -8,13 +13,21 @@ import { MediaService } from '@watch-together/utils';
   imports: [CommonModule],
   templateUrl: './media-configuration.component.html',
   styleUrl: './media-configuration.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MediaConfigurationComponent {
-  @Input({ transform: (value: MediaDeviceInfo[] | null): MediaDeviceInfo[] => value || [] }) audioDevices: MediaDeviceInfo[] = [];
-  @Input({ transform: (value: MediaDeviceInfo[] | null): MediaDeviceInfo[] => value || [] }) videoDevices: MediaDeviceInfo[] = [];
+  @Input({
+    transform: (value: MediaDeviceInfo[] | null): MediaDeviceInfo[] =>
+      value || [],
+  })
+  audioDevices: MediaDeviceInfo[] = [];
+  @Input({
+    transform: (value: MediaDeviceInfo[] | null): MediaDeviceInfo[] =>
+      value || [],
+  })
+  videoDevices: MediaDeviceInfo[] = [];
 
-  private mediaService = inject(MediaService);
+  private readonly mediaService = inject(MediaService);
 
   public changeAudio(event: any) {
     this.mediaService.changeAudioDeviceTo(event.target?.value);

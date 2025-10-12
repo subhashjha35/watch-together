@@ -1,4 +1,4 @@
-import { IChat } from '@watch-together/utils';
+import { IChat } from '@watch-together/shared';
 
 export const userColor: Record<string, string> = {
   'subhashjha35': '#da4141',

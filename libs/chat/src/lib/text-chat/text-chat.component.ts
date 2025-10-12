@@ -13,8 +13,7 @@ import { CommonModule } from '@angular/common';
 import { ChatService, IChatDataExtended } from '../chat.service';
 import { BehaviorSubject, filter, map, Observable, of, startWith, Subject, tap, withLatestFrom } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ExpandableContainerComponent } from '@watch-together/expandable-container';
-import { IChat } from '@watch-together/utils';
+import { ExpandableContainerComponent, IChat } from '@watch-together/shared';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { mockChatData, userColor } from './mock.data';
 

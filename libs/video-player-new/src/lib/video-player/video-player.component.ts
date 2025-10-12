@@ -8,9 +8,7 @@ import {
   viewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IVideo, SocketService } from '@watch-together/utils';
-import { CallService } from '../../../../room/src';
-
+import { CallService, IVideo, SocketService } from '@watch-together/shared';
 
 @Component({
   selector: 'lib-video-player',
@@ -18,51 +16,60 @@ import { CallService } from '../../../../room/src';
   imports: [CommonModule],
   templateUrl: './video-player.component.html',
   styleUrl: './video-player.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VideoPlayerComponent implements OnInit, AfterViewInit {
-  readonly videoPlayer = viewChild.required<ElementRef<HTMLVideoElement>>('videoPlayer');
+  readonly videoPlayer =
+    viewChild.required<ElementRef<HTMLVideoElement>>('videoPlayer');
 
   public selectedFile: string | undefined = undefined;
-  private callService = inject(CallService);
-  private socketService = inject(SocketService<IVideo>);
+  private readonly callService = inject(CallService);
+  private readonly socketService = inject(SocketService<IVideo>);
   private isSyncing = false; // Flag to prevent looping
-  private forwardTime = 5; // Time to fast forward in seconds
-  private rewindTime = 5; // Time to rewind in seconds
+  private readonly forwardTime = 5; // Time to fast forward in seconds
+  private readonly rewindTime = 5; // Time to rewind in seconds
 
   ngOnInit(): void {
     // Listen for play, pause, and seek events from server and synchronize
     this.socketService.on('video', (data: IVideo['dataType']) => {
-      // console.warn('video', data);
-
       // Avoid infinite loop by setting the isSyncing flag
       this.isSyncing = true;
 
       this.performVideoActionOnEvent(data.event, data.time);
     });
 
-    this.videoPlayer().nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
-      event.preventDefault();
-      if (event.key === 'ArrowRight') {
-        this.forward();
-      } else if (event.key === 'ArrowLeft') {
-        this.rewind();
-      }
-    });
+    this.videoPlayer().nativeElement.addEventListener(
+      'keydown',
+      (event: KeyboardEvent) => {
+        event.preventDefault();
+        if (event.key === 'ArrowRight') {
+          this.forward();
+        } else if (event.key === 'ArrowLeft') {
+          this.rewind();
+        }
+      },
+    );
   }
 
-  performVideoActionOnEvent(event: IVideo['dataType']['event'], time: IVideo['dataType']['time']) {
+  performVideoActionOnEvent(
+    event: IVideo['dataType']['event'],
+    time: IVideo['dataType']['time'],
+  ) {
     console.warn('performVideoActionOnEvent', event, time);
     const video = this.videoPlayer().nativeElement;
 
     if (!this.isSyncing) {
       console.error('emit true');
-      this.socketService.emit('video', { event, time, roomId: this.callService.getRoomId() });
+      this.socketService.emit('video', {
+        event,
+        time,
+        roomId: this.callService.getRoomId(),
+      });
     } else {
       switch (event) {
         case 'play':
           video.currentTime = time; // Ensure the time is in sync before playing
-          video.play().catch(e => console.error('Error playing video:', e));
+          video.play().catch((e) => console.error('Error playing video:', e));
           break;
         case 'seek':
           video.currentTime = time; // This will be handled by `seeked`
@@ -89,7 +96,6 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
     video.currentTime -= this.rewindTime; // Move backward by the defined time
     this.performVideoActionOnEvent('seek', video.currentTime);
   }
-
 
   // Handle file selection and video loading
   onFileSelected(event: Event): void {

@@ -1,14 +1,16 @@
 {
-  "name": "utils",
+  "name": "shared",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/src",
-  "prefix": "lib",
+  "prefix": "shared",
   "projectType": "library",
   "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "libs/shared/jest.config.ts"
       }

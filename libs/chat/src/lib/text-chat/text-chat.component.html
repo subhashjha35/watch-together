@@ -1,4 +1,4 @@
-<lib-expandable-container #expandableContainerComponent [title]="'Chat'" class="text-chat-container">
+<shared-expandable-container #expandableContainerComponent [title]="'Chat'" class="text-chat-container">
   @if (name$ | async) {
     <div class="p-2 chat-history" #scrollFrame>
       <div *ngFor="let chat of chatHistory$ | async" class="d-flex gap-2" #item>
@@ -22,4 +22,4 @@
       </div>
     </form>
   }
-</lib-expandable-container>
+</shared-expandable-container>

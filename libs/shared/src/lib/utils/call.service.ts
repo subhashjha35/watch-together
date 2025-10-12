@@ -1,13 +1,11 @@
 import { ElementRef, inject, Injectable } from '@angular/core';
-import { ICall, SocketService } from '@watch-together/utils';
+import { SocketService } from './socket.service';
+import { ICall } from './socket.type';
 
 export const rtcConfiguration: RTCConfiguration = {
   iceServers: [
     {
-      urls: [
-        'stun:stun1.l.google.com:19302',
-        'stun:stun2.l.google.com:19302',
-      ],
+      urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
     },
     {
       urls: 'turn:openrelay.metered.ca:80',

@@ -6,7 +6,7 @@
       {{ isOpen() ? '-' : '+' }}
     </button>
   </div>
-  <div [class] = "isOpen() ? 'open' : 'closed'" class="content position-relative">
+  <div [class]="isOpen() ? 'open' : 'closed'" class="content position-relative">
     <ng-content></ng-content>
   </div>
 </div>

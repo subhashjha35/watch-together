@@ -8,31 +8,32 @@ import {
   viewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { MediaConfigurationComponent } from '../media-configuration/media-configuration.component';
-import { MediaService } from '@watch-together/utils';
+import { MediaConfigurationComponent } from '../media-configuration';
+import { MediaService } from '@watch-together/shared';
 import { Observable } from 'rxjs';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'lib-video',
   standalone: true,
-  imports: [CommonModule, FaIconComponent, MediaConfigurationComponent],
+  imports: [CommonModule, MediaConfigurationComponent, FontAwesomeModule],
   providers: [BsModalService],
   templateUrl: './video.component.html',
   styleUrl: './video.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VideoComponent implements AfterViewInit {
-
-  readonly localVideo = viewChild.required<ElementRef<HTMLVideoElement>>('localVideo');
+  readonly localVideo =
+    viewChild.required<ElementRef<HTMLVideoElement>>('localVideo');
   public audioDevices$!: Observable<MediaDeviceInfo[]>;
   public videoDevices$!: Observable<MediaDeviceInfo[]>;
   protected readonly faEdit = faEdit;
-  private mediaService = inject(MediaService);
+
+  private readonly mediaService = inject(MediaService);
   private modalRef = inject(BsModalRef);
-  private modalService = inject(BsModalService);
+  private readonly modalService = inject(BsModalService);
 
   ngAfterViewInit(): void {
     this.audioDevices$ = this.mediaService.getAudioSettings();
