@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  Input,
+  input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MediaService } from '@watch-together/shared';
@@ -16,16 +16,8 @@ import { MediaService } from '@watch-together/shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MediaConfigurationComponent {
-  @Input({
-    transform: (value: MediaDeviceInfo[] | null): MediaDeviceInfo[] =>
-      value || [],
-  })
-  audioDevices: MediaDeviceInfo[] = [];
-  @Input({
-    transform: (value: MediaDeviceInfo[] | null): MediaDeviceInfo[] =>
-      value || [],
-  })
-  videoDevices: MediaDeviceInfo[] = [];
+  audioDevices = input<MediaDeviceInfo[] | null>([]);
+  videoDevices = input<MediaDeviceInfo[] | null>([]);
 
   private readonly mediaService = inject(MediaService);
 

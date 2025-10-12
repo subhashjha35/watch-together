@@ -4,8 +4,10 @@ import {
   Component,
   ElementRef,
   inject,
+  Injector,
   OnInit,
   QueryList,
+  runInInjectionContext,
   viewChild,
   ViewChildren
 } from '@angular/core';
@@ -15,9 +17,6 @@ import { BehaviorSubject, filter, map, Observable, of, startWith, Subject, tap, 
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ExpandableContainerComponent, IChat } from '@watch-together/shared';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { mockChatData, userColor } from './mock.data';
-
-const mockData: IChat['dataType'][] = mockChatData;
 
 @Component({
   selector: 'lib-text-chat',
@@ -41,6 +40,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
   public chatHistory$: Observable<IChatDataExtended[]> = of([]);
   public name$ = new BehaviorSubject<string | undefined>(undefined);
 
+  private readonly injector = inject(Injector);
   private scrollContainer!: HTMLDivElement;
   private readonly chatService = inject(ChatService);
   private readonly formBuilder = inject(FormBuilder);
@@ -48,8 +48,6 @@ export class TextChatComponent implements OnInit, AfterViewInit {
   public chat$: Observable<IChat['dataType']> = this.chatSubject.asObservable();
 
   ngOnInit() {
-    this.chatHistory$ = of(mockData.map((d) => ({ ...d, color: userColor[d.user] || '#000' })));
-
     this.chatHistory$ = this.chat$.pipe(
       withLatestFrom(this.chatHistory$),
       filter(([data]) => !!data.text),
@@ -94,19 +92,21 @@ export class TextChatComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    toObservable(this.ecComponent().isOpen)
-      .pipe(
-        tap(() => console.error()),
-        startWith(false),
-      )
-      .subscribe((isOpen) => {
-        if (isOpen) {
-          this.scrollContainer = this.scrollFrame().nativeElement;
-          this.itemElements.changes.subscribe(() =>
-            this.onItemElementsChanged(),
-          );
-        }
-      });
+    runInInjectionContext(this.injector, () => {
+      toObservable(this.ecComponent().isOpen)
+        .pipe(
+          tap(() => console.error()),
+          startWith(false),
+        )
+        .subscribe((isOpen) => {
+          if (isOpen) {
+            this.scrollContainer = this.scrollFrame().nativeElement;
+            this.itemElements.changes.subscribe(() =>
+              this.onItemElementsChanged(),
+            );
+          }
+        });
+    });
   }
 
   private onItemElementsChanged(): void {

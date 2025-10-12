@@ -43,6 +43,7 @@ export class VideoComponent implements AfterViewInit {
   public setVideo(stream: MediaStream): void {
     const videoElement = this.localVideo().nativeElement;
     videoElement.srcObject = stream;
+    videoElement.muted = true;
   }
 
   public openVideoSettings(templateRef: TemplateRef<any>): void {
