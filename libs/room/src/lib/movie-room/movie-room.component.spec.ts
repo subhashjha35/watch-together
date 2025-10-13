@@ -7,7 +7,7 @@ import {
   ENV_DATA,
   MediaService,
   MediaServiceMock,
-  RTCPeerConnectionMock,
+  RTCPeerConnectionMock
 } from '@watch-together/shared';
 
 describe('MovieRoomComponent', () => {
@@ -20,7 +20,7 @@ describe('MovieRoomComponent', () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: { params: { pipe: () => ({ subscribe: () => {} }) } },
+          useValue: { params: { pipe: () => ({ subscribe: jest.fn() }) } },
         },
         { provide: ENV_DATA, useValue: {} },
         { provide: CallService, useClass: CallServiceMock },

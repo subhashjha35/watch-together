@@ -1,8 +1,9 @@
 import { signal } from '@angular/core';
+import { jest } from '@jest/globals';
 
 export class RTCPeerConnectionMock {
   addStream = jest.fn();
-  createOffer = jest.fn().mockResolvedValue({});
+  createOffer = jest.fn();
   setLocalDescription = jest.fn();
   setRemoteDescription = jest.fn();
   // ...other methods
