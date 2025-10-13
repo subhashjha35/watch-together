@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TextChatComponent } from './text-chat.component';
+import { ENV_DATA } from '@watch-together/shared';
 
 describe('TextChatComponent', () => {
   let component: TextChatComponent;
@@ -8,6 +9,7 @@ describe('TextChatComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TextChatComponent],
+      providers: [{ provide: ENV_DATA, useValue: {} }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TextChatComponent);

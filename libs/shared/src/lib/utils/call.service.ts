@@ -171,14 +171,12 @@ export class CallService {
   }
 
   private _registerConnectionListeners(): void {
-    this.peerConnection.onicegatheringstatechange = () => {};
     this.peerConnection.onconnectionstatechange = () => {
       if (this.peerConnection.connectionState === 'failed') {
         console.error('Connection failed. Restarting ICE...');
         this.peerConnection.restartIce();
       }
     };
-    this.peerConnection.onsignalingstatechange = () => {};
     this.peerConnection.oniceconnectionstatechange = () => {
       if (this.peerConnection.iceConnectionState === 'failed') {
         console.error('ICE connection failed. Restarting ICE...');

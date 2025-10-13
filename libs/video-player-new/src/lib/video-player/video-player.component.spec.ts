@@ -1,5 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { VideoPlayerComponent } from './video-player.component';
+import {
+  CallService,
+  CallServiceMock,
+  ENV_DATA,
+  MediaService,
+  MediaServiceMock,
+  RTCPeerConnectionMock
+} from '@watch-together/shared';
 
 describe('VideoPlayerComponent', () => {
   let component: VideoPlayerComponent;
@@ -8,6 +16,12 @@ describe('VideoPlayerComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [VideoPlayerComponent],
+      providers: [
+        { provide: ENV_DATA, useValue: {} },
+        { provide: CallService, useClass: CallServiceMock },
+        { provide: MediaService, useClass: MediaServiceMock },
+        { provide: 'RTCPeerConnection', useClass: RTCPeerConnectionMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(VideoPlayerComponent);

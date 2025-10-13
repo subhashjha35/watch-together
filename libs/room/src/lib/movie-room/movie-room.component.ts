@@ -53,7 +53,10 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
     });
   }
 
-  async ngAfterViewInit() {
+  ngAfterViewInit() {
+    void this.initializeVideoStreams();
+  }
+  private async initializeVideoStreams() {
     try {
       const constraints: MediaStreamConstraints = {
         video: {
@@ -74,7 +77,6 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
       console.error('Error initializing video stream:', error);
     }
   }
-
   joinRoom() {
     this.roomSocketService.emit('room', { event: 'join', roomId: this.roomId });
     this.roomSocketService.on(

@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatService, IChatDataExtended } from '../chat.service';
-import { startWith, Subject, tap } from 'rxjs';
+import { startWith, Subject } from 'rxjs';
 import {
   FormBuilder,
   FormControl,
@@ -101,10 +101,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     runInInjectionContext(this.injector, () => {
       toObservable(this.ecComponent().isOpen)
-        .pipe(
-          tap(() => console.error()),
-          startWith(false),
-        )
+        .pipe(startWith(false))
         .subscribe((isOpen) => {
           if (isOpen) {
             this.scrollContainer = this.scrollFrame().nativeElement;

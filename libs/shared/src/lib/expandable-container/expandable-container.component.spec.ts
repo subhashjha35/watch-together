@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ExpandableContainerComponent } from './expandable-container.component';
+import { ExpandableContainerComponent } from '.';
 
 describe('ExpandableContainerComponent', () => {
   let component: ExpandableContainerComponent;
