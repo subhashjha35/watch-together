@@ -4,7 +4,21 @@
   "projectType": "application",
   "sourceRoot": "apps/watch-together-e2e/src",
   "tags": [],
-  "implicitDependencies": ["watch-together"],
-  "// targets": "to see all targets run: nx show project watch-together-e2e --web",
-  "targets": {}
+  "implicitDependencies": [
+    "watch-together"
+  ],
+  "targets": {
+    "e2e": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/watch-together-e2e/cypress.config.ts"
+      },
+      "dependsOn": [
+        {
+          "target": "serve",
+          "projects": "watch-together"
+        }
+      ]
+    }
+  }
 }

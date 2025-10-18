@@ -6,13 +6,9 @@ export default defineConfig({
   e2e: {
     ...nxE2EPreset(__filename, {
       cypressDir: 'src',
-      webServerCommands: {
-        default: 'npx nx run watch-together:serve',
-        production: 'npx nx run watch-together:serve-static',
-      },
       ciWebServerCommand: 'npx nx run watch-together:serve-static',
-      ciBaseUrl: 'http://localhost:4200',
+      ciBaseUrl: process.env['CYPRESS_BASE_URL'] || 'https://localhost:4200',
     }),
-    baseUrl: 'http://localhost:4200',
+    baseUrl: process.env['CYPRESS_BASE_URL'] || 'https://localhost:4200',
   },
 });
