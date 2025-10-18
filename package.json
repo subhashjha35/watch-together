@@ -55,6 +55,7 @@
     "@types/jest": "30.0.0",
     "@types/node": "22.7.5",
     "@typescript-eslint/utils": "8.44.0",
+    "@vercel/remote-nx": "^2.0.0",
     "angular-eslint": "20.3.0",
     "autoprefixer": "^10.4.20",
     "cypress": "14.3.1",
