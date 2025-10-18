@@ -53,7 +53,7 @@ jobs:
           node-version: 22
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
-      - run: yarn build
+      - run: yarn nx build watch-together
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
