@@ -1,18 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
+  "buildCommand": "nx build watch-together",
   "outputDirectory": "dist/apps/watch-together/browser",
   "builds": [
     {
       "src": "apps/backend-api/src/index.ts",
       "use": "@vercel/node"
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist/apps/watch-together/browser"
-      }
     }
   ],
   "routes": [
@@ -23,14 +16,6 @@
     {
       "src": "/api/(.*)",
       "dest": "/apps/backend-api/src/index.ts"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/favicon.ico"
     },
     {
       "handle": "filesystem"

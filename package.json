@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "set-ip": "ts-node tools/set-local-ip.ts"
+    "set-ip": "ts-node tools/set-local-ip.ts",
+    "build": "nx build watch-together"
   },
   "private": true,
   "dependencies": {
