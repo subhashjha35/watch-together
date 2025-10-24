@@ -5,9 +5,6 @@ import { IAllSocketEventTypes } from './socket.type';
 export const ENV_DATA = new InjectionToken<Env>('ENV_DATA');
 
 type Env = {
-  IP: string;
-  BACKEND_PORT: number;
-  FRONTEND_PORT: number;
   HOST: string;
 };
 type ServerToClientEvents = Record<IAllSocketEventTypes['event'], any>;

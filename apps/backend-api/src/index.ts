@@ -13,16 +13,6 @@ const ip = process.env.IP || '127.0.0.1';
 
 const app: Application = express();
 
-// Set up config endpoint for both environments
-app.get('/api/config', (_req, res) => {
-  res.json({
-    IP: process.env.IP,
-    HOST: process.env.HOST,
-    BACKEND_PORT: process.env.BACKEND_PORT,
-    FRONTEND_PORT: process.env.FRONTEND_PORT,
-  });
-});
-
 // Socket.IO handler function
 const handleSocket = (socket: Socket) => {
   console.log('A user connected:', socket.id);
