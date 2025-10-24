@@ -8,7 +8,8 @@ type Env = {
   IP: string;
   BACKEND_PORT: number;
   FRONTEND_PORT: number;
-}
+  HOST: string;
+};
 type ServerToClientEvents = Record<IAllSocketEventTypes['event'], any>;
 type ClientToServerEvents = Record<IAllSocketEventTypes['event'], any>;
 
@@ -21,6 +22,6 @@ export abstract class CommonSocketService {
 
   protected constructor() {
     const envData = this.envData;
-    this.socket = io(`${envData.IP}:${envData.BACKEND_PORT}`); // Connect to the backend server
+    this.socket = io(`${envData.HOST}`); // Connect to the backend server
   }
 }
