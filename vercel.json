@@ -1,28 +1,39 @@
 {
   "version": 2,
-  "buildCommand": "nx build watch-together",
-  "outputDirectory": "dist/apps/watch-together/browser",
+  "buildCommand": "nx run-many --target=build --projects=watch-together,backend-api",
   "builds": [
     {
       "src": "apps/backend-api/src/index.ts",
       "use": "@vercel/node"
+    },
+    {
+      "src": "dist/apps/watch-together/browser/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/socket.io/(.*)",
-      "dest": "/apps/backend-api/src/index.ts"
+      "dest": "apps/backend-api/src/index.ts"
     },
     {
       "src": "/api/(.*)",
-      "dest": "/apps/backend-api/src/index.ts"
+      "dest": "apps/backend-api/src/index.ts"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/dist/apps/watch-together/browser/assets/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/dist/apps/watch-together/browser/favicon.ico"
     },
     {
       "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/dist/apps/watch-together/browser/index.html"
     }
   ]
 }
