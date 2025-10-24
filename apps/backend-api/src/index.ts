@@ -13,6 +13,15 @@ const ip = process.env.IP || '127.0.0.1';
 
 const app: Application = express();
 
+// Set up config endpoint for both environments
+app.get('/api/config', (_req, res) => {
+  res.json({
+    IP: process.env.IP,
+    BACKEND_PORT: process.env.BACKEND_PORT,
+    FRONTEND_PORT: process.env.FRONTEND_PORT,
+  });
+});
+
 // Socket.IO handler function
 const handleSocket = (socket: Socket) => {
   console.log('A user connected:', socket.id);
@@ -119,14 +128,6 @@ if (process.env.VERCEL) {
   });
 
   io.on('connection', handleSocket);
-
-  app.get('/config', (_req, res) => {
-    res.json({
-      IP: process.env.IP,
-      BACKEND_PORT: process.env.BACKEND_PORT,
-      FRONTEND_PORT: process.env.FRONTEND_PORT,
-    });
-  });
 
   httpsServer.listen(port, ip, () => {
     console.log(`Server is running on https://${ip}:${port}`);
