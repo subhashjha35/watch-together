@@ -1,7 +1,11 @@
-FROM docker.io/nginx:stable-alpine
+# Dockerfile
+FROM nginx:stable-alpine
 
-COPY dist/apps/watch-together /usr/share/nginx/html
-COPY apps/watch-together/nginx.conf  /etc/nginx/conf.d/default.conf
+RUN rm /etc/nginx/conf.d/default.conf
+
+COPY apps/watch-together/nginx.conf /etc/nginx/conf.d/default.conf
+
+COPY dist/apps/watch-together/browser /usr/share/nginx/html
 
 EXPOSE 80
 

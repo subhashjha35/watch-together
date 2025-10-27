@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: path.join(process.cwd(), '.local.env') });
 
 const port = Number(process.env.BACKEND_PORT) || 3000;
-const ip = process.env.IP || '127.0.0.1';
+const ip = process.env.IP || '0.0.0.0';
 
 const app: Application = express();
 
