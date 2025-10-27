@@ -101,11 +101,11 @@ if (process.env.VERCEL) {
 } else {
   // Local development with HTTPS
   const privateKey = fs.readFileSync(
-    path.join(process.cwd(), 'apps/backend-api/src/certs/key.pem'),
+    path.join(__dirname, 'certs/key.pem'),
     'utf8',
   );
   const certificate = fs.readFileSync(
-    path.join(process.cwd(), 'apps/backend-api/src/certs/cert.pem'),
+    path.join(__dirname, 'certs/cert.pem'),
     'utf8',
   );
   const credentials = { key: privateKey, cert: certificate };

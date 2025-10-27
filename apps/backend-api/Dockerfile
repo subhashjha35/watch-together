@@ -11,6 +11,7 @@ FROM node:22-alpine AS runner
 WORKDIR /app
 COPY --from=builder /app/dist/apps/backend-api ./
 COPY --from=builder /app/package.json /app/yarn.lock ./
+
 RUN yarn install --frozen-lockfile --production && yarn cache clean
 # Render assigns PORT (default 10000); use 8080 for flexibility
 EXPOSE 8080
