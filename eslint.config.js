@@ -1,11 +1,12 @@
-const nx = require('@nx/eslint-plugin');
+import nx from '@nx/eslint-plugin';
+import jsoncParser from 'jsonc-eslint-parser';
 
-module.exports = [
+export default [
   ...nx.configs['flat/base'],
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
   {
-    ignores: ['**/dist'],
+    ignores: ['**/dist', '.angular/**', 'tmp/**'],
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
@@ -38,6 +39,6 @@ module.exports = [
         { ignoredFiles: ['{projectRoot}/eslint.config.{js,cjs,mjs}'] },
       ],
     },
-    languageOptions: { parser: require('jsonc-eslint-parser') },
+    languageOptions: { parser: jsoncParser },
   },
 ];
