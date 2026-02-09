@@ -10,36 +10,23 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ESNext",
-    "lib": [
-      "ES2020",
-      "dom"
-    ],
+    "lib": ["ES2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@watch-together/chat": [
-        "libs/chat/src/index.ts"
-      ],
+      "@watch-together/chat": ["libs/chat/src/index.ts"],
       "@watch-together/expandable-container": [
         "libs/expandable-container/src/index.ts"
       ],
-      "@watch-together/home": [
-        "libs/home/src/index.ts"
-      ],
-      "@watch-together/movie-room": [
-        "libs/room/src/index.ts"
-      ],
-      "@watch-together/shared": [
-        "libs/shared/src/index.ts"
-      ],
+      "@watch-together/home": ["libs/home/src/index.ts"],
+      "@watch-together/movie-room": ["libs/room/src/index.ts"],
+      "@watch-together/shared": ["libs/shared/src/index.ts"],
       "@watch-together/video-player-new": [
         "libs/video-player-new/src/index.ts"
-      ]
+      ],
+      "@watch-together/youtube-ui": ["libs/youtube/ui/src/index.ts"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }
