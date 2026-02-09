@@ -2,8 +2,10 @@
   "name": "@watch-together/source",
   "version": "0.0.0",
   "license": "MIT",
+  "type": "module",
   "scripts": {
-    "set-ip": "ts-node tools/set-local-ip.ts",
+    "set-ip": "node tools/set-local-ip.ts",
+    "set-env": "node tools/set-env.ts",
     "build": "nx build watch-together"
   },
   "private": true,
@@ -60,8 +62,8 @@
     "angular-eslint": "21.2.0",
     "autoprefixer": "^10.4.20",
     "cypress": "15.9.0",
-    "esbuild": "^0.24.0",
-    "eslint": "^9.12.0",
+    "esbuild": "0.25.0",
+    "eslint": "9.26.0",
     "eslint-config-prettier": "10.1.2",
     "eslint-plugin-cypress": "^3.5.0",
     "jest": "30.0.5",

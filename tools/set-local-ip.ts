@@ -2,6 +2,10 @@
 import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const interfaces = os.networkInterfaces();
 let localIP = '127.0.0.1';
