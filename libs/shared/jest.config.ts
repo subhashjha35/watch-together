@@ -1,6 +1,8 @@
+import { Config } from 'jest';
+
 export default {
   displayName: 'utils',
-  preset: '../../jest.preset.js',
+  preset: '../../jest.preset.cjs',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../coverage/libs/shared',
   transform: {
@@ -18,4 +20,4 @@ export default {
     'jest-preset-angular/build/serializers/ng-snapshot',
     'jest-preset-angular/build/serializers/html-comment',
   ],
-};
+} satisfies Config;
