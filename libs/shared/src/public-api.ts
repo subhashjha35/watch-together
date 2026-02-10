@@ -20,3 +20,4 @@ export {
 } from './lib/utils';
 export * from './lib/expandable-container';
 export * from './lib/mock';
+export * from './lib/menu-bar';
