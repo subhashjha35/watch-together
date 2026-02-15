@@ -22,8 +22,8 @@
       "@watch-together/home": ["libs/home/src/index.ts"],
       "@watch-together/movie-room": ["libs/room/src/index.ts"],
       "@watch-together/shared": ["libs/shared/src/index.ts"],
-      "@watch-together/video-player-new": [
-        "libs/video-player-new/src/index.ts"
+      "@watch-together/local-video-player": [
+        "libs/local-video-player/src/index.ts"
       ],
       "@watch-together/youtube-ui": ["libs/youtube/ui/src/index.ts"]
     }

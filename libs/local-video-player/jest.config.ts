@@ -1,10 +1,10 @@
 import { Config } from 'jest';
 
 export default {
-  displayName: 'video-player-new',
+  displayName: 'local-video-player',
   preset: '../../jest.preset.cjs',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../coverage/libs/video-player-new',
+  coverageDirectory: '../../coverage/libs/local-video-player',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

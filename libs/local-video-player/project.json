@@ -1,7 +1,7 @@
 {
-  "name": "video-player-new",
+  "name": "local-video-player",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/video-player-new/src",
+  "sourceRoot": "libs/local-video-player/src",
   "prefix": "lib",
   "projectType": "library",
   "tags": [],
@@ -10,8 +10,8 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/video-player-new/jest.config.ts",
-        "tsConfig": "libs/video-player-new/tsconfig.spec.json"
+        "jestConfig": "libs/local-video-player/jest.config.ts",
+        "tsConfig": "libs/local-video-player/tsconfig.spec.json"
       }
     },
     "lint": {

@@ -6,7 +6,7 @@ import {
   ENV_DATA,
   MediaService,
   MediaServiceMock,
-  RTCPeerConnectionMock
+  RTCPeerConnectionMock,
 } from '@watch-together/shared';
 
 describe('VideoPlayerComponent', () => {

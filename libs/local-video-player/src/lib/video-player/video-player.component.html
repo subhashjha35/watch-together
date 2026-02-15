@@ -4,6 +4,12 @@
     <label class="form-control" for="fileUpload">
       {{ selectedFile || 'Upload File' }}
     </label>
-    <input (change)="onFileSelected($event)" accept="video/*" class="file-picker" id="fileUpload" type="file" />
+    <input
+      (change)="onFileSelected($event)"
+      accept="video/*"
+      class="file-picker"
+      id="fileUpload"
+      type="file"
+    />
   </div>
 </div>

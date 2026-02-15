@@ -19,7 +19,7 @@ import {
   SocketService,
 } from '@watch-together/shared';
 import { VideoComponent } from '../video';
-import { VideoPlayerComponent } from '@watch-together/video-player-new';
+import { VideoPlayerComponent } from '@watch-together/local-video-player';
 
 @Component({
   selector: 'lib-movie-room',

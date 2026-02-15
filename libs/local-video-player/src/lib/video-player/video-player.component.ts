@@ -5,7 +5,7 @@ import {
   ElementRef,
   inject,
   OnInit,
-  viewChild
+  viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CallService, IVideo, SocketService } from '@watch-together/shared';
