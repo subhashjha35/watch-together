@@ -1,1 +1,1 @@
-export { YoutubeVideoPlayer } from './index';
+export { YoutubeVideoPlayerComponent } from './index';
