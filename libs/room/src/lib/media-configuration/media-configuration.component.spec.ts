@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { type ComponentFixture, TestBed } from '@angular/core/testing';
 import { MediaConfigurationComponent } from './media-configuration.component';
 import { MediaService, MediaServiceMock } from '@watch-together/shared';
 

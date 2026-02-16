@@ -8,4 +8,4 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './main-menu.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainMenu {}
+export class MainMenuComponent {}

@@ -39,9 +39,10 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     viewChild.required<ElementRef<HTMLDivElement>>('scrollFrame');
   @ViewChildren('item') itemElements!: QueryList<any>;
 
-  readonly ecComponent = viewChild.required<ExpandableContainerComponent>(
-    'expandableContainerComponent',
-  );
+  public readonly ecComponent =
+    viewChild.required<ExpandableContainerComponent>(
+      'expandableContainerComponent',
+    );
 
   public chatForm!: FormGroup;
   public registrationForm!: FormGroup;
@@ -55,7 +56,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly chatSubject = new Subject<IChat['dataType']>();
 
-  constructor() {
+  public constructor() {
     effect(() => {
       const data = this.chat();
       if (data?.text) {
@@ -64,11 +65,11 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() {
-    this.chatService.on('chat', async (data) => {
+  public ngOnInit() {
+    this.chatService.on('chat', (data) => {
       this.chat.update(() => data);
       const audio: HTMLAudioElement = new Audio('./assets/pop-sound.wav');
-      await audio.play();
+      void audio.play();
     });
 
     this.chatForm = this.formBuilder.group({
@@ -80,7 +81,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     });
   }
 
-  sendMessage(event: Event): void {
+  public sendMessage(event: Event): void {
     event.preventDefault();
     const data: IChat['dataType'] = {
       user: this.name() ?? 'Anonymous',
@@ -92,13 +93,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     this.chatForm.controls['textMessage'].reset();
   }
 
-  setName(): void {
-    this.name.set(
-      this.registrationForm.controls['username'].value || 'Anonymous',
-    );
-  }
-
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     runInInjectionContext(this.injector, () => {
       toObservable(this.ecComponent().isOpen)
         .pipe(startWith(false))
@@ -111,6 +106,12 @@ export class TextChatComponent implements OnInit, AfterViewInit {
           }
         });
     });
+  }
+
+  public setName(): void {
+    this.name.set(
+      this.registrationForm.controls['username'].value || 'Anonymous',
+    );
   }
 
   private onItemElementsChanged(): void {

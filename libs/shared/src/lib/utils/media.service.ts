@@ -17,7 +17,7 @@ export class MediaService {
   private readonly mediaDevices = signal<MediaDeviceInfo[]>([]);
 
   public constructor() {
-    this.loadDevices();
+    void this.loadDevices();
   }
 
   getUserMediaStream(constraints: MediaStreamConstraints) {

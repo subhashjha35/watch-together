@@ -20,6 +20,7 @@ import {
 } from '@watch-together/shared';
 import { VideoComponent } from '../video';
 import { VideoPlayerComponent } from '@watch-together/local-video-player';
+import { YoutubeVideoPlayerComponent } from '@watch-together/youtube-ui';
 
 @Component({
   selector: 'lib-movie-room',
@@ -29,6 +30,7 @@ import { VideoPlayerComponent } from '@watch-together/local-video-player';
     TextChatComponent,
     VideoPlayerComponent,
     VideoComponent,
+    YoutubeVideoPlayerComponent,
   ],
   templateUrl: './movie-room.component.html',
   styleUrl: './movie-room.component.scss',
@@ -45,7 +47,7 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
   private readonly mediaService = inject(MediaService);
   private roomId = '';
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.route.params.pipe(filter((params) => !!params)).subscribe((params) => {
       this.roomId = params['roomId'] || 'abc';
       this.callService.setRoomId(this.roomId); // Set roomId
@@ -53,9 +55,18 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     void this.initializeVideoStreams();
   }
+
+  public async startCall() {
+    try {
+      await this.callService.makeCall(this.remoteVideo());
+    } catch (error) {
+      console.error('Error starting call:', error);
+    }
+  }
+
   private async initializeVideoStreams() {
     try {
       const constraints: MediaStreamConstraints = {
@@ -77,27 +88,19 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
       console.error('Error initializing video stream:', error);
     }
   }
-  joinRoom() {
+  private joinRoom() {
     this.roomSocketService.emit('room', { event: 'join', roomId: this.roomId });
     this.roomSocketService.on(
       'room',
-      async (data: { socketId: string; event: string }) => {
+      (data: { socketId: string; event: string }) => {
         if (
           data.event === 'join' &&
           data.socketId !== this.socketService.socket.id
         ) {
           console.log(`Initiating call to peer: ${data.socketId}`);
-          await this.startCall();
+          void this.startCall();
         }
       },
     );
-  }
-
-  async startCall() {
-    try {
-      await this.callService.makeCall(this.remoteVideo());
-    } catch (error) {
-      console.error('Error starting call:', error);
-    }
   }
 }

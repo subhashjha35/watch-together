@@ -1,5 +1,5 @@
-import express, { Application } from 'express';
-import { Server, Socket } from 'socket.io';
+import express, { type Application } from 'express';
+import { Server, type Socket } from 'socket.io';
 import * as https from 'node:https';
 import * as fs from 'node:fs';
 import path from 'node:path';
@@ -22,7 +22,7 @@ const handleSocket = (socket: Socket) => {
       `Received room event: ${data.event}, roomId: ${data.roomId}, socketId: ${socket.id}`,
     );
     if (data.event === 'join') {
-      socket.join(data.roomId);
+      void socket.join(data.roomId);
       console.log(`User ${socket.id} joined room: ${data.roomId}`);
       socket
         .to(data.roomId)

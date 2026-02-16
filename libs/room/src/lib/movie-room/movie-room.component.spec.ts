@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { type ComponentFixture, TestBed } from '@angular/core/testing';
 import { MovieRoomComponent } from './movie-room.component';
 import { ActivatedRoute } from '@angular/router';
 import {

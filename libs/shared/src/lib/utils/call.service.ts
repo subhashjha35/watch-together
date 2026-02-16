@@ -217,7 +217,9 @@ export class CallService {
       remoteVideo.nativeElement.srcObject = new MediaStream();
 
       this.localStream.getTracks().forEach((track) => {
-        this.peerConnection.addTrack(track, this.localStream!);
+        if (this.localStream != null) {
+          this.peerConnection.addTrack(track, this.localStream);
+        }
       });
     } catch (error) {
       console.error('Error getting user media:', error);

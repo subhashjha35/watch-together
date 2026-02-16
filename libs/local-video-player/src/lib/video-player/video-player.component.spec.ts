@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { type ComponentFixture, TestBed } from '@angular/core/testing';
 import { VideoPlayerComponent } from './video-player.component';
 import {
   CallService,
@@ -6,7 +6,7 @@ import {
   ENV_DATA,
   MediaService,
   MediaServiceMock,
-  RTCPeerConnectionMock,
+  RTCPeerConnectionMock
 } from '@watch-together/shared';
 
 describe('VideoPlayerComponent', () => {

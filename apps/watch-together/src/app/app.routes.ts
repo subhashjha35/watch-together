@@ -1,4 +1,4 @@
-import { Route } from '@angular/router';
+import { type Route } from '@angular/router';
 import { AppComponent } from './app.component';
 import { MovieRoomComponent } from '@watch-together/movie-room';
 import { HomeComponent } from '@watch-together/home';

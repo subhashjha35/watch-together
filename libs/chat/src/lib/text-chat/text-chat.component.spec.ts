@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { type ComponentFixture, TestBed } from '@angular/core/testing';
 import { TextChatComponent } from './text-chat.component';
 import { ENV_DATA } from '@watch-together/shared';
 
