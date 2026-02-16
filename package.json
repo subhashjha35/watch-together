@@ -4,6 +4,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "format": "prettier \"apps/**/src/**/*.{ts,js,html,scss}\" \"libs/**/src/**/*.{ts,js,html,scss}\" --write",
     "set-ip": "node tools/set-local-ip.ts",
     "set-env": "node tools/set-env.ts",
     "build": "nx build watch-together"

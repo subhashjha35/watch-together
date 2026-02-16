@@ -9,7 +9,7 @@ describe('MediaConfigurationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MediaConfigurationComponent],
-      providers: [{ provide: MediaService, useValue: MediaServiceMock }],
+      providers: [{ provide: MediaService, useValue: MediaServiceMock }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MediaConfigurationComponent);

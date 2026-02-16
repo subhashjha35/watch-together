@@ -11,8 +11,8 @@ bootstrapApplication(AppComponent, {
     {
       provide: ENV_DATA,
       useValue: {
-        HOST: environment.apiUrl,
-      },
-    },
-  ],
+        HOST: environment.apiUrl
+      }
+    }
+  ]
 }).catch((err) => console.error(err));

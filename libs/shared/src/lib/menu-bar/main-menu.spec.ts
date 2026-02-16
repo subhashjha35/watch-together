@@ -7,7 +7,7 @@ describe('MainMenu', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainMenuComponent],
+      imports: [MainMenuComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MainMenuComponent);

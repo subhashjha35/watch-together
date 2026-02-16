@@ -4,7 +4,7 @@ import { CommonSocketService, IChat, ISocket } from '@watch-together/shared';
 export type IChatDataExtended = IChat['dataType'] & { color?: string };
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ChatService extends CommonSocketService implements ISocket<IChat> {
   constructor() {

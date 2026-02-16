@@ -5,7 +5,7 @@ import {
   ElementRef,
   inject,
   OnInit,
-  viewChild,
+  viewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CallService, IVideo, SocketService } from '@watch-together/shared';
@@ -16,11 +16,10 @@ import { CallService, IVideo, SocketService } from '@watch-together/shared';
   imports: [CommonModule],
   templateUrl: './video-player.component.html',
   styleUrl: './video-player.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VideoPlayerComponent implements OnInit, AfterViewInit {
-  readonly videoPlayer =
-    viewChild.required<ElementRef<HTMLVideoElement>>('videoPlayer');
+  readonly videoPlayer = viewChild.required<ElementRef<HTMLVideoElement>>('videoPlayer');
 
   public selectedFile: string | undefined = undefined;
   private readonly callService = inject(CallService);
@@ -38,23 +37,17 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
       this.performVideoActionOnEvent(data.event, data.time);
     });
 
-    this.videoPlayer().nativeElement.addEventListener(
-      'keydown',
-      (event: KeyboardEvent) => {
-        event.preventDefault();
-        if (event.key === 'ArrowRight') {
-          this.forward();
-        } else if (event.key === 'ArrowLeft') {
-          this.rewind();
-        }
-      },
-    );
+    this.videoPlayer().nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
+      event.preventDefault();
+      if (event.key === 'ArrowRight') {
+        this.forward();
+      } else if (event.key === 'ArrowLeft') {
+        this.rewind();
+      }
+    });
   }
 
-  performVideoActionOnEvent(
-    event: IVideo['dataType']['event'],
-    time: IVideo['dataType']['time'],
-  ) {
+  performVideoActionOnEvent(event: IVideo['dataType']['event'], time: IVideo['dataType']['time']) {
     console.warn('performVideoActionOnEvent', event, time);
     const video = this.videoPlayer().nativeElement;
 
@@ -63,7 +56,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
       this.socketService.emit('video', {
         event,
         time,
-        roomId: this.callService.getRoomId(),
+        roomId: this.callService.getRoomId()
       });
     } else {
       switch (event) {

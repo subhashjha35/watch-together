@@ -6,14 +6,7 @@ export default [
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
   {
-    ignores: [
-      '**/dist',
-      '.angular/**',
-      'tmp/**',
-      '.nx/**',
-      '.vscode/**',
-      '.idea/**',
-    ],
+    ignores: ['**/dist', '.angular/**', 'tmp/**', '.nx/**', '.vscode/**', '.idea/**']
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
@@ -26,27 +19,30 @@ export default [
           depConstraints: [
             {
               sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
-            },
-          ],
-        },
-      ],
-    },
+              onlyDependOnLibsWithTags: ['*']
+            }
+          ]
+        }
+      ]
+    }
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     // Override or add rules here
-    rules: {},
+    rules: {
+      'object-curly-newline': 'off',
+      'comma-dangle': ['error', 'never']
+    }
   },
   {
     files: ['**/*.json'],
     rules: {
       '@nx/dependency-checks': [
         'error',
-        { ignoredFiles: ['{projectRoot}/eslint.config.{js,cjs,mjs}'] },
-      ],
+        { ignoredFiles: ['{projectRoot}/eslint.config.{js,cjs,mjs}'] }
+      ]
     },
-    languageOptions: { parser: jsoncParser },
+    languageOptions: { parser: jsoncParser }
   },
   {
     files: ['**/src/**/*.ts'],
@@ -60,10 +56,10 @@ export default [
           './apps/*/tsconfig.app.json',
           './apps/*/tsconfig.json',
           './libs/*/tsconfig.lib.json',
-          './libs/*/tsconfig.json',
+          './libs/*/tsconfig.json'
         ],
-        tsconfigRootDir: new URL('.', import.meta.url).pathname,
-      },
+        tsconfigRootDir: new URL('.', import.meta.url).pathname
+      }
     },
     rules: {
       '@typescript-eslint/member-ordering': [
@@ -98,35 +94,35 @@ export default [
             // Methods
             'public-instance-method',
             'protected-instance-method',
-            'private-instance-method',
-          ],
-        },
+            'private-instance-method'
+          ]
+        }
       ],
       // TypeScript best-practices
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/consistent-type-imports': [
         'error',
-        { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
+        { prefer: 'type-imports', fixStyle: 'inline-type-imports' }
       ],
       '@typescript-eslint/ban-ts-comment': [
         'error',
-        { 'ts-expect-error': 'allow-with-description' },
+        { 'ts-expect-error': 'allow-with-description' }
       ],
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/prefer-readonly': 'warn',
       '@typescript-eslint/no-misused-promises': [
         'error',
-        { checksVoidReturn: { attributes: true, returns: true } },
+        { checksVoidReturn: { attributes: true, returns: true } }
       ],
       '@typescript-eslint/no-unsafe-argument': 'warn',
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
       ],
       '@typescript-eslint/prefer-nullish-coalescing': 'warn',
-      '@typescript-eslint/prefer-optional-chain': 'warn',
-    },
+      '@typescript-eslint/prefer-optional-chain': 'warn'
+    }
   },
   // Angular 21 best-practices for component classes
   {
@@ -134,18 +130,12 @@ export default [
     plugins: {
       '@angular-eslint':
         (await import('@angular-eslint/eslint-plugin')).default ??
-        (await import('@angular-eslint/eslint-plugin')),
+        (await import('@angular-eslint/eslint-plugin'))
     },
     rules: {
       '@angular-eslint/prefer-on-push-component-change-detection': 'error',
-      '@angular-eslint/component-class-suffix': [
-        'error',
-        { suffixes: ['Component'] },
-      ],
-      '@angular-eslint/directive-class-suffix': [
-        'error',
-        { suffixes: ['Directive'] },
-      ],
+      '@angular-eslint/component-class-suffix': ['error', { suffixes: ['Component'] }],
+      '@angular-eslint/directive-class-suffix': ['error', { suffixes: ['Directive'] }],
       '@angular-eslint/no-input-rename': 'error',
       '@angular-eslint/no-output-rename': 'error',
       '@angular-eslint/component-selector': [
@@ -154,18 +144,18 @@ export default [
           type: 'element',
           style: 'kebab-case',
           // Allow any prefix to avoid forcing a specific project prefix
-          prefix: [],
-        },
+          prefix: []
+        }
       ],
       '@angular-eslint/directive-selector': [
         'error',
         {
           type: 'attribute',
           style: 'camelCase',
-          prefix: [],
-        },
-      ],
-    },
+          prefix: []
+        }
+      ]
+    }
   },
   // Angular template accessibility & best-practices
   {
@@ -173,17 +163,14 @@ export default [
     plugins: {
       '@angular-eslint/template':
         (await import('@angular-eslint/eslint-plugin-template')).default ??
-        (await import('@angular-eslint/eslint-plugin-template')),
+        (await import('@angular-eslint/eslint-plugin-template'))
     },
     rules: {
       '@angular-eslint/template/eqeqeq': 'error',
       '@angular-eslint/template/no-negated-async': 'warn',
       '@angular-eslint/template/banana-in-box': 'error',
       '@angular-eslint/template/no-call-expression': 'warn',
-      '@angular-eslint/template/cyclomatic-complexity': [
-        'warn',
-        { maxComplexity: 6 },
-      ],
-    },
-  },
+      '@angular-eslint/template/cyclomatic-complexity': ['warn', { maxComplexity: 6 }]
+    }
+  }
 ];

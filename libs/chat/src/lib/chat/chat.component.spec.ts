@@ -7,7 +7,7 @@ describe('ChatComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChatComponent],
+      imports: [ChatComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChatComponent);

@@ -19,53 +19,38 @@ const handleSocket = (socket: Socket) => {
 
   socket.on('room', (data: { event: string; roomId: string }) => {
     console.log(
-      `Received room event: ${data.event}, roomId: ${data.roomId}, socketId: ${socket.id}`,
+      `Received room event: ${data.event}, roomId: ${data.roomId}, socketId: ${socket.id}`
     );
     if (data.event === 'join') {
       void socket.join(data.roomId);
       console.log(`User ${socket.id} joined room: ${data.roomId}`);
-      socket
-        .to(data.roomId)
-        .emit('room', { event: 'join', socketId: socket.id });
+      socket.to(data.roomId).emit('room', { event: 'join', socketId: socket.id });
       socket.emit('room', { event: 'join', roomId: data.roomId });
     }
   });
 
   socket.on(
     'call',
-    (data: {
-      event: 'offer' | 'answer' | 'candidate';
-      data: any;
-      roomId: string;
-    }) => {
-      console.log(
-        `Received call event from ${socket.id}:`,
-        JSON.stringify(data),
-      );
+    (data: { event: 'offer' | 'answer' | 'candidate'; data: any; roomId: string }) => {
+      console.log(`Received call event from ${socket.id}:`, JSON.stringify(data));
       socket.to(data.roomId).emit('call', {
         event: data.event,
         data: data.data,
         socketId: socket.id,
-        roomId: data.roomId,
+        roomId: data.roomId
       });
-    },
+    }
   );
 
-  socket.on(
-    'video',
-    (data: { event: string; time: number; roomId: string }) => {
-      console.log('Video event:', data, data.roomId);
-      socket.to(data.roomId).emit('video', data);
-    },
-  );
+  socket.on('video', (data: { event: string; time: number; roomId: string }) => {
+    console.log('Video event:', data, data.roomId);
+    socket.to(data.roomId).emit('video', data);
+  });
 
-  socket.on(
-    'chat',
-    (data: { user: string; message: string; roomId: string }) => {
-      console.log('Chat message:', data);
-      socket.to(data.roomId).emit('chat', data);
-    },
-  );
+  socket.on('chat', (data: { user: string; message: string; roomId: string }) => {
+    console.log('Chat message:', data);
+    socket.to(data.roomId).emit('chat', data);
+  });
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
@@ -86,8 +71,8 @@ if (process.env.VERCEL) {
         path: '/socket.io',
         cors: {
           origin: '*',
-          methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        },
+          methods: ['GET', 'POST', 'PUT', 'DELETE']
+        }
       });
 
       io.on('connection', handleSocket);
@@ -100,22 +85,16 @@ if (process.env.VERCEL) {
   module.exports = app;
 } else {
   // Local development with HTTPS
-  const privateKey = fs.readFileSync(
-    path.join(__dirname, 'certs/key.pem'),
-    'utf8',
-  );
-  const certificate = fs.readFileSync(
-    path.join(__dirname, 'certs/cert.pem'),
-    'utf8',
-  );
+  const privateKey = fs.readFileSync(path.join(__dirname, 'certs/key.pem'), 'utf8');
+  const certificate = fs.readFileSync(path.join(__dirname, 'certs/cert.pem'), 'utf8');
   const credentials = { key: privateKey, cert: certificate };
   const httpsServer = https.createServer(credentials, app);
 
   const io = new Server(httpsServer, {
     cors: {
       origin: '*',
-      methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    },
+      methods: ['GET', 'POST', 'PUT', 'DELETE']
+    }
   });
 
   io.on('connection', handleSocket);

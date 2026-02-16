@@ -5,19 +5,13 @@ import {
   ElementRef,
   inject,
   OnInit,
-  viewChild,
+  viewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TextChatComponent } from '@watch-together/chat';
 import { ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
-import {
-  CallService,
-  ICall,
-  IRoom,
-  MediaService,
-  SocketService,
-} from '@watch-together/shared';
+import { CallService, ICall, IRoom, MediaService, SocketService } from '@watch-together/shared';
 import { VideoComponent } from '../video';
 import { VideoPlayerComponent } from '@watch-together/local-video-player';
 import { YoutubeVideoPlayerComponent } from '@watch-together/youtube-ui';
@@ -30,16 +24,15 @@ import { YoutubeVideoPlayerComponent } from '@watch-together/youtube-ui';
     TextChatComponent,
     VideoPlayerComponent,
     VideoComponent,
-    YoutubeVideoPlayerComponent,
+    YoutubeVideoPlayerComponent
   ],
   templateUrl: './movie-room.component.html',
   styleUrl: './movie-room.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MovieRoomComponent implements OnInit, AfterViewInit {
   readonly myVideo = viewChild.required<VideoComponent>('myVideo');
-  readonly remoteVideo =
-    viewChild.required<ElementRef<HTMLVideoElement>>('remoteVideo');
+  readonly remoteVideo = viewChild.required<ElementRef<HTMLVideoElement>>('remoteVideo');
   private readonly route = inject(ActivatedRoute);
   private readonly socketService = inject(SocketService<ICall>);
   private readonly roomSocketService = inject(SocketService<IRoom>);
@@ -74,10 +67,10 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
           aspectRatio: 1.77778,
           width: { ideal: 1280 },
           deviceId: {
-            exact: this.mediaService.selectedVideoDevice() || undefined,
-          },
+            exact: this.mediaService.selectedVideoDevice() || undefined
+          }
         },
-        audio: { noiseSuppression: true },
+        audio: { noiseSuppression: true }
       };
       await this.callService.initializeStreams(this.remoteVideo(), constraints);
       const localStream = this.callService.getLocalStream();
@@ -90,17 +83,11 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
   }
   private joinRoom() {
     this.roomSocketService.emit('room', { event: 'join', roomId: this.roomId });
-    this.roomSocketService.on(
-      'room',
-      (data: { socketId: string; event: string }) => {
-        if (
-          data.event === 'join' &&
-          data.socketId !== this.socketService.socket.id
-        ) {
-          console.log(`Initiating call to peer: ${data.socketId}`);
-          void this.startCall();
-        }
-      },
-    );
+    this.roomSocketService.on('room', (data: { socketId: string; event: string }) => {
+      if (data.event === 'join' && data.socketId !== this.socketService.socket.id) {
+        console.log(`Initiating call to peer: ${data.socketId}`);
+        void this.startCall();
+      }
+    });
   }
 }

@@ -16,7 +16,7 @@ export {
   IRoomEvent,
   IAllSocketEventTypes,
   ISocketOnMethod,
-  ISocketEmitMethod,
+  ISocketEmitMethod
 } from './lib/utils';
 export * from './lib/expandable-container';
 export * from './lib/mock';

@@ -11,7 +11,7 @@ import {
   runInInjectionContext,
   signal,
   viewChild,
-  ViewChildren,
+  ViewChildren
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatService, IChatDataExtended } from '../chat.service';
@@ -21,7 +21,7 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { ExpandableContainerComponent, IChat } from '@watch-together/shared';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -32,17 +32,15 @@ import { toObservable } from '@angular/core/rxjs-interop';
   imports: [CommonModule, ReactiveFormsModule, ExpandableContainerComponent],
   templateUrl: './text-chat.component.html',
   styleUrl: './text-chat.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TextChatComponent implements OnInit, AfterViewInit {
-  readonly scrollFrame =
-    viewChild.required<ElementRef<HTMLDivElement>>('scrollFrame');
+  readonly scrollFrame = viewChild.required<ElementRef<HTMLDivElement>>('scrollFrame');
   @ViewChildren('item') itemElements!: QueryList<any>;
 
-  public readonly ecComponent =
-    viewChild.required<ExpandableContainerComponent>(
-      'expandableContainerComponent',
-    );
+  public readonly ecComponent = viewChild.required<ExpandableContainerComponent>(
+    'expandableContainerComponent'
+  );
 
   public chatForm!: FormGroup;
   public registrationForm!: FormGroup;
@@ -73,11 +71,11 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     });
 
     this.chatForm = this.formBuilder.group({
-      textMessage: new FormControl(null, [Validators.required]),
+      textMessage: new FormControl(null, [Validators.required])
     });
 
     this.registrationForm = this.formBuilder.group({
-      username: new FormControl(null, [Validators.required]),
+      username: new FormControl(null, [Validators.required])
     });
   }
 
@@ -85,7 +83,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     event.preventDefault();
     const data: IChat['dataType'] = {
       user: this.name() ?? 'Anonymous',
-      text: this.chatForm.controls['textMessage'].value,
+      text: this.chatForm.controls['textMessage'].value
     };
     this.chatSubject.next(data);
     this.chatService.emit('chat', data);
@@ -100,18 +98,14 @@ export class TextChatComponent implements OnInit, AfterViewInit {
         .subscribe((isOpen) => {
           if (isOpen) {
             this.scrollContainer = this.scrollFrame().nativeElement;
-            this.itemElements.changes.subscribe(() =>
-              this.onItemElementsChanged(),
-            );
+            this.itemElements.changes.subscribe(() => this.onItemElementsChanged());
           }
         });
     });
   }
 
   public setName(): void {
-    this.name.set(
-      this.registrationForm.controls['username'].value || 'Anonymous',
-    );
+    this.name.set(this.registrationForm.controls['username'].value || 'Anonymous');
   }
 
   private onItemElementsChanged(): void {
@@ -122,7 +116,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
     this.scrollContainer?.scroll({
       top: this.scrollContainer.scrollHeight,
       left: 0,
-      behavior: 'instant',
+      behavior: 'instant'
     });
   }
 }

@@ -1,17 +1,17 @@
 import { computed, Injectable, signal } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class MediaService {
   public selectedVideoDevice = signal<string | undefined>(undefined);
   public selectedAudioDevice = signal<string | undefined>(undefined);
   public videoDevices = computed(() =>
-    this.mediaDevices().filter((device) => device.kind === 'videoinput'),
+    this.mediaDevices().filter((device) => device.kind === 'videoinput')
   );
 
   public audioDevices = computed(() =>
-    this.mediaDevices().filter((device) => device.kind === 'audioinput'),
+    this.mediaDevices().filter((device) => device.kind === 'audioinput')
   );
 
   private readonly mediaDevices = signal<MediaDeviceInfo[]>([]);

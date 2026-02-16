@@ -9,7 +9,7 @@ describe('TextChatComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TextChatComponent],
-      providers: [{ provide: ENV_DATA, useValue: {} }],
+      providers: [{ provide: ENV_DATA, useValue: {} }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TextChatComponent);

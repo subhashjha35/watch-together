@@ -17,7 +17,7 @@ type ClientToServerEvents = {
     event: ICallEvent;
     data: RTCSessionDescriptionInit | RTCIceCandidateInit;
   };
-  room: IRoomEventData
+  room: IRoomEventData;
 };
 
 type ServerToClientEvents = {
@@ -27,13 +27,16 @@ type ServerToClientEvents = {
     event: ICallEvent;
     data: RTCSessionDescriptionInit | RTCIceCandidateInit;
   };
-  room: IRoomEventData
+  room: IRoomEventData;
 };
 
 @Injectable({
   providedIn: 'root'
 })
-export class SocketService<T extends IAllSocketEventTypes> extends CommonSocketService implements ISocket<T> {
+export class SocketService<T extends IAllSocketEventTypes>
+  extends CommonSocketService
+  implements ISocket<T>
+{
   constructor() {
     super();
   }
@@ -42,7 +45,13 @@ export class SocketService<T extends IAllSocketEventTypes> extends CommonSocketS
     return this.socket.emit(eventGroup satisfies keyof ClientToServerEvents, data);
   }
 
-  on(eventGroup: T['event'], listener: (data: T['dataType']) => void): Socket<ServerToClientEvents, ClientToServerEvents> {
-    return this.socket.on(eventGroup satisfies keyof ServerToClientEvents, listener as (data: ServerToClientEvents[T['event']]) => void);
+  on(
+    eventGroup: T['event'],
+    listener: (data: T['dataType']) => void
+  ): Socket<ServerToClientEvents, ClientToServerEvents> {
+    return this.socket.on(
+      eventGroup satisfies keyof ServerToClientEvents,
+      listener as (data: ServerToClientEvents[T['event']]) => void
+    );
   }
 }

@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MediaService } from '@watch-together/shared';
 
@@ -13,7 +8,7 @@ import { MediaService } from '@watch-together/shared';
   imports: [CommonModule],
   templateUrl: './media-configuration.component.html',
   styleUrl: './media-configuration.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MediaConfigurationComponent {
   audioDevices = input<MediaDeviceInfo[] | null>([]);

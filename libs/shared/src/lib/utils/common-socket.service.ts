@@ -11,7 +11,7 @@ type ServerToClientEvents = Record<IAllSocketEventTypes['event'], any>;
 type ClientToServerEvents = Record<IAllSocketEventTypes['event'], any>;
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export abstract class CommonSocketService {
   public socket!: Socket<ServerToClientEvents, ClientToServerEvents>;

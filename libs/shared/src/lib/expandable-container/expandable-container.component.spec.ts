@@ -7,7 +7,7 @@ describe('ExpandableContainerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ExpandableContainerComponent],
+      imports: [ExpandableContainerComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ExpandableContainerComponent);

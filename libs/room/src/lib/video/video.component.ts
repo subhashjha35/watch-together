@@ -21,11 +21,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   providers: [BsModalService],
   templateUrl: './video.component.html',
   styleUrl: './video.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VideoComponent {
-  readonly localVideo =
-    viewChild.required<ElementRef<HTMLVideoElement>>('localVideo');
+  readonly localVideo = viewChild.required<ElementRef<HTMLVideoElement>>('localVideo');
   public audioDevices = computed(() => this.mediaService.audioDevices());
   public videoDevices = computed(() => this.mediaService.videoDevices());
 

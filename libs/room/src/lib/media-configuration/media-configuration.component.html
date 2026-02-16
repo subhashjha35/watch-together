@@ -2,8 +2,7 @@
   <label for="videoInputSelect">Video Input</label>
   <select (change)="changeVideo($event)" class="form-control" id="videoInputSelect">
     @for (device of videoDevices(); track device.deviceId) {
-      <option [value]="device.deviceId">{{ device.label || 'Video Device' }}
-      </option>
+      <option [value]="device.deviceId">{{ device.label || 'Video Device' }}</option>
     }
   </select>
 </div>
@@ -12,8 +11,7 @@
   <label for="audioInputSelect">Audio Input</label>
   <select (change)="changeAudio($event)" class="form-control" id="audioInputSelect">
     @for (device of audioDevices(); track device.deviceId) {
-      <option [value]="device.deviceId">{{ device.label || 'Audio Device' }}
-      </option>
+      <option [value]="device.deviceId">{{ device.label || 'Audio Device' }}</option>
     }
   </select>
 </div>

@@ -5,27 +5,25 @@ import { ICall } from './socket.type';
 export const rtcConfiguration: RTCConfiguration = {
   iceServers: [
     {
-      urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
+      urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
     },
     {
       urls: 'turn:openrelay.metered.ca:80',
       username: 'openrelay.project',
-      credential: 'openrelayproject',
-    },
+      credential: 'openrelayproject'
+    }
   ],
-  iceCandidatePoolSize: 10,
+  iceCandidatePoolSize: 10
 };
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class CallService {
   private roomId: string | null = null;
   private peerConnection!: RTCPeerConnection;
 
-  private readonly socketService: SocketService<ICall> = inject(
-    SocketService<ICall>,
-  );
+  private readonly socketService: SocketService<ICall> = inject(SocketService<ICall>);
   private remoteVideoRef: ElementRef | null = null;
   private localStream: MediaStream | null = null;
   private candidateQueue: RTCIceCandidateInit[] = []; // Queue for ICE candidates
@@ -35,7 +33,7 @@ export class CallService {
     this.socketService.on('call', async (data) => {
       if (!this.roomId || data.roomId !== this.roomId) {
         console.warn(
-          `Ignoring call event: expected roomId=${this.roomId}, received roomId=${data.roomId}`,
+          `Ignoring call event: expected roomId=${this.roomId}, received roomId=${data.roomId}`
         );
         return;
       }
@@ -45,10 +43,7 @@ export class CallService {
           break;
         case 'offer':
           if (this.remoteVideoRef) {
-            await this.handleOffer(
-              data.data as RTCSessionDescription,
-              this.remoteVideoRef,
-            );
+            await this.handleOffer(data.data as RTCSessionDescription, this.remoteVideoRef);
           } else {
             console.error('Remote video reference not set');
           }
@@ -72,7 +67,7 @@ export class CallService {
 
   public async initializeStreams(
     remoteVideo: ElementRef,
-    constraints?: MediaStreamConstraints,
+    constraints?: MediaStreamConstraints
   ): Promise<void> {
     this.remoteVideoRef = remoteVideo;
     await this._getStreams(remoteVideo, constraints);
@@ -88,14 +83,11 @@ export class CallService {
     this.socketService.emit('call', {
       event: 'offer',
       data: offer,
-      roomId: this.roomId,
+      roomId: this.roomId
     });
   }
 
-  public async handleOffer(
-    offer: RTCSessionDescription,
-    remoteVideo: ElementRef,
-  ): Promise<void> {
+  public async handleOffer(offer: RTCSessionDescription, remoteVideo: ElementRef): Promise<void> {
     if (!this.roomId) throw new Error('roomId not set');
     if (this.peerConnection.signalingState !== 'stable') {
       return;
@@ -103,29 +95,25 @@ export class CallService {
     this.initializePeerConnection();
     this.remoteVideoRef = remoteVideo;
     await this._initConnection(remoteVideo);
-    await this.peerConnection.setRemoteDescription(
-      new RTCSessionDescription(offer),
-    );
+    await this.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
     await this.processQueuedCandidates();
     const answer = await this.peerConnection.createAnswer();
     await this.peerConnection.setLocalDescription(answer);
     this.socketService.emit('call', {
       event: 'answer',
       data: answer,
-      roomId: this.roomId,
+      roomId: this.roomId
     });
   }
 
   public async handleAnswer(answer: RTCSessionDescription): Promise<void> {
     if (this.peerConnection.signalingState !== 'have-local-offer') {
       console.error(
-        `Cannot set remote answer: RTCPeerConnection not in have-local-offer state: ${this.peerConnection.signalingState}`,
+        `Cannot set remote answer: RTCPeerConnection not in have-local-offer state: ${this.peerConnection.signalingState}`
       );
       return;
     }
-    await this.peerConnection.setRemoteDescription(
-      new RTCSessionDescription(answer),
-    );
+    await this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
     await this.processQueuedCandidates();
   }
 
@@ -150,9 +138,7 @@ export class CallService {
     while (this.candidateQueue.length > 0) {
       const candidate = this.candidateQueue.shift();
       if (candidate) {
-        await this.peerConnection.addIceCandidate(
-          new RTCIceCandidate(candidate),
-        );
+        await this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
       }
     }
   }
@@ -188,13 +174,12 @@ export class CallService {
         this.socketService.emit('call', {
           event: 'candidate',
           data: event.candidate.toJSON(),
-          roomId: this.roomId,
+          roomId: this.roomId
         });
       }
     };
     this.peerConnection.ontrack = (event) => {
-      const remoteStream = this.remoteVideoRef?.nativeElement
-        .srcObject as MediaStream;
+      const remoteStream = this.remoteVideoRef?.nativeElement.srcObject as MediaStream;
       if (remoteStream) {
         event.streams[0].getTracks().forEach((track) => {
           remoteStream.addTrack(track);
@@ -209,8 +194,8 @@ export class CallService {
     remoteVideo: ElementRef,
     constraints: MediaStreamConstraints = {
       video: true,
-      audio: true,
-    },
+      audio: true
+    }
   ): Promise<void> {
     try {
       this.localStream = await navigator.mediaDevices.getUserMedia(constraints);

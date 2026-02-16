@@ -1,8 +1,10 @@
 <div class="expandable-container d-flex flex-column justify-content-between">
   <div class="header d-flex align-items-center justify-content-between">
-    <div class="title p-2 ">{{ title | titlecase }}</div>
-    <button (click)="toggleSlideUpDown()"
-            class="toggle-expansion d-flex align-items-center justify-content-center border-0">
+    <div class="title p-2">{{ title | titlecase }}</div>
+    <button
+      (click)="toggleSlideUpDown()"
+      class="toggle-expansion d-flex align-items-center justify-content-center border-0"
+    >
       {{ isOpen() ? '-' : '+' }}
     </button>
   </div>

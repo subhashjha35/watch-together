@@ -20,8 +20,8 @@ describe('VideoPlayerComponent', () => {
         { provide: ENV_DATA, useValue: {} },
         { provide: CallService, useClass: CallServiceMock },
         { provide: MediaService, useClass: MediaServiceMock },
-        { provide: 'RTCPeerConnection', useClass: RTCPeerConnectionMock },
-      ],
+        { provide: 'RTCPeerConnection', useClass: RTCPeerConnectionMock }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(VideoPlayerComponent);

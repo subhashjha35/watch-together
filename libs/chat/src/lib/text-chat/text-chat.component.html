@@ -1,25 +1,39 @@
-<shared-expandable-container #expandableContainerComponent [title]="'Chat'" class="text-chat-container">
+<shared-expandable-container
+  #expandableContainerComponent
+  [title]="'Chat'"
+  class="text-chat-container"
+>
   @if (name()) {
     <div class="p-2 chat-history" #scrollFrame>
       @for (chat of chatHistory(); track chat.text) {
         <div class="d-flex gap-2" #item>
-          <div [ngStyle]="{color: chat.color}">{{ chat.user }}:</div>
+          <div [ngStyle]="{ color: chat.color }">{{ chat.user }}:</div>
           <div>{{ chat.text }}</div>
         </div>
       }
     </div>
     <form [formGroup]="chatForm" class="form position-absolute">
       <div class="d-flex p-2 gap-2 d-flex">
-        <input formControlName="textMessage" type="text" class="form-control border-r-1">
+        <input formControlName="textMessage" type="text" class="form-control border-r-1" />
         <button (click)="sendMessage($event)" class="btn btn-primary" type="submit">Send</button>
       </div>
     </form>
   } @else {
     <form [formGroup]="registrationForm">
       <div class="d-flex p-2 gap-2">
-        <input class="form-control form-control-sm border-r-1" formControlName="username" type="search"
-               placeholder="Enter your name">
-        <button (click)="setName()" [disabled]="!registrationForm.valid" class="btn btn-primary" type="submit">Submit
+        <input
+          class="form-control form-control-sm border-r-1"
+          formControlName="username"
+          type="search"
+          placeholder="Enter your name"
+        />
+        <button
+          (click)="setName()"
+          [disabled]="!registrationForm.valid"
+          class="btn btn-primary"
+          type="submit"
+        >
+          Submit
         </button>
       </div>
     </form>
