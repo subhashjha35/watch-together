@@ -1,6 +1,6 @@
 // TypeScript
 import express, { type Application, type Request, type Response } from 'express';
-import { Server } from 'socket.io';
+import { Server, type Socket } from 'socket.io';
 import * as https from 'node:https';
 import * as fs from 'node:fs';
 import path from 'node:path';
@@ -13,7 +13,7 @@ const ip = process.env.IP || '0.0.0.0';
 
 const app: Application = express();
 
-const handleSocket = (socket: import('socket.io').Socket) => {
+const handleSocket = (socket: Socket) => {
   console.log('A user connected:', socket.id);
 
   socket.on('room', (data: { event: string; roomId: string }) => {
