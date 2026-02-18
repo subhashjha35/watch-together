@@ -1,11 +1,12 @@
-import express, { type Application } from 'express';
+// TypeScript
+import express, { type Application, type Request, type Response } from 'express';
 import { Server, type Socket } from 'socket.io';
 import * as https from 'node:https';
 import * as fs from 'node:fs';
 import path from 'node:path';
 import dotenv from 'dotenv';
 
-// Load environment variables from .local.env file
+// Load environment variables from '.local.env'
 dotenv.config({ path: path.join(process.cwd(), '.local.env') });
 
 const port = Number(process.env.BACKEND_PORT) || 3000;
@@ -29,18 +30,18 @@ const handleSocket = (socket: Socket) => {
     }
   });
 
-  socket.on(
-    'call',
-    (data: { event: 'offer' | 'answer' | 'candidate'; data: any; roomId: string }) => {
-      console.log(`Received call event from ${socket.id}:`, JSON.stringify(data));
-      socket.to(data.roomId).emit('call', {
-        event: data.event,
-        data: data.data,
-        socketId: socket.id,
-        roomId: data.roomId
-      });
-    }
-  );
+  type CallEvent = 'offer' | 'answer' | 'candidate';
+  type CallPayload = RTCSessionDescriptionInit | RTCIceCandidateInit;
+
+  socket.on('call', (data: { event: CallEvent; data: CallPayload; roomId: string }) => {
+    console.log(`Received call event from ${socket.id}:`, JSON.stringify(data));
+    socket.to(data.roomId).emit('call', {
+      event: data.event,
+      data: data.data,
+      socketId: socket.id,
+      roomId: data.roomId
+    });
+  });
 
   socket.on('video', (data: { event: string; time: number; roomId: string }) => {
     console.log('Video event:', data, data.roomId);
@@ -62,21 +63,47 @@ const handleSocket = (socket: Socket) => {
   });
 };
 
+// Common CORS middleware
+const allowOrigin = '*'; // or set to a specific origin if needed
+app.use((req: Request, res: Response, next) => {
+  res.header('Access-Control-Allow-Origin', allowOrigin);
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  next();
+});
+
 // Check if running on Vercel
 if (process.env.VERCEL) {
-  // For Vercel, export the app and handle socket.io as middleware
-  const ioHandler = (req: any, res: any) => {
-    if (!res.socket.server.io) {
-      const io = new Server(res.socket.server, {
+  // Safely type and attach Socket.IO on Vercel at '/api/socket'
+  type ServerWithIO = { io?: Server };
+  type ResWithSocket = Response & { socket?: { server?: ServerWithIO } };
+
+  const ioHandler = (req: Request, res: ResWithSocket) => {
+    // Set CORS for this endpoint explicitly
+    res.header('Access-Control-Allow-Origin', allowOrigin);
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+
+    if (req.method === 'OPTIONS') {
+      res.status(200).end();
+      return;
+    }
+
+    const serverRef: ServerWithIO | undefined = res.socket?.server;
+    if (serverRef && !serverRef.io) {
+      const io = new Server(res.socket!.server as unknown as https.Server, {
         path: '/socket.io',
         cors: {
-          origin: '*',
+          origin: allowOrigin,
           methods: ['GET', 'POST', 'PUT', 'DELETE']
         }
       });
-
       io.on('connection', handleSocket);
-      res.socket.server.io = io;
+      serverRef.io = io;
     }
     res.end();
   };
@@ -92,7 +119,7 @@ if (process.env.VERCEL) {
 
   const io = new Server(httpsServer, {
     cors: {
-      origin: '*',
+      origin: allowOrigin,
       methods: ['GET', 'POST', 'PUT', 'DELETE']
     }
   });
