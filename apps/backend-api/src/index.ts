@@ -12,6 +12,7 @@ const port = Number(process.env.BACKEND_PORT) || 3000;
 const ip = process.env.IP || '0.0.0.0';
 
 const app: Application = express();
+export default app;
 
 const handleSocket = (socket: Socket) => {
   console.log('A user connected:', socket.id);
@@ -104,7 +105,6 @@ if (process.env.VERCEL) {
   };
 
   app.get('/api/socket', ioHandler);
-  module.exports = app;
 } else {
   const privateKey = fs.readFileSync(path.join(__dirname, 'certs/key.pem'), 'utf8');
   const certificate = fs.readFileSync(path.join(__dirname, 'certs/cert.pem'), 'utf8');
