@@ -1,3 +1,94 @@
-<section class="yt-player" aria-label="YouTube video player">
+<section class="yt-player" aria-label="YouTube video player" (pointermove)="onPointerMove()">
   <div #playerContainer class="yt-player__frame" role="group" aria-label="Video area"></div>
+
+  <div
+    class="yt-player__controls"
+    role="group"
+    aria-label="Player controls"
+    [class.hidden]="!controlsVisible()"
+    tabindex="0"
+    (focus)="onControlsFocus()"
+    (blur)="onControlsBlur()"
+  >
+    <button
+      type="button"
+      class="yt-player__btn"
+      [disabled]="!isReady()"
+      [attr.aria-pressed]="isPlaying() ? 'true' : 'false'"
+      [attr.aria-label]="isPlaying() ? 'Pause' : 'Play'"
+      (click)="isPlaying() ? pause() : play()"
+    >
+      @if (isPlaying()) {
+        <!-- Pause icon -->
+        <svg class="yt-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="6" y="4" width="4" height="16"></rect>
+          <rect x="14" y="4" width="4" height="16"></rect>
+        </svg>
+        <span class="visually-hidden">Pause</span>
+      } @else {
+        <!-- Play icon -->
+        <svg class="yt-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <polygon points="8,5 19,12 8,19"></polygon>
+        </svg>
+        <span class="visually-hidden">Play</span>
+      }
+    </button>
+
+    <label class="yt-player__time" [attr.for]="'yt-progress'">
+      <span aria-label="Current time">{{ currentTime() | number:'1.0-0' }}s</span>
+      /
+      <span aria-label="Duration">{{ duration() | number:'1.0-0' }}s</span>
+    </label>
+
+    <input
+      id="yt-progress"
+      class="yt-player__progress"
+      type="range"
+      [min]="0"
+      [max]="duration()"
+      [step]="0.1"
+      [value]="currentTime()"
+      [disabled]="!isReady()"
+      (input)="onSeekChange($event)"
+      aria-label="Seek"
+    />
+
+    <button
+      type="button"
+      class="yt-player__btn"
+      aria-label="Toggle fullscreen"
+      (click)="toggleFullscreen()"
+    >
+      @if (isFullscreen()) {
+        <!-- Exit fullscreen icon -->
+        <svg class="yt-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M14 10V4h6v2h-4v4h-2zM4 10V4h6v2H6v4H4zm10 10v-6h2v4h4v2h-6zM4 20v-6h2v4h4v2H4z"></path>
+        </svg>
+        <span class="visually-hidden">Exit Fullscreen</span>
+      } @else {
+        <!-- Enter fullscreen icon -->
+        <svg class="yt-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M14 4h6v6h-2V6h-4V4zM4 4h6v2H6v4H4V4zm16 16h-6v-2h4v-4h2v6zM10 20H4v-6h2v4h4v2z"></path>
+        </svg>
+        <span class="visually-hidden">Fullscreen</span>
+      }
+    </button>
+
+    @if (watchUrl()) {
+      <a
+        class="yt-player__link"
+        [href]="watchUrl()!"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Open video on YouTube"
+      >
+        <!-- External link icon -->
+        <svg class="yt-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3z"></path>
+          <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"></path>
+        </svg>
+        <span class="visually-hidden">Open on YouTube</span>
+      </a>
+    }
+  </div>
 </section>

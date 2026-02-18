@@ -1,0 +1,100 @@
+.yt-player {
+  position: relative;
+}
+
+.yt-player__frame {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+/* Overlay controls over the video */
+.yt-player__controls {
+  position: absolute;
+  left: 50%;
+  bottom: 0.75rem;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: saturate(120%) blur(2px);
+  z-index: 3;
+  transition: opacity 120ms ease-out;
+
+  /* Use the measured frame width to match controls width and centering */
+  width: var(--yt-frame-width, auto);
+  max-width: min(80vw, 1280px);
+}
+
+/* Keep controls visible in fullscreen */
+:fullscreen .yt-player__controls {
+  bottom: 1rem;
+  width: var(--yt-frame-width, auto);
+}
+
+.yt-player__controls.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease-in;
+}
+
+.yt-player__btn {
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+
+.yt-player__btn[disabled] {
+  opacity: 0.6;
+}
+
+.yt-player__progress {
+  flex: 1 1 auto;
+  min-width: 160px;
+}
+
+.yt-player__time {
+  color: #fff;
+}
+
+.yt-player__link {
+  color: #61dafb;
+  text-decoration: underline;
+}
+
+/* Constrain when the container is in fullscreen */
+:fullscreen .yt-player__frame {
+  margin: 0 auto;
+  max-width: min(80vw, 1280px);
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+:fullscreen .yt-player {
+  background: #000;
+  display: grid;
+  place-items: center;
+}
+
+.yt-icon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

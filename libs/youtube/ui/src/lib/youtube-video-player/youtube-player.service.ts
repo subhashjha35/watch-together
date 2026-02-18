@@ -198,7 +198,10 @@ export class YoutubePlayerService {
         rel: 0,
         playsinline: 1,
         enablejsapi: 1,
-        origin: window.location.origin
+        origin: window.location.origin,
+        fs: 0, // disable native fullscreen button
+        controls: 0, // remove player controls to avoid fullscreen triggers
+        disablekb: 1 // disable keyboard shortcuts like 'f' for fullscreen
       },
       events: {
         onReady: (ev: YTOnReadyEvent) => {
