@@ -1,12 +1,11 @@
 // TypeScript
 import express, { type Application, type Request, type Response } from 'express';
-import { Server, type Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import * as https from 'node:https';
 import * as fs from 'node:fs';
 import path from 'node:path';
 import dotenv from 'dotenv';
 
-// Load environment variables from '.local.env'
 dotenv.config({ path: path.join(process.cwd(), '.local.env') });
 
 const port = Number(process.env.BACKEND_PORT) || 3000;
@@ -14,8 +13,7 @@ const ip = process.env.IP || '0.0.0.0';
 
 const app: Application = express();
 
-// Socket.IO handler function
-const handleSocket = (socket: Socket) => {
+const handleSocket = (socket: import('socket.io').Socket) => {
   console.log('A user connected:', socket.id);
 
   socket.on('room', (data: { event: string; roomId: string }) => {
@@ -63,8 +61,7 @@ const handleSocket = (socket: Socket) => {
   });
 };
 
-// Common CORS middleware
-const allowOrigin = '*'; // or set to a specific origin if needed
+const allowOrigin = '*';
 app.use((req: Request, res: Response, next) => {
   res.header('Access-Control-Allow-Origin', allowOrigin);
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
@@ -76,14 +73,11 @@ app.use((req: Request, res: Response, next) => {
   next();
 });
 
-// Check if running on Vercel
 if (process.env.VERCEL) {
-  // Safely type and attach Socket.IO on Vercel at '/api/socket'
   type ServerWithIO = { io?: Server };
   type ResWithSocket = Response & { socket?: { server?: ServerWithIO } };
 
   const ioHandler = (req: Request, res: ResWithSocket) => {
-    // Set CORS for this endpoint explicitly
     res.header('Access-Control-Allow-Origin', allowOrigin);
     res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
@@ -95,8 +89,9 @@ if (process.env.VERCEL) {
 
     const serverRef: ServerWithIO | undefined = res.socket?.server;
     if (serverRef && !serverRef.io) {
-      const io = new Server(res.socket!.server as unknown as https.Server, {
-        path: '/socket.io',
+      // Attach Socket.IO using the API path to avoid 404s
+      const io = new Server(serverRef as unknown as https.Server, {
+        path: '/api/socket.io',
         cors: {
           origin: allowOrigin,
           methods: ['GET', 'POST', 'PUT', 'DELETE']
@@ -111,7 +106,6 @@ if (process.env.VERCEL) {
   app.get('/api/socket', ioHandler);
   module.exports = app;
 } else {
-  // Local development with HTTPS
   const privateKey = fs.readFileSync(path.join(__dirname, 'certs/key.pem'), 'utf8');
   const certificate = fs.readFileSync(path.join(__dirname, 'certs/cert.pem'), 'utf8');
   const credentials = { key: privateKey, cert: certificate };
