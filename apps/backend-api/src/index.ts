@@ -2,6 +2,7 @@
 import express, { type Application, type Request, type Response } from 'express';
 import { Server, type Socket } from 'socket.io';
 import * as https from 'node:https';
+import * as http from 'node:http';
 import * as fs from 'node:fs';
 import path from 'node:path';
 import dotenv from 'dotenv';
@@ -9,8 +10,9 @@ import { fileURLToPath } from 'node:url';
 
 dotenv.config({ path: path.join(process.cwd(), '.local.env') });
 
-const port = Number(process.env.BACKEND_PORT) || 3000;
+const port = Number(process.env.PORT ?? process.env.BACKEND_PORT) || 3000;
 const ip = process.env.IP || '0.0.0.0';
+const useHttps = process.env.USE_HTTPS === 'true';
 
 const app: Application = express();
 export default app;
@@ -110,12 +112,17 @@ if (process.env.VERCEL) {
   // ESM-safe dirname resolution for runtime file access.
   const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
-  const privateKey = fs.readFileSync(path.join(currentDir, 'certs/key.pem'), 'utf8');
-  const certificate = fs.readFileSync(path.join(currentDir, 'certs/cert.pem'), 'utf8');
-  const credentials = { key: privateKey, cert: certificate };
-  const httpsServer = https.createServer(credentials, app);
+  const server = useHttps
+    ? https.createServer(
+        {
+          key: fs.readFileSync(path.join(currentDir, 'certs/key.pem'), 'utf8'),
+          cert: fs.readFileSync(path.join(currentDir, 'certs/cert.pem'), 'utf8')
+        },
+        app
+      )
+    : http.createServer(app);
 
-  const io = new Server(httpsServer, {
+  const io = new Server(server, {
     cors: {
       origin: allowOrigin,
       methods: ['GET', 'POST', 'PUT', 'DELETE']
@@ -124,7 +131,8 @@ if (process.env.VERCEL) {
 
   io.on('connection', handleSocket);
 
-  httpsServer.listen(port, ip, () => {
-    console.log(`Server is running on https://${ip}:${port}`);
+  server.listen(port, ip, () => {
+    const protocol = useHttps ? 'https' : 'http';
+    console.log(`Server is running on ${protocol}://${ip}:${port}`);
   });
 }
