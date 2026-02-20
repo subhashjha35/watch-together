@@ -5,6 +5,7 @@ import * as https from 'node:https';
 import * as fs from 'node:fs';
 import path from 'node:path';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'node:url';
 
 dotenv.config({ path: path.join(process.cwd(), '.local.env') });
 
@@ -106,8 +107,11 @@ if (process.env.VERCEL) {
 
   app.get('/api/socket', ioHandler);
 } else {
-  const privateKey = fs.readFileSync(path.join(__dirname, 'certs/key.pem'), 'utf8');
-  const certificate = fs.readFileSync(path.join(__dirname, 'certs/cert.pem'), 'utf8');
+  // ESM-safe dirname resolution for runtime file access.
+  const currentDir = path.dirname(fileURLToPath(import.meta.url));
+
+  const privateKey = fs.readFileSync(path.join(currentDir, 'certs/key.pem'), 'utf8');
+  const certificate = fs.readFileSync(path.join(currentDir, 'certs/cert.pem'), 'utf8');
   const credentials = { key: privateKey, cert: certificate };
   const httpsServer = https.createServer(credentials, app);
 

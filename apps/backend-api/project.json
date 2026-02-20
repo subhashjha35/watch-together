@@ -12,7 +12,7 @@
       "options": {
         "platform": "node",
         "outputPath": "dist/apps/backend-api",
-        "format": ["cjs"],
+        "format": ["esm"],
         "bundle": true,
         "main": "apps/backend-api/src/index.ts",
         "tsConfig": "apps/backend-api/tsconfig.app.json",
