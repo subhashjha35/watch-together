@@ -24,7 +24,7 @@ const excludedIfacePrefixes = [
   'wg', // wireguard
   'tun', // general tun devices
   'tap', // general tap devices
-  'podman', // podman networks
+  'podman' // podman networks
 ];
 
 function isExcludedIface(name: string): boolean {
@@ -34,15 +34,10 @@ function isExcludedIface(name: string): boolean {
 function isValidIPv4Address(address: string): boolean {
   // Basic IPv4 check without relying on any external lib
   const parts = address.split('.').map((p) => Number(p));
-  return (
-    parts.length === 4 &&
-    parts.every((n) => Number.isInteger(n) && n >= 0 && n <= 255)
-  );
+  return parts.length === 4 && parts.every((n) => Number.isInteger(n) && n >= 0 && n <= 255);
 }
 
-function ipCategory(
-  address: string,
-): 'lan-192' | 'lan-10' | 'lan-172' | 'other' {
+function ipCategory(address: string): 'lan-192' | 'lan-10' | 'lan-172' | 'other' {
   if (address.startsWith('192.168.')) return 'lan-192';
   if (address.startsWith('10.')) return 'lan-10';
   const parts = address.split('.').map((p) => Number(p));
@@ -56,7 +51,7 @@ function selectLocalIPv4(): string {
     'lan-192': [],
     'lan-10': [],
     'lan-172': [],
-    other: [],
+    other: []
   };
 
   // 1) Add preferred interfaces first
@@ -64,12 +59,7 @@ function selectLocalIPv4(): string {
     const configs = interfaces[pref];
     if (!configs) continue;
     for (const cfg of configs) {
-      if (
-        cfg &&
-        cfg.family === 'IPv4' &&
-        !cfg.internal &&
-        isValidIPv4Address(cfg.address)
-      ) {
+      if (cfg && cfg.family === 'IPv4' && !cfg.internal && isValidIPv4Address(cfg.address)) {
         candidates[ipCategory(cfg.address)].push(cfg.address);
       }
     }
@@ -79,12 +69,7 @@ function selectLocalIPv4(): string {
   for (const [name, configs] of Object.entries(interfaces)) {
     if (!configs || isExcludedIface(name)) continue;
     for (const cfg of configs) {
-      if (
-        cfg &&
-        cfg.family === 'IPv4' &&
-        !cfg.internal &&
-        isValidIPv4Address(cfg.address)
-      ) {
+      if (cfg && cfg.family === 'IPv4' && !cfg.internal && isValidIPv4Address(cfg.address)) {
         candidates[ipCategory(cfg.address)].push(cfg.address);
       }
     }
@@ -105,6 +90,7 @@ const envPath = path.resolve(projectRoot, '.local.env');
 const envContent = `IP=${localIP}
 BACKEND_PORT=3000
 FRONTEND_PORT=4200
+USE_HTTPS=true
 `;
 
 fs.writeFileSync(envPath, envContent);
