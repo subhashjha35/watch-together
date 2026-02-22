@@ -1,6 +1,7 @@
 import { type ComponentFixture, TestBed } from '@angular/core/testing';
 import { MediaConfigurationComponent } from './media-configuration.component';
-import { MediaService, MediaServiceMock } from '@watch-together/shared';
+import { MediaService } from '@watch-together/shared';
+import { MediaServiceMock } from '@watch-together/shared-testing';
 
 describe('MediaConfigurationComponent', () => {
   let component: MediaConfigurationComponent;

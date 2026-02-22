@@ -1,14 +1,12 @@
 import { type ComponentFixture, TestBed } from '@angular/core/testing';
 import { MovieRoomComponent } from './movie-room.component';
 import { ActivatedRoute } from '@angular/router';
+import { CallService, ENV_DATA, MediaService } from '@watch-together/shared';
 import {
-  CallService,
   CallServiceMock,
-  ENV_DATA,
-  MediaService,
   MediaServiceMock,
   RTCPeerConnectionMock
-} from '@watch-together/shared';
+} from '@watch-together/shared-testing';
 
 describe('MovieRoomComponent', () => {
   let component: MovieRoomComponent;

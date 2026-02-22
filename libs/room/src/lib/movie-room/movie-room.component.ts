@@ -35,7 +35,7 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
 
   public ngOnInit(): void {
     this.route.params.pipe(filter((params) => !!params)).subscribe((params) => {
-      this.roomId = params['roomId'] || 'abc';
+      this.roomId = params['roomId'] ?? 'abc';
       this.callService.setRoomId(this.roomId); // Set roomId
       this.joinRoom();
     });
