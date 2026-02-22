@@ -77,62 +77,29 @@ app.use((req: Request, res: Response, next) => {
   next();
 });
 
-if (process.env.VERCEL) {
-  type ServerWithIO = { io?: Server };
-  type ResWithSocket = Response & { socket?: { server?: ServerWithIO } };
+// ESM-safe dirname resolution for runtime file access.
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
-  const ioHandler = (req: Request, res: ResWithSocket) => {
-    res.header('Access-Control-Allow-Origin', allowOrigin);
-    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+const server = useHttps
+  ? https.createServer(
+      {
+        key: fs.readFileSync(path.join(currentDir, 'certs/key.pem'), 'utf8'),
+        cert: fs.readFileSync(path.join(currentDir, 'certs/cert.pem'), 'utf8')
+      },
+      app
+    )
+  : http.createServer(app);
 
-    if (req.method === 'OPTIONS') {
-      res.status(200).end();
-      return;
-    }
+const io = new Server(server, {
+  cors: {
+    origin: allowOrigin,
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+  }
+});
 
-    const serverRef: ServerWithIO | undefined = res.socket?.server;
-    if (serverRef && !serverRef.io) {
-      // Attach Socket.IO using the API path to avoid 404s
-      const io = new Server(serverRef as unknown as https.Server, {
-        path: '/api/socket.io',
-        cors: {
-          origin: allowOrigin,
-          methods: ['GET', 'POST', 'PUT', 'DELETE']
-        }
-      });
-      io.on('connection', handleSocket);
-      serverRef.io = io;
-    }
-    res.end();
-  };
+io.on('connection', handleSocket);
 
-  app.get('/api/socket', ioHandler);
-} else {
-  // ESM-safe dirname resolution for runtime file access.
-  const currentDir = path.dirname(fileURLToPath(import.meta.url));
-
-  const server = useHttps
-    ? https.createServer(
-        {
-          key: fs.readFileSync(path.join(currentDir, 'certs/key.pem'), 'utf8'),
-          cert: fs.readFileSync(path.join(currentDir, 'certs/cert.pem'), 'utf8')
-        },
-        app
-      )
-    : http.createServer(app);
-
-  const io = new Server(server, {
-    cors: {
-      origin: allowOrigin,
-      methods: ['GET', 'POST', 'PUT', 'DELETE']
-    }
-  });
-
-  io.on('connection', handleSocket);
-
-  server.listen(port, ip, () => {
-    const protocol = useHttps ? 'https' : 'http';
-    console.log(`Server is running on ${protocol}://${ip}:${port}`);
-  });
-}
+server.listen(port, ip, () => {
+  const protocol = useHttps ? 'https' : 'http';
+  console.log(`Server is running on ${protocol}://${ip}:${port}`);
+});
