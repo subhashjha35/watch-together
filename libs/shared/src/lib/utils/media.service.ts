@@ -4,13 +4,13 @@ import { computed, Injectable, signal } from '@angular/core';
   providedIn: 'root'
 })
 export class MediaService {
-  public selectedVideoDevice = signal<string | undefined>(undefined);
-  public selectedAudioDevice = signal<string | undefined>(undefined);
-  public videoDevices = computed(() =>
+  public readonly selectedVideoDevice = signal<string | undefined>(undefined);
+  public readonly selectedAudioDevice = signal<string | undefined>(undefined);
+  public readonly videoDevices = computed(() =>
     this.mediaDevices().filter((device) => device.kind === 'videoinput')
   );
 
-  public audioDevices = computed(() =>
+  public readonly audioDevices = computed(() =>
     this.mediaDevices().filter((device) => device.kind === 'audioinput')
   );
 
@@ -20,19 +20,19 @@ export class MediaService {
     void this.loadDevices();
   }
 
-  getUserMediaStream(constraints: MediaStreamConstraints) {
+  async getUserMediaStream(constraints: MediaStreamConstraints): Promise<MediaStream> {
     return navigator.mediaDevices.getUserMedia(constraints);
   }
 
-  public changeVideoDeviceTo(deviceId: string) {
+  public changeVideoDeviceTo(deviceId: string): void {
     this.selectedVideoDevice.set(deviceId);
   }
 
-  public changeAudioDeviceTo(deviceId: string) {
+  public changeAudioDeviceTo(deviceId: string): void {
     this.selectedAudioDevice.set(deviceId);
   }
 
-  private async loadDevices() {
+  private async loadDevices(): Promise<void> {
     const devices = await navigator.mediaDevices.enumerateDevices();
     this.mediaDevices.set(devices);
   }

@@ -28,8 +28,8 @@ import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'lib-text-chat',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ExpandableContainerComponent],
+  standalone: true,
   templateUrl: './text-chat.component.html',
   styleUrl: './text-chat.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -44,9 +44,9 @@ export class TextChatComponent implements OnInit, AfterViewInit {
 
   public chatForm!: FormGroup;
   public registrationForm!: FormGroup;
-  public chatHistory = signal<IChatDataExtended[]>([]);
-  public chat = signal<IChat['dataType'] | null>(null);
-  public name = signal<string | undefined>(undefined);
+  public readonly chatHistory = signal<IChatDataExtended[]>([]);
+  public readonly chat = signal<IChat['dataType'] | null>(null);
+  public readonly name = signal<string | undefined>(undefined);
 
   private readonly injector = inject(Injector);
   private scrollContainer!: HTMLDivElement;

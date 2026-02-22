@@ -4,23 +4,23 @@ import { MediaService } from '@watch-together/shared';
 
 @Component({
   selector: 'lib-media-configuration',
-  standalone: true,
   imports: [CommonModule],
+  standalone: true,
   templateUrl: './media-configuration.component.html',
   styleUrl: './media-configuration.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MediaConfigurationComponent {
-  audioDevices = input<MediaDeviceInfo[] | null>([]);
-  videoDevices = input<MediaDeviceInfo[] | null>([]);
+  public readonly audioDevices = input<MediaDeviceInfo[] | null>([]);
+  public readonly videoDevices = input<MediaDeviceInfo[] | null>([]);
 
   private readonly mediaService = inject(MediaService);
 
-  public changeAudio(event: any) {
+  public changeAudio(event: any): void {
     this.mediaService.changeAudioDeviceTo(event.target?.value);
   }
 
-  public changeVideo(event: any) {
+  public changeVideo(event: any): void {
     console.error(event.target?.value);
     this.mediaService.changeVideoDeviceTo(event.target?.value);
   }

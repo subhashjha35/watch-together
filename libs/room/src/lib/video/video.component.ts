@@ -16,17 +16,17 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'lib-video',
-  standalone: true,
   imports: [CommonModule, MediaConfigurationComponent, FontAwesomeModule],
-  providers: [BsModalService],
+  standalone: true,
   templateUrl: './video.component.html',
   styleUrl: './video.component.scss',
+  providers: [BsModalService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VideoComponent {
   readonly localVideo = viewChild.required<ElementRef<HTMLVideoElement>>('localVideo');
-  public audioDevices = computed(() => this.mediaService.audioDevices());
-  public videoDevices = computed(() => this.mediaService.videoDevices());
+  public readonly audioDevices = computed(() => this.mediaService.audioDevices());
+  public readonly videoDevices = computed(() => this.mediaService.videoDevices());
 
   protected readonly faEdit = faEdit;
 

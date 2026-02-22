@@ -1,3 +1,3 @@
 export * from './youtube-player.service';
 export * from './youtube.utils';
-export * from './youtube.types';
+export type * from './youtube.types';

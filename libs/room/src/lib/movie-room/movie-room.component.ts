@@ -17,8 +17,8 @@ import { YoutubeVideoPlayerComponent } from '@watch-together/youtube-ui';
 
 @Component({
   selector: 'lib-movie-room',
-  standalone: true,
   imports: [CommonModule, TextChatComponent, VideoComponent, YoutubeVideoPlayerComponent],
+  standalone: true,
   templateUrl: './movie-room.component.html',
   styleUrl: './movie-room.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

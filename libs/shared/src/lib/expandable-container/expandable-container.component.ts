@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'shared-expandable-container',
-  standalone: true,
   imports: [CommonModule],
+  standalone: true,
   templateUrl: './expandable-container.component.html',
   styleUrl: './expandable-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 export class ExpandableContainerComponent {
   @Input()
   public title: string | null = null;
-  public isOpen = signal(false);
+  public readonly isOpen = signal(false);
 
   toggleSlideUpDown(): void {
     this.isOpen.update((value) => !value);

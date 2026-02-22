@@ -1,6 +1,6 @@
 import { ElementRef, inject, Injectable } from '@angular/core';
 import { SocketService } from './socket.service';
-import { ICall } from './socket.type';
+import type { ICall } from './socket.type';
 
 export const rtcConfiguration: RTCConfiguration = {
   iceServers: [
@@ -29,7 +29,7 @@ export class CallService {
 
   constructor() {
     this.initializePeerConnection();
-    this.socketService.on('call', async (data) => {
+    this.socketService.on('call', (data) => {
       if (!this.roomId || data.roomId !== this.roomId) {
         console.warn(
           `Ignoring call event: expected roomId=${this.roomId}, received roomId=${data.roomId}`
@@ -38,17 +38,17 @@ export class CallService {
       }
       switch (data.event) {
         case 'candidate':
-          await this.handleCandidate(data.data as RTCIceCandidateInit);
+          void this.handleCandidate(data.data as RTCIceCandidateInit);
           break;
         case 'offer':
           if (this.remoteVideoRef) {
-            await this.handleOffer(data.data as RTCSessionDescription, this.remoteVideoRef);
+            void this.handleOffer(data.data as RTCSessionDescription, this.remoteVideoRef);
           } else {
             console.error('Remote video reference not set');
           }
           break;
         case 'answer':
-          await this.handleAnswer(data.data as RTCSessionDescription);
+          void this.handleAnswer(data.data as RTCSessionDescription);
           break;
         default:
           console.warn('Unknown call event:', data.event);

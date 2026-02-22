@@ -1,4 +1,13 @@
-import { computed, effect, ElementRef, inject, Injectable, Signal, signal, untracked } from '@angular/core';
+import {
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  Injectable,
+  Signal,
+  signal,
+  untracked
+} from '@angular/core';
 import { CallService, IVideo, SocketService } from '@watch-together/shared';
 import { normalizeYouTubeVideoId } from './youtube.utils';
 import { YTOnErrorEvent, YTOnReadyEvent, YTOnStateChangeEvent, YTPlayer } from './youtube.types';

@@ -1,6 +1,11 @@
 import { type ComponentFixture, TestBed } from '@angular/core/testing';
 import { VideoPlayerComponent } from './video-player.component';
 import { CallService, ENV_DATA, MediaService } from '@watch-together/shared';
+import {
+  CallServiceMock,
+  MediaServiceMock,
+  RTCPeerConnectionMock
+} from '@watch-together/shared-testing';
 
 describe('VideoPlayerComponent', () => {
   let component: VideoPlayerComponent;

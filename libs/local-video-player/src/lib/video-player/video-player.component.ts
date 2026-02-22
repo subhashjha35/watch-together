@@ -12,8 +12,8 @@ import { CallService, IVideo, SocketService } from '@watch-together/shared';
 
 @Component({
   selector: 'lib-video-player',
-  standalone: true,
   imports: [CommonModule],
+  standalone: true,
   templateUrl: './video-player.component.html',
   styleUrl: './video-player.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
