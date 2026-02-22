@@ -1,0 +1,21 @@
+{
+  "name": "main-menu-ui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/main-menu/ui/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["lib:ui", "scope:watch-together"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/main-menu/ui/jest.config.cts",
+        "tsConfig": "libs/main-menu/ui/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "main-menu-common",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/main-menu/common/src",
+  "projectType": "library",
+  "tags": ["lib:common", "scope:watch-together"],
+  "// targets": "to see all targets run: nx show project main-menu-common --web",
+  "targets": {}
+}

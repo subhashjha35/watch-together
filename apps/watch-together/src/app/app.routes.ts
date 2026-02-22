@@ -1,17 +1,11 @@
 import type { Route } from '@angular/router';
-import { AppComponent } from './app.component';
 import { MovieRoomComponent } from '@watch-together/movie-room';
 import { HomeComponent } from '@watch-together/home';
+import { mainRoutes } from '@watch-together/main-menu-common';
 
 export const appRoutes: Route[] = [
-  {
-    path: '',
-    component: AppComponent,
-    children: [
-      { path: '', component: HomeComponent },
-      { path: 'room/:roomId', component: MovieRoomComponent },
-      { path: '*', redirectTo: '' },
-      { path: '**', redirectTo: '' }
-    ]
-  }
+  { path: '', component: HomeComponent },
+  { path: mainRoutes.home.path, component: HomeComponent },
+  { path: `${mainRoutes.room.path}/:roomId`, component: MovieRoomComponent },
+  { path: '**', redirectTo: '' }
 ];

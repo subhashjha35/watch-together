@@ -22,7 +22,9 @@
       "@watch-together/shared": ["libs/shared/src/index.ts"],
       "@watch-together/local-video-player": ["libs/local-video-player/src/index.ts"],
       "@watch-together/youtube-ui": ["libs/youtube/ui/src/index.ts"],
-      "@watch-together/shared-testing": ["shared-testing/src/index.ts"]
+      "@watch-together/shared-testing": ["shared-testing/src/index.ts"],
+      "@watch-together/main-menu-ui": ["libs/main-menu/ui/src/index.ts"],
+      "@watch-together/main-menu-common": ["libs/main-menu/common/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
