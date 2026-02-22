@@ -1,1 +1,1 @@
-export { YoutubeVideoPlayerComponent } from './index';
+export { YoutubeVideoPlayerComponent, YoutubePlayerService } from './index';

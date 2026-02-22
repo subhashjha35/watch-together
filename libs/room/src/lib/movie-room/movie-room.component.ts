@@ -13,19 +13,12 @@ import { ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
 import { CallService, ICall, IRoom, MediaService, SocketService } from '@watch-together/shared';
 import { VideoComponent } from '../video';
-import { VideoPlayerComponent } from '@watch-together/local-video-player';
 import { YoutubeVideoPlayerComponent } from '@watch-together/youtube-ui';
 
 @Component({
   selector: 'lib-movie-room',
   standalone: true,
-  imports: [
-    CommonModule,
-    TextChatComponent,
-    VideoPlayerComponent,
-    VideoComponent,
-    YoutubeVideoPlayerComponent
-  ],
+  imports: [CommonModule, TextChatComponent, VideoComponent, YoutubeVideoPlayerComponent],
   templateUrl: './movie-room.component.html',
   styleUrl: './movie-room.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

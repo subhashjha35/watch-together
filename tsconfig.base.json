@@ -16,16 +16,13 @@
     "baseUrl": ".",
     "paths": {
       "@watch-together/chat": ["libs/chat/src/index.ts"],
-      "@watch-together/expandable-container": [
-        "libs/expandable-container/src/index.ts"
-      ],
+      "@watch-together/expandable-container": ["libs/expandable-container/src/index.ts"],
       "@watch-together/home": ["libs/home/src/index.ts"],
       "@watch-together/movie-room": ["libs/room/src/index.ts"],
       "@watch-together/shared": ["libs/shared/src/index.ts"],
-      "@watch-together/local-video-player": [
-        "libs/local-video-player/src/index.ts"
-      ],
-      "@watch-together/youtube-ui": ["libs/youtube/ui/src/index.ts"]
+      "@watch-together/local-video-player": ["libs/local-video-player/src/index.ts"],
+      "@watch-together/youtube-ui": ["libs/youtube/ui/src/index.ts"],
+      "@watch-together/shared-testing": ["shared-testing/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,4 +1,3 @@
-// Import ambient global typings for YouTube IFrame API
 import '../shared/youtube.globals.d.ts';
 import {
   ChangeDetectionStrategy,
@@ -14,8 +13,7 @@ import {
   signal,
   ViewChild
 } from '@angular/core';
-import { normalizeYouTubeVideoId } from '../shared/youtube.utils';
-import { YoutubePlayerService } from './youtube-player.service';
+import { normalizeYouTubeVideoId, YoutubePlayerService } from '../shared';
 import { DecimalPipe } from '@angular/common';
 
 @Component({

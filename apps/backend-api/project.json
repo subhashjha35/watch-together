@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/backend-api/src",
   "projectType": "application",
-  "tags": ["server"],
+  "tags": ["app:backend", "scope:watch-together"],
   "targets": {
     "build": {
       "executor": "@nx/esbuild:esbuild",

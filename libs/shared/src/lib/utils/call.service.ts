@@ -22,7 +22,6 @@ export const rtcConfiguration: RTCConfiguration = {
 export class CallService {
   private roomId: string | null = null;
   private peerConnection!: RTCPeerConnection;
-
   private readonly socketService: SocketService<ICall> = inject(SocketService<ICall>);
   private remoteVideoRef: ElementRef | null = null;
   private localStream: MediaStream | null = null;

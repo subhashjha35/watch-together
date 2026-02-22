@@ -1,0 +1,21 @@
+{
+  "name": "shared-testing",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "shared-testing/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["lib:ui", "layer:testing", "scope:shared"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "shared-testing/jest.config.cts",
+        "tsConfig": "shared-testing/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

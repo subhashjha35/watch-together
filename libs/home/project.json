@@ -4,7 +4,7 @@
   "sourceRoot": "libs/home/src",
   "prefix": "lib",
   "projectType": "library",
-  "tags": [],
+  "tags": ["lib:ui", "scope:watch-together"],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",

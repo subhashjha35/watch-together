@@ -15,11 +15,47 @@ export default [
         'error',
         {
           enforceBuildableLibDependency: true,
-          allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?js$'],
+          allow: ['@adbsg-alis/testing-web-stubs/**'],
           depConstraints: [
             {
-              sourceTag: '*',
+              sourceTag: 'app:ui',
+              onlyDependOnLibsWithTags: ['lib:ui', 'lib:common']
+            },
+            {
+              sourceTag: 'app:backend',
+              onlyDependOnLibsWithTags: ['lib:common', 'lib:backend']
+            },
+            {
+              sourceTag: 'app:testing',
               onlyDependOnLibsWithTags: ['*']
+            },
+            {
+              sourceTag: 'lib:ui',
+              onlyDependOnLibsWithTags: ['lib:ui', 'lib:common']
+            },
+            {
+              sourceTag: 'lib:backend',
+              onlyDependOnLibsWithTags: ['lib:common', 'lib:backend']
+            },
+            {
+              sourceTag: 'lib:common',
+              onlyDependOnLibsWithTags: ['lib:common']
+            },
+            {
+              sourceTag: 'layer:core',
+              onlyDependOnLibsWithTags: ['layer:core', 'layer:testing']
+            },
+            {
+              sourceTag: 'layer:feature',
+              onlyDependOnLibsWithTags: ['layer:core', 'layer:feature', 'layer:testing']
+            },
+            {
+              sourceTag: 'scope:watch-together',
+              onlyDependOnLibsWithTags: ['scope:watch-together', 'scope:shared']
+            },
+            {
+              sourceTag: 'scope:shared',
+              onlyDependOnLibsWithTags: ['scope:shared']
             }
           ]
         }
