@@ -2,17 +2,14 @@
   <div class="row d-flex flex-row justify-content-center gx-0 row-gap-2 column-gap-lg-5 gx-0">
     <div class="composite-player col-lg-12">
       <!--      <lib-video-player class="col-lg-6"></lib-video-player>-->
-      <lib-youtube-video-player class="col-lg-6" [fullscreenMode]="'parent'"></lib-youtube-video-player>
-      <div
-        class="chat-container d-flex row-gap-2 column-gap-1 col-lg-5 col-md-12 justify-content-around"
-      >
+      <lib-youtube-video-player [fullscreenMode]="'parent'"></lib-youtube-video-player>
+      <div class="chat-container d-flex row-gap-2 column-gap-1 justify-content-around" libResizable libDraggable>
         <div class="chat-video my-video">
           <lib-video #myVideo></lib-video>
         </div>
-        <div class="chat-video col-10 col-sm-5 col-md-3 col-lg-5">
-          <video #remoteVideo autoplay height="180" muted playsinline width="320"></video>
+        <div class="chat-video">
+          <video #remoteVideo autoplay muted playsinline></video>
         </div>
-        <button (click)="startCall()">Create Offer</button>
       </div>
     </div>
   </div>

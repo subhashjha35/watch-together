@@ -1,11 +1,28 @@
+:host {
+  display: block;
+}
+
+:host-context(.is-fullscreen) {
+  width: 100%;
+  height: 100%;
+}
+
 .yt-player {
   position: relative;
+  display: inline-block; /* shrink-wrap to iframe size */
 }
 
 .yt-player__frame {
-  width: 100%;
-  aspect-ratio: 16 / 9;
+  display: block;
+  line-height: 0; /* collapse whitespace around iframe */
   background: #000;
+
+  iframe {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: 0;
+  }
 }
 
 /* Overlay controls over the video */
@@ -26,11 +43,11 @@
 
   /* Use the measured frame width to match controls width and centering */
   width: var(--yt-frame-width, auto);
-  max-width: min(80vw, 1280px);
+  max-width: min(60vw, 1280px);
 }
 
 /* Keep controls visible in fullscreen */
-:fullscreen .yt-player__controls {
+:host-context(.is-fullscreen) .yt-player__controls {
   bottom: 1rem;
   width: var(--yt-frame-width, auto);
 }
@@ -67,18 +84,28 @@
   text-decoration: underline;
 }
 
-/* Constrain when the container is in fullscreen */
-:fullscreen .yt-player__frame {
-  margin: 0 auto;
-  max-width: min(80vw, 1280px);
+/* ── Fullscreen styles ─────────────────────────────────────────────────
+   .is-fullscreen is toggled on the fullscreen target element by the
+   component.  :host-context(.is-fullscreen) checks if any ancestor
+   carries the class, which works reliably with Angular's emulated
+   view encapsulation.
+   ──────────────────────────────────────────────────────────────────── */
+:host-context(.is-fullscreen) .yt-player {
+  display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 100%;
+  background: #000;
 }
 
-:fullscreen .yt-player {
-  background: #000;
-  display: grid;
-  place-items: center;
+:host-context(.is-fullscreen) .yt-player__frame {
+  width: 100%;
+  height: 100%;
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+  }
 }
 
 .yt-icon {

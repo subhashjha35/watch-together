@@ -11,13 +11,28 @@ import { CommonModule } from '@angular/common';
 import { TextChatComponent } from '@watch-together/chat';
 import { ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
-import { CallService, ICall, IRoom, MediaService, SocketService } from '@watch-together/shared';
+import {
+  CallService,
+  DraggableDirective,
+  ICall,
+  IRoom,
+  MediaService,
+  ResizableDirective,
+  SocketService
+} from '@watch-together/shared';
 import { VideoComponent } from '../video';
 import { YoutubeVideoPlayerComponent } from '@watch-together/youtube-ui';
 
 @Component({
   selector: 'lib-movie-room',
-  imports: [CommonModule, TextChatComponent, VideoComponent, YoutubeVideoPlayerComponent],
+  imports: [
+    CommonModule,
+    TextChatComponent,
+    VideoComponent,
+    YoutubeVideoPlayerComponent,
+    DraggableDirective,
+    ResizableDirective
+  ],
   standalone: true,
   templateUrl: './movie-room.component.html',
   styleUrl: './movie-room.component.scss',
