@@ -5,12 +5,23 @@ import type { ICall } from './socket.type';
 export const rtcConfiguration: RTCConfiguration = {
   iceServers: [
     {
-      urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
+      urls: [
+        'stun:stun.l.google.com:19302',
+        'stun:stun1.l.google.com:19302',
+        'stun:stun2.l.google.com:19302',
+        'stun:stun3.l.google.com:19302',
+        'stun:stun4.l.google.com:19302'
+      ]
     },
     {
-      urls: 'turn:openrelay.metered.ca:80',
-      username: 'openrelay.project',
-      credential: 'openrelayproject'
+      urls: 'turn:freestun.net:3479',
+      username: 'free',
+      credential: 'free'
+    },
+    {
+      urls: 'turn:freestun.net:3479?transport=tcp',
+      username: 'free',
+      credential: 'free'
     }
   ],
   iceCandidatePoolSize: 10
@@ -152,21 +163,39 @@ export class CallService {
   }
 
   private async _initConnection(remoteVideo: ElementRef): Promise<void> {
-    await this._getStreams(remoteVideo);
+    // Set up the remote video with a fresh MediaStream
+    remoteVideo.nativeElement.srcObject = new MediaStream();
+
+    // If we already have a local stream, reuse it by adding tracks to the new peer connection.
+    // Otherwise, request media access.
+    if (this.localStream) {
+      this.localStream.getTracks().forEach((track) => {
+        if (this.localStream != null) {
+          this.peerConnection.addTrack(track, this.localStream);
+        }
+      });
+    } else {
+      await this._getStreams(remoteVideo);
+    }
   }
 
   private _registerConnectionListeners(): void {
     this.peerConnection.onconnectionstatechange = () => {
+      console.log('Connection state:', this.peerConnection.connectionState);
       if (this.peerConnection.connectionState === 'failed') {
         console.error('Connection failed. Restarting ICE...');
         this.peerConnection.restartIce();
       }
     };
     this.peerConnection.oniceconnectionstatechange = () => {
+      console.log('ICE connection state:', this.peerConnection.iceConnectionState);
       if (this.peerConnection.iceConnectionState === 'failed') {
         console.error('ICE connection failed. Restarting ICE...');
         this.peerConnection.restartIce();
       }
+    };
+    this.peerConnection.onicegatheringstatechange = () => {
+      console.log('ICE gathering state:', this.peerConnection.iceGatheringState);
     };
     this.peerConnection.onicecandidate = (event) => {
       if (event.candidate && this.roomId) {
@@ -178,13 +207,21 @@ export class CallService {
       }
     };
     this.peerConnection.ontrack = (event) => {
-      const remoteStream = this.remoteVideoRef?.nativeElement.srcObject as MediaStream;
-      if (remoteStream) {
-        event.streams[0].getTracks().forEach((track) => {
-          remoteStream.addTrack(track);
-        });
+      console.log('Remote track received:', event.track.kind, event.track.readyState);
+      if (!this.remoteVideoRef) {
+        console.error('Remote video reference not set when track received');
+        return;
+      }
+      if (event.streams?.length > 0) {
+        // Replace srcObject with the remote stream directly for better compatibility
+        this.remoteVideoRef.nativeElement.srcObject = event.streams[0];
       } else {
-        console.error('Remote stream not initialized');
+        const existing = this.remoteVideoRef.nativeElement.srcObject as MediaStream | null;
+        if (existing) {
+          existing.addTrack(event.track);
+        } else {
+          this.remoteVideoRef.nativeElement.srcObject = new MediaStream([event.track]);
+        }
       }
     };
   }
@@ -196,6 +233,11 @@ export class CallService {
       audio: true
     }
   ): Promise<void> {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error(
+        'navigator.mediaDevices is not available. Ensure the page is served over HTTPS.'
+      );
+    }
     try {
       this.localStream = await navigator.mediaDevices.getUserMedia(constraints);
       remoteVideo.nativeElement.srcObject = new MediaStream();
@@ -207,7 +249,17 @@ export class CallService {
       });
     } catch (error) {
       console.error('Error getting user media:', error);
-      throw new Error('Failed to access camera or microphone.');
+      if (error instanceof DOMException && error.name === 'NotAllowedError') {
+        throw new Error('Camera/microphone permission denied by user or browser policy.');
+      }
+      if (error instanceof DOMException && error.name === 'OverconstrainedError') {
+        throw new Error(
+          'Camera constraints could not be satisfied. Try with different device settings.'
+        );
+      }
+      throw new Error(
+        `Failed to access camera or microphone: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 }

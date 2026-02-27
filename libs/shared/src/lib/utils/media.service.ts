@@ -21,6 +21,11 @@ export class MediaService {
   }
 
   async getUserMediaStream(constraints: MediaStreamConstraints): Promise<MediaStream> {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error(
+        'navigator.mediaDevices is not available. Ensure the page is served over HTTPS.'
+      );
+    }
     return navigator.mediaDevices.getUserMedia(constraints);
   }
 
@@ -33,7 +38,15 @@ export class MediaService {
   }
 
   private async loadDevices(): Promise<void> {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    this.mediaDevices.set(devices);
+    if (!navigator.mediaDevices?.enumerateDevices) {
+      console.warn('navigator.mediaDevices is not available. Media device enumeration skipped.');
+      return;
+    }
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      this.mediaDevices.set(devices);
+    } catch (error) {
+      console.error('Failed to enumerate media devices:', error);
+    }
   }
 }

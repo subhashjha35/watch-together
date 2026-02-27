@@ -52,12 +52,13 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
     this.route.params.pipe(filter((params) => !!params)).subscribe((params) => {
       this.roomId = params['roomId'] ?? 'abc';
       this.callService.setRoomId(this.roomId); // Set roomId
-      this.joinRoom();
     });
   }
 
   public ngAfterViewInit() {
-    void this.initializeVideoStreams();
+    void this.initializeVideoStreams().then(() => {
+      this.joinRoom();
+    });
   }
 
   public async startCall() {
@@ -70,14 +71,16 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
 
   private async initializeVideoStreams() {
     try {
+      const selectedDevice = this.mediaService.selectedVideoDevice();
+      const videoConstraints: MediaTrackConstraints = {
+        aspectRatio: 1.77778,
+        width: { ideal: 1280 }
+      };
+      if (selectedDevice) {
+        videoConstraints.deviceId = { exact: selectedDevice };
+      }
       const constraints: MediaStreamConstraints = {
-        video: {
-          aspectRatio: 1.77778,
-          width: { ideal: 1280 },
-          deviceId: {
-            exact: this.mediaService.selectedVideoDevice() || undefined
-          }
-        },
+        video: videoConstraints,
         audio: { noiseSuppression: true }
       };
       await this.callService.initializeStreams(this.remoteVideo(), constraints);
@@ -87,15 +90,35 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
       }
     } catch (error) {
       console.error('Error initializing video stream:', error);
+      // Retry without device-specific constraints as a fallback
+      try {
+        await this.callService.initializeStreams(this.remoteVideo(), {
+          video: true,
+          audio: true
+        });
+        const localStream = this.callService.getLocalStream();
+        if (localStream) {
+          this.myVideo().setVideo(localStream);
+        }
+      } catch (fallbackError) {
+        console.error('Fallback video initialization also failed:', fallbackError);
+      }
     }
   }
   private joinRoom() {
     this.roomSocketService.emit('room', { event: 'join', roomId: this.roomId });
-    this.roomSocketService.on('room', (data: { socketId: string; event: string }) => {
-      if (data.event === 'join' && data.socketId !== this.socketService.socket.id) {
-        console.log(`Initiating call to peer: ${data.socketId}`);
-        void this.startCall();
+    this.roomSocketService.on(
+      'room',
+      (data: { socketId?: string; event: string; roomId?: string }) => {
+        if (
+          data.event === 'join' &&
+          data.socketId &&
+          data.socketId !== this.socketService.socket.id
+        ) {
+          console.log(`Initiating call to peer: ${data.socketId}`);
+          void this.startCall();
+        }
       }
-    });
+    );
   }
 }
