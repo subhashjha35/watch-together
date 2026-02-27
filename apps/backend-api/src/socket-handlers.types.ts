@@ -9,17 +9,15 @@ export type CallPayload = RTCSessionDescriptionInit | RTCIceCandidateInit;
 export interface CallData {
   event: CallEvent;
   data: CallPayload;
-  roomId: string;
+  roomId?: string;
 }
 
 export interface VideoEvent {
   event: string;
   time: number;
-  roomId: string;
 }
 
 export interface ChatMessage {
   user: string;
-  message: string;
-  roomId: string;
+  text: string;
 }
