@@ -15,7 +15,6 @@ import {
 import type { FullscreenMode } from '../shared';
 import {
   AutoHideController,
-  normalizeYouTubeVideoId,
   observeFrameSize,
   resolveFullscreenTarget,
   toggleFullscreen,
@@ -31,43 +30,34 @@ import { DecimalPipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     role: 'region',
-    '[attr.aria-busy]': '(!isReady()) ? "true" : null',
-    '[attr.aria-live]': 'isPlaying() ? "off" : "polite"',
+    '[attr.aria-busy]': '(!player.isReady()) ? "true" : null',
+    '[attr.aria-live]': 'player.isPlaying() ? "off" : "polite"',
     '[attr.aria-label]':
-      'watchUrl() ? `YouTube video player for ${watchUrl()}` : "YouTube video player"',
+      'player.watchUrl() ? `YouTube video player for ${player.watchUrl()}` : "YouTube video player"',
     class: 'youtube-video-player'
   }
 })
 export class YoutubeVideoPlayerComponent implements OnInit {
   // ── Inputs ──────────────────────────────────────────────────────────
-  readonly videoId = input<string>('7OE4v5AHxkc');
-  readonly useStandardHost = input<boolean>(true);
-  readonly fullscreenMode = input<FullscreenMode>('host');
-  readonly fullscreenClosestSelector = input<string>('');
+  public readonly videoId = input<string>('7OE4v5AHxkc');
+  public readonly useStandardHost = input<boolean>(true);
+  public readonly fullscreenMode = input<FullscreenMode>('host');
+  public readonly fullscreenClosestSelector = input<string>('');
 
-  // ── Computed signals (public) ───────────────────────────────────────
-  readonly watchUrl = computed(() => {
-    const id = normalizeYouTubeVideoId(this.videoId());
-    return id ? `https://www.youtube.com/watch?v=${id}` : null;
-  });
-  readonly isReady = computed(() => this.player.isReady());
-  readonly error = computed(() => this.player.error());
-  readonly duration = computed(() => this.player.duration());
-  readonly currentTime = computed(() => this.player.currentTime());
-  readonly isPlaying = computed(() => this.player.isPlaying());
-  readonly isFullscreen = signal(false);
-  readonly controlsVisible = computed(() => this.autoHide.visible());
+  // ── Component-owned state ───────────────────────────────────────────
+  public readonly isFullscreen = signal(false);
+  public readonly controlsVisible = computed(() => this.autoHide.visible());
+
+  // ── Exposed service (used directly by the template) ─────────────────
+  protected readonly player = inject(YoutubePlayerService);
 
   // ── View children ───────────────────────────────────────────────────
   @ViewChild('playerContainer', { static: true })
   private readonly playerContainer?: ElementRef<HTMLDivElement>;
 
-  // ── Injected dependencies ───────────────────────────────────────────
-  private readonly player = inject(YoutubePlayerService);
+  // ── Private dependencies ────────────────────────────────────────────
   private readonly hostRef: ElementRef<HTMLElement> = inject(ElementRef);
   private readonly destroyRef = inject(DestroyRef);
-
-  // ── Auto-hide controller ────────────────────────────────────────────
   private readonly autoHide = new AutoHideController(2000, () => this.isFocusInsideControls());
 
   // ── Effects (run in injection context) ──────────────────────────────
@@ -84,23 +74,18 @@ export class YoutubeVideoPlayerComponent implements OnInit {
     this.autoHide.scheduleHide();
   }
 
-  // ── Public methods (template-bound) ─────────────────────────────────
-  play(): void {
-    this.player.play();
-  }
-
-  pause(): void {
-    this.player.pause();
-  }
-
-  seekTo(seconds: number): void {
-    this.player.seekTo(seconds);
-  }
-
+  // ── Template-bound methods ──────────────────────────────────────────
   onSeekChange(event: Event): void {
     const value = (event.target as HTMLInputElement | null)?.valueAsNumber;
     if (value !== undefined && Number.isFinite(value)) {
-      this.seekTo(value);
+      this.player.seekTo(value);
+    }
+  }
+
+  onVolumeChange(event: Event): void {
+    const value = (event.target as HTMLInputElement | null)?.valueAsNumber;
+    if (value !== undefined && Number.isFinite(value)) {
+      this.player.setVolume(value);
     }
   }
 
@@ -143,9 +128,6 @@ export class YoutubeVideoPlayerComponent implements OnInit {
       const isFs = !!document.fullscreenElement;
       this.isFullscreen.set(isFs);
 
-      // Toggle a CSS class on the fullscreen target so parent components
-      // can style with `.is-fullscreen` instead of `:fullscreen` (which
-      // breaks with Angular's emulated view encapsulation).
       const target = resolveFullscreenTarget(
         this.hostRef.nativeElement,
         this.fullscreenMode(),

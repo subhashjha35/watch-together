@@ -26,6 +26,8 @@ export class YoutubePlayerService {
   public readonly duration: Signal<number> = computed(() => this._duration());
   public readonly currentTime: Signal<number> = computed(() => this._currentTime());
   public readonly isPlaying: Signal<boolean> = computed(() => this._isPlaying());
+  public readonly volume: Signal<number> = computed(() => this._volume());
+  public readonly isMuted: Signal<boolean> = computed(() => this._isMuted());
 
   // Private instance fields (services, internal state, refs, timers)
   private readonly _player = signal<YTPlayer | null>(null);
@@ -34,6 +36,8 @@ export class YoutubePlayerService {
   private readonly _duration = signal<number>(0);
   private readonly _currentTime = signal<number>(0);
   private readonly _isPlaying = signal(false);
+  private readonly _volume = signal<number>(100);
+  private readonly _isMuted = signal(false);
   private readonly _loadedVideoId = signal<string | null>(null);
   private containerRef: ElementRef<HTMLDivElement> | null = null;
   private isApplyingRemote = false;
@@ -45,7 +49,7 @@ export class YoutubePlayerService {
   private readonly _videoIdEffect = effect(() => {
     const vidInput = this.videoId();
     const vid = normalizeYouTubeVideoId(vidInput);
-    const apiReady = !!(window.YT && window.YT.Player);
+    const apiReady = !!(window.YT?.Player);
     if (!vid || !apiReady) return;
     const current = untracked(this._player);
     const loadedId = untracked(this._loadedVideoId);
@@ -126,6 +130,30 @@ export class YoutubePlayerService {
     this.emitVideoEvent('seek', clamped);
   }
 
+  public setVolume(value: number): void {
+    const player = this._player();
+    if (!player) return;
+    const clamped = Math.max(0, Math.min(100, Math.round(value)));
+    player.setVolume(clamped);
+    this._volume.set(clamped);
+    if (clamped > 0 && this._isMuted()) {
+      player.unMute();
+      this._isMuted.set(false);
+    }
+  }
+
+  public toggleMute(): void {
+    const player = this._player();
+    if (!player) return;
+    if (this._isMuted()) {
+      player.unMute();
+      this._isMuted.set(false);
+    } else {
+      player.mute();
+      this._isMuted.set(true);
+    }
+  }
+
   public setVideoId(id: string): void {
     this.videoId.set(id);
   }
@@ -133,7 +161,7 @@ export class YoutubePlayerService {
     this.useStandardHost.set(val);
   }
   public loadYouTubeIframeAPI(): void {
-    if (window.YT && window.YT.Player) {
+    if (window.YT?.Player) {
       this.createPlayer();
       return;
     }
@@ -155,7 +183,7 @@ export class YoutubePlayerService {
 
   // Private instance methods
   private createPlayer(): void {
-    if (!window.YT || !window.YT.Player) {
+    if (!window.YT?.Player) {
       this._error.set('YouTube API is not available.');
       return;
     }
@@ -177,7 +205,7 @@ export class YoutubePlayerService {
     playerEl.id = `yt-player-${Math.random().toString(36).slice(2)}`;
     container.innerHTML = '';
     container.appendChild(playerEl);
-    if (!window.YT || !window.YT.Player) {
+    if (!window.YT?.Player) {
       this._error.set('YouTube API is not available.');
       return;
     }
@@ -204,6 +232,8 @@ export class YoutubePlayerService {
           this._isReady.set(true);
           const d = ev.target.getDuration();
           if (Number.isFinite(d)) this._duration.set(d);
+          this._volume.set(ev.target.getVolume());
+          this._isMuted.set(ev.target.isMuted());
           this.startTimeUpdates();
         },
         onStateChange: (ev: YTOnStateChangeEvent) => {

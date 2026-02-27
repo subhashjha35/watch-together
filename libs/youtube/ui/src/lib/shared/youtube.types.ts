@@ -8,6 +8,11 @@ export interface YTPlayer {
   destroy: () => void;
   getDuration: () => number;
   getCurrentTime: () => number;
+  getVolume: () => number;
+  setVolume: (volume: number) => void;
+  isMuted: () => boolean;
+  mute: () => void;
+  unMute: () => void;
 }
 
 export interface YTPlayerState {

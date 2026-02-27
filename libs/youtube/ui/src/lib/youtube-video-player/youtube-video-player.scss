@@ -75,6 +75,17 @@
   min-width: 160px;
 }
 
+.yt-player__volume {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.yt-player__volume-slider {
+  width: 80px;
+  cursor: pointer;
+}
+
 .yt-player__time {
   color: #fff;
 }
