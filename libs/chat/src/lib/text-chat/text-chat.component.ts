@@ -66,7 +66,7 @@ export class TextChatComponent implements OnInit, AfterViewInit {
   public ngOnInit() {
     this.chatService.on('chat', (data) => {
       this.chat.update(() => data);
-      const audio: HTMLAudioElement = new Audio('./assets/pop-sound.wav');
+      const audio: HTMLAudioElement = new Audio('./assets/audio/pop-sound.wav');
       void audio.play();
     });
 

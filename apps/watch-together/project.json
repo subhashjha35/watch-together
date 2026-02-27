@@ -23,8 +23,8 @@
           },
           {
             "glob": "**/*",
-            "input": "dist/libs/chat/assets",
-            "output": "assets/chat"
+            "input": "libs/chat/src/assets",
+            "output": "assets"
           }
         ],
         "styles": [
