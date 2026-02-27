@@ -14,14 +14,27 @@ export const rtcConfiguration: RTCConfiguration = {
       ]
     },
     {
-      urls: 'turn:freestun.net:3479',
-      username: 'free',
-      credential: 'free'
+      urls: 'stun:stun.relay.metered.ca:80'
     },
     {
-      urls: 'turn:freestun.net:3479?transport=tcp',
-      username: 'free',
-      credential: 'free'
+      urls: 'turn:openrelay.metered.ca:80',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:80?transport=tcp',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turns:openrelay.metered.ca:443?transport=tcp',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
     }
   ],
   iceCandidatePoolSize: 10
@@ -190,6 +203,7 @@ export class CallService {
       this.peerConnections.delete(peerId);
     }
     this.candidateQueues.delete(peerId);
+    this.iceRestartAttempts.delete(peerId);
     this.remoteStreams.update((current) => {
       if (!current.has(peerId)) return current;
       const next = new Map(current);
@@ -236,30 +250,66 @@ export class CallService {
     }
   }
 
+  private readonly iceRestartAttempts = new Map<string, number>();
+  private static readonly MAX_ICE_RESTARTS = 2;
+
+  private async attemptIceRestart(peerId: string, pc: RTCPeerConnection): Promise<void> {
+    const attempts = this.iceRestartAttempts.get(peerId) ?? 0;
+    if (attempts >= CallService.MAX_ICE_RESTARTS) {
+      console.error(`[${peerId}] ICE restart limit reached (${attempts}). Cleaning up.`);
+      this.removePeer(peerId);
+      return;
+    }
+    this.iceRestartAttempts.set(peerId, attempts + 1);
+    console.warn(`[${peerId}] Attempting ICE restart (attempt ${attempts + 1}).`);
+    try {
+      const offer = await pc.createOffer({ iceRestart: true });
+      await pc.setLocalDescription(offer);
+      if (this.roomId) {
+        this.socketService.emit('call', {
+          event: 'offer',
+          data: offer,
+          roomId: this.roomId,
+          targetSocketId: peerId
+        });
+      }
+    } catch (err) {
+      console.error(`[${peerId}] ICE restart failed:`, err);
+      this.removePeer(peerId);
+    }
+  }
+
   private registerConnectionListeners(peerId: string, pc: RTCPeerConnection): void {
     pc.onconnectionstatechange = () => {
       console.log(`[${peerId}] Connection state:`, pc.connectionState);
       switch (pc.connectionState) {
+        case 'connected':
+          // Reset restart counter on successful connection
+          this.iceRestartAttempts.delete(peerId);
+          break;
         case 'failed':
-          console.error(`[${peerId}] Connection failed. Cleaning up.`);
-          this.removePeer(peerId);
+          void this.attemptIceRestart(peerId, pc);
           break;
         case 'disconnected':
           // Peer may reconnect briefly — wait before cleaning up
           setTimeout(() => {
             if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
-              console.warn(`[${peerId}] Still disconnected. Cleaning up.`);
-              this.removePeer(peerId);
+              console.warn(`[${peerId}] Still disconnected. Attempting ICE restart.`);
+              void this.attemptIceRestart(peerId, pc);
             }
           }, 5000);
           break;
         case 'closed':
+          this.iceRestartAttempts.delete(peerId);
           this.removePeer(peerId);
           break;
       }
     };
     pc.oniceconnectionstatechange = () => {
       console.log(`[${peerId}] ICE connection state:`, pc.iceConnectionState);
+      if (pc.iceConnectionState === 'failed') {
+        void this.attemptIceRestart(peerId, pc);
+      }
     };
     pc.onicegatheringstatechange = () => {
       console.log(`[${peerId}] ICE gathering state:`, pc.iceGatheringState);
