@@ -2,12 +2,11 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
+  computed,
   inject,
   OnInit,
   viewChild
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { TextChatComponent } from '@watch-together/chat';
 import { ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
@@ -21,26 +20,30 @@ import {
   SocketService
 } from '@watch-together/shared';
 import { VideoComponent } from '../video';
+import { RemoteVideoComponent } from '../remote-video';
 import { YoutubeVideoPlayerComponent } from '@watch-together/youtube-ui';
 
 @Component({
   selector: 'lib-movie-room',
   imports: [
-    CommonModule,
     TextChatComponent,
     VideoComponent,
+    RemoteVideoComponent,
     YoutubeVideoPlayerComponent,
     DraggableDirective,
     ResizableDirective
   ],
-  standalone: true,
   templateUrl: './movie-room.component.html',
   styleUrl: './movie-room.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MovieRoomComponent implements OnInit, AfterViewInit {
   readonly myVideo = viewChild.required<VideoComponent>('myVideo');
-  readonly remoteVideo = viewChild.required<ElementRef<HTMLVideoElement>>('remoteVideo');
+  protected readonly remoteStreams = computed(() => {
+    const streams: ReadonlyMap<string, MediaStream> = this.callService.remoteStreams();
+    return [...streams.entries()];
+  });
+
   private readonly route = inject(ActivatedRoute);
   private readonly socketService = inject(SocketService<ICall>);
   private readonly roomSocketService = inject(SocketService<IRoom>);
@@ -51,7 +54,7 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
     this.route.params.pipe(filter((params) => !!params)).subscribe((params) => {
       this.roomId = params['roomId'] ?? 'abc';
-      this.callService.setRoomId(this.roomId); // Set roomId
+      this.callService.setRoomId(this.roomId);
     });
   }
 
@@ -59,14 +62,6 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
     void this.initializeVideoStreams().then(() => {
       this.joinRoom();
     });
-  }
-
-  public async startCall() {
-    try {
-      await this.callService.makeCall(this.remoteVideo());
-    } catch (error) {
-      console.error('Error starting call:', error);
-    }
   }
 
   private async initializeVideoStreams() {
@@ -83,16 +78,15 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
         video: videoConstraints,
         audio: { noiseSuppression: true }
       };
-      await this.callService.initializeStreams(this.remoteVideo(), constraints);
+      await this.callService.initializeStreams(constraints);
       const localStream = this.callService.getLocalStream();
       if (localStream) {
         this.myVideo().setVideo(localStream);
       }
     } catch (error) {
       console.error('Error initializing video stream:', error);
-      // Retry without device-specific constraints as a fallback
       try {
-        await this.callService.initializeStreams(this.remoteVideo(), {
+        await this.callService.initializeStreams({
           video: true,
           audio: true
         });
@@ -105,18 +99,28 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
       }
     }
   }
+
   private joinRoom() {
     this.roomSocketService.emit('room', { event: 'join', roomId: this.roomId });
     this.roomSocketService.on(
       'room',
-      (data: { socketId?: string; event: string; roomId?: string }) => {
-        if (
+      (data: { socketId?: string; event: string; roomId?: string; peers?: string[] }) => {
+        if (data.event === 'peers' && data.peers) {
+          // Connect to all existing peers in the room
+          for (const peerId of data.peers) {
+            console.log(`Initiating call to existing peer: ${peerId}`);
+            void this.callService.makeCall(peerId);
+          }
+        } else if (
           data.event === 'join' &&
           data.socketId &&
           data.socketId !== this.socketService.socket.id
         ) {
-          console.log(`Initiating call to peer: ${data.socketId}`);
-          void this.startCall();
+          console.log(`Initiating call to new peer: ${data.socketId}`);
+          void this.callService.makeCall(data.socketId);
+        } else if (data.event === 'leave' && data.socketId) {
+          console.log(`Peer left: ${data.socketId}`);
+          this.callService.removePeer(data.socketId);
         }
       }
     );

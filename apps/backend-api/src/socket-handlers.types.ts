@@ -10,6 +10,7 @@ export interface CallData {
   event: CallEvent;
   data: CallPayload;
   roomId?: string;
+  targetSocketId?: string;
 }
 
 export interface VideoEvent {

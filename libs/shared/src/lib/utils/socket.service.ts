@@ -16,6 +16,8 @@ type ClientToServerEvents = {
   call: {
     event: ICallEvent;
     data: RTCSessionDescriptionInit | RTCIceCandidateInit;
+    roomId?: string;
+    targetSocketId?: string;
   };
   room: IRoomEventData;
 };
@@ -26,8 +28,10 @@ type ServerToClientEvents = {
   call: {
     event: ICallEvent;
     data: RTCSessionDescriptionInit | RTCIceCandidateInit;
+    socketId?: string;
+    roomId?: string;
   };
-  room: IRoomEventData;
+  room: IRoomEventData & { socketId?: string; peers?: string[] };
 };
 
 @Injectable({

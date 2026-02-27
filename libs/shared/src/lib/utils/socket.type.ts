@@ -36,13 +36,17 @@ export type ICall = {
   dataType: {
     event: ICallEvent;
     data: RTCSessionDescriptionInit | RTCIceCandidateInit;
-    roomId?: string; // Optional roomId for call events
+    roomId?: string;
+    socketId?: string;
+    targetSocketId?: string;
   };
 };
 export type IRoomEvent = 'join' | 'leave';
 export type IRoomEventData = {
-  event: IRoomEvent;
+  event: IRoomEvent | 'peers';
   roomId: string;
+  socketId?: string;
+  peers?: string[];
 };
 export type IRoom = {
   event: 'room';

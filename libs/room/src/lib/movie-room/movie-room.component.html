@@ -7,9 +7,11 @@
         <div class="chat-video my-video">
           <lib-video #myVideo></lib-video>
         </div>
-        <div class="chat-video">
-          <video #remoteVideo autoplay muted playsinline></video>
-        </div>
+        @for (entry of remoteStreams(); track entry[0]) {
+          <div class="chat-video">
+            <lib-remote-video [stream]="entry[1]" />
+          </div>
+        }
       </div>
     </div>
   </div>

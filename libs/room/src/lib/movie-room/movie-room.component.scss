@@ -40,7 +40,8 @@
         object-fit: contain;
       }
 
-      lib-video {
+      lib-video,
+      lib-remote-video {
         display: block;
         width: 100%;
         height: 100%;
@@ -102,7 +103,8 @@
 
 
       video,
-      lib-video {
+      lib-video,
+      lib-remote-video {
         width: 100%;
         height: auto;
         display: block;
