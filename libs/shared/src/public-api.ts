@@ -21,3 +21,4 @@ export {
 export * from './lib/expandable-container';
 export * from './lib/menu-bar';
 export * from './lib/draggable-resizable';
+export * from './lib/icons';

@@ -1,5 +1,5 @@
 import nx from '@nx/eslint-plugin';
-import baseConfig from '../../eslint.config.js';
+import baseConfig from '../../eslint.config.ts';
 
 export default [
   ...baseConfig,
@@ -12,23 +12,23 @@ export default [
         'error',
         {
           type: 'attribute',
-          prefix: 'lib',
-          style: 'camelCase',
-        },
+          prefix: 'shared',
+          style: 'camelCase'
+        }
       ],
       '@angular-eslint/component-selector': [
         'error',
         {
           type: 'element',
           prefix: 'shared',
-          style: 'kebab-case',
-        },
-      ],
-    },
+          style: 'kebab-case'
+        }
+      ]
+    }
   },
   {
     files: ['**/*.html'],
     // Override or add rules here
-    rules: {},
-  },
+    rules: {}
+  }
 ];

@@ -21,10 +21,11 @@ import {
   YoutubePlayerService
 } from '../shared';
 import { DecimalPipe } from '@angular/common';
+import { IconComponent } from '@watch-together/shared';
 
 @Component({
   selector: 'lib-youtube-video-player',
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, IconComponent],
   templateUrl: './youtube-video-player.html',
   styleUrl: './youtube-video-player.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
