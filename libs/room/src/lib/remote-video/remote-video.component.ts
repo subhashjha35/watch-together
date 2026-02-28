@@ -1,4 +1,5 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   effect,
@@ -18,19 +19,36 @@ export class RemoteVideoComponent {
   readonly stream = input.required<MediaStream>();
 
   private readonly videoEl = viewChild<ElementRef<HTMLVideoElement>>('videoEl');
+  private viewReady = false;
 
-  private readonly streamEffect = effect(() => {
-    const stream = this.stream();
+  constructor() {
+    afterNextRender(() => {
+      this.viewReady = true;
+      this.attachStream();
+    });
+
+    effect(() => {
+      // Track the stream signal so effect re-runs when it changes
+      this.stream();
+      if (this.viewReady) {
+        this.attachStream();
+      }
+    });
+  }
+
+  private attachStream(): void {
     const ref = this.videoEl();
     if (!ref) return;
     const video = ref.nativeElement;
-    video.srcObject = stream;
-    video.play().catch(() => {
-      // Autoplay blocked — retry muted (browser policy)
-      video.muted = true;
+    const stream = this.stream();
+    if (video.srcObject !== stream) {
+      video.srcObject = stream;
+    }
+    // Ensure playback starts (muted in template to satisfy autoplay policy)
+    if (video.paused) {
       video.play().catch((err: unknown) => {
         console.error('Remote video play failed:', err);
       });
-    });
-  });
+    }
+  }
 }
