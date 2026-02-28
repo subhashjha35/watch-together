@@ -15,6 +15,8 @@ export interface ServerConfig {
   corsOrigin: string;
   baseDir: string;
   iceServers: IceServer[];
+  meteredApiKey: string | undefined;
+  meteredAppName: string | undefined;
 }
 
 const DEFAULT_ICE_SERVERS: IceServer[] = [
@@ -27,26 +29,6 @@ const DEFAULT_ICE_SERVERS: IceServer[] = [
   },
   {
     urls: 'stun:stun.relay.metered.ca:80'
-  },
-  {
-    urls: 'turn:global.relay.metered.ca:80',
-    username: 'openrelayproject',
-    credential: 'openrelayproject'
-  },
-  {
-    urls: 'turn:global.relay.metered.ca:80?transport=tcp',
-    username: 'openrelayproject',
-    credential: 'openrelayproject'
-  },
-  {
-    urls: 'turn:global.relay.metered.ca:443',
-    username: 'openrelayproject',
-    credential: 'openrelayproject'
-  },
-  {
-    urls: 'turns:global.relay.metered.ca:443?transport=tcp',
-    username: 'openrelayproject',
-    credential: 'openrelayproject'
   }
 ];
 
@@ -74,6 +56,8 @@ export function loadConfig(): ServerConfig {
     useHttps: process.env.USE_HTTPS === 'true',
     corsOrigin: process.env.CORS_ORIGIN || '*',
     baseDir,
-    iceServers: parseIceServers()
+    iceServers: parseIceServers(),
+    meteredApiKey: process.env.METERED_API_KEY,
+    meteredAppName: process.env.METERED_APP_NAME
   };
 }

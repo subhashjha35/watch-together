@@ -71,6 +71,19 @@ export class CallService {
 
   public async loadIceConfig(): Promise<void> {
     this.rtcConfig = await this.iceConfigService.getConfig();
+    const turnCount =
+      this.rtcConfig.iceServers?.filter((s) => {
+        const urls = Array.isArray(s.urls) ? s.urls : [s.urls ?? ''];
+        return urls.some((u) => u.startsWith('turn:') || u.startsWith('turns:'));
+      }).length ?? 0;
+    console.log(
+      `ICE config loaded: ${this.rtcConfig.iceServers?.length} server(s), ${turnCount} TURN server(s)`
+    );
+    if (turnCount === 0) {
+      console.warn(
+        'No TURN servers configured! Cross-NAT connections will likely fail. Set METERED_API_KEY on the backend.'
+      );
+    }
   }
 
   public async initializeStreams(constraints?: MediaStreamConstraints): Promise<void> {
@@ -299,12 +312,20 @@ export class CallService {
     };
     pc.onicecandidate = (event) => {
       if (event.candidate && this.roomId) {
+        console.log(
+          `[${peerId}] ICE candidate:`,
+          event.candidate.type ?? 'unknown',
+          event.candidate.protocol,
+          event.candidate.address ? `${event.candidate.address}:${event.candidate.port}` : ''
+        );
         this.socketService.emit('call', {
           event: 'candidate',
           data: event.candidate.toJSON(),
           roomId: this.roomId,
           targetSocketId: peerId
         });
+      } else if (!event.candidate) {
+        console.log(`[${peerId}] ICE gathering complete (null candidate)`);
       }
     };
     pc.ontrack = (event) => {

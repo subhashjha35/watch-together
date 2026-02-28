@@ -13,7 +13,6 @@ import { filter } from 'rxjs';
 import {
   CallService,
   DraggableDirective,
-  ICall,
   IRoom,
   MediaService,
   ResizableDirective,
@@ -45,7 +44,6 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
   });
 
   private readonly route = inject(ActivatedRoute);
-  private readonly socketService = inject(SocketService<ICall>);
   private readonly roomSocketService = inject(SocketService<IRoom>);
   private readonly callService = inject(CallService);
   private readonly mediaService = inject(MediaService);
@@ -108,18 +106,15 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
       'room',
       (data: { socketId?: string; event: string; roomId?: string; peers?: string[] }) => {
         if (data.event === 'peers' && data.peers) {
-          // Connect to all existing peers in the room
+          // As the new joiner, initiate calls to all existing peers
           for (const peerId of data.peers) {
             console.log(`Initiating call to existing peer: ${peerId}`);
             void this.callService.makeCall(peerId);
           }
-        } else if (
-          data.event === 'join' &&
-          data.socketId &&
-          data.socketId !== this.socketService.socket.id
-        ) {
-          console.log(`Initiating call to new peer: ${data.socketId}`);
-          void this.callService.makeCall(data.socketId);
+        } else if (data.event === 'join' && data.socketId) {
+          // A new peer joined — do NOT call them; they will call us
+          // via the 'peers' list they receive from the server.
+          console.log(`New peer joined: ${data.socketId} (waiting for their offer)`);
         } else if (data.event === 'leave' && data.socketId) {
           console.log(`Peer left: ${data.socketId}`);
           this.callService.removePeer(data.socketId);

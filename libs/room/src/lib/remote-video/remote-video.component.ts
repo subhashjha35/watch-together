@@ -1,9 +1,10 @@
 import {
-  afterNextRender,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   effect,
   ElementRef,
+  inject,
   input,
   viewChild
 } from '@angular/core';
@@ -19,36 +20,32 @@ export class RemoteVideoComponent {
   readonly stream = input.required<MediaStream>();
 
   private readonly videoEl = viewChild<ElementRef<HTMLVideoElement>>('videoEl');
-  private viewReady = false;
+  private destroyed = false;
 
   constructor() {
-    afterNextRender(() => {
-      this.viewReady = true;
-      this.attachStream();
+    inject(DestroyRef).onDestroy(() => {
+      this.destroyed = true;
+      const ref = this.videoEl();
+      if (ref) {
+        ref.nativeElement.srcObject = null;
+      }
     });
 
     effect(() => {
-      // Track the stream signal so effect re-runs when it changes
-      this.stream();
-      if (this.viewReady) {
-        this.attachStream();
+      const stream = this.stream();
+      const ref = this.videoEl();
+      if (!ref || this.destroyed) return;
+      const video = ref.nativeElement;
+      if (video.srcObject !== stream) {
+        video.srcObject = stream;
+      }
+      if (video.paused) {
+        video.play().catch((err: unknown) => {
+          if (!this.destroyed) {
+            console.error('Remote video play failed:', err);
+          }
+        });
       }
     });
-  }
-
-  private attachStream(): void {
-    const ref = this.videoEl();
-    if (!ref) return;
-    const video = ref.nativeElement;
-    const stream = this.stream();
-    if (video.srcObject !== stream) {
-      video.srcObject = stream;
-    }
-    // Ensure playback starts (muted in template to satisfy autoplay policy)
-    if (video.paused) {
-      video.play().catch((err: unknown) => {
-        console.error('Remote video play failed:', err);
-      });
-    }
   }
 }
