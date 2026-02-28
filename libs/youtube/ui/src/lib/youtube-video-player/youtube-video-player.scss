@@ -1,28 +1,41 @@
 :host {
   display: block;
+  width: 100%;
 }
 
-:host-context(.is-fullscreen) {
-  width: 100%;
+:host(.is-fullscreen) {
   height: 100%;
+  min-height: 0;
 }
 
 .yt-player {
   position: relative;
-  display: inline-block; /* shrink-wrap to iframe size */
+  display: block;
+  width: 100%;
 }
 
 .yt-player__frame {
   display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   line-height: 0; /* collapse whitespace around iframe */
   background: #000;
 
   iframe {
     display: block;
-    max-width: 100%;
-    height: auto;
+    width: 100%;
+    height: 100%;
     border: 0;
   }
+}
+
+:host(.is-fullscreen) .yt-player {
+  height: 100%;
+}
+
+:host(.is-fullscreen) .yt-player__frame {
+  height: 100%;
+  aspect-ratio: auto;
 }
 
 /* Overlay controls over the video */
@@ -43,13 +56,14 @@
 
   /* Use the measured frame width to match controls width and centering */
   width: var(--yt-frame-width, auto);
-  max-width: min(60vw, 1280px);
+  max-width: calc(100% - 2rem);
 }
 
 /* Keep controls visible in fullscreen */
-:host-context(.is-fullscreen) .yt-player__controls {
+:host(.is-fullscreen) .yt-player__controls {
   bottom: 1rem;
   width: var(--yt-frame-width, auto);
+  max-width: 100%;
 }
 
 .yt-player__controls.hidden {
@@ -96,28 +110,8 @@
 }
 
 /* ── Fullscreen styles ─────────────────────────────────────────────────
-   .is-fullscreen is toggled on the fullscreen target element by the
-   component.  :host-context(.is-fullscreen) checks if any ancestor
-   carries the class, which works reliably with Angular's emulated
-   view encapsulation.
+   Additional fullscreen overrides beyond those defined above.
    ──────────────────────────────────────────────────────────────────── */
-:host-context(.is-fullscreen) .yt-player {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: #000;
-}
-
-:host-context(.is-fullscreen) .yt-player__frame {
-  width: 100%;
-  height: 100%;
-
-  iframe {
-    width: 100%;
-    height: 100%;
-    max-width: none;
-  }
-}
 
 
 .visually-hidden {

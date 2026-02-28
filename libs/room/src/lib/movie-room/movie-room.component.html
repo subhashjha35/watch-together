@@ -1,21 +1,21 @@
-<div class="container-fluid container-fluid movie-room m-0 p-0">
-  <div class="row d-flex flex-row justify-content-center gx-0 row-gap-2 column-gap-lg-5 gx-0">
-    <div class="composite-player col-lg-12">
-      <!--      <lib-video-player class="col-lg-6"></lib-video-player>-->
-      <lib-youtube-video-player [fullscreenMode]="'parent'"></lib-youtube-video-player>
-      <div class="chat-container d-flex row-gap-2 column-gap-1 justify-content-around" libResizable libDraggable>
-        <div class="chat-video my-video">
-          <lib-video #myVideo></lib-video>
-        </div>
-        @for (entry of remoteStreams(); track entry[0]) {
-          <div class="chat-video">
-            <lib-remote-video [stream]="entry[1]" />
-          </div>
-        }
-      </div>
+<div class="movie-room">
+  <div class="player-wrapper">
+    <lib-youtube-video-player [fullscreenMode]="'closest'"
+                              [fullscreenClosestSelector]="'.movie-room'"></lib-youtube-video-player>
+  </div>
+
+  <div class="chat-overlay" libResizable libDraggable>
+    <div class="chat-video my-video">
+      <lib-video #myVideo></lib-video>
     </div>
+    @for (entry of remoteStreams(); track entry[0]) {
+      <div class="chat-video">
+        <lib-remote-video [stream]="entry[1]" />
+      </div>
+    }
   </div>
 </div>
+
 <div class="text-chat-container">
   <lib-text-chat></lib-text-chat>
 </div>

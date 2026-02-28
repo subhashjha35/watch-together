@@ -49,7 +49,7 @@ export class YoutubePlayerService {
   private readonly _videoIdEffect = effect(() => {
     const vidInput = this.videoId();
     const vid = normalizeYouTubeVideoId(vidInput);
-    const apiReady = !!(window.YT?.Player);
+    const apiReady = !!window.YT?.Player;
     if (!vid || !apiReady) return;
     const current = untracked(this._player);
     const loadedId = untracked(this._loadedVideoId);
@@ -228,6 +228,12 @@ export class YoutubePlayerService {
       },
       events: {
         onReady: (ev: YTOnReadyEvent) => {
+          // Ensure the iframe fills its container
+          const iframe = container.querySelector('iframe');
+          if (iframe) {
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+          }
           this._loadedVideoId.set(vid);
           this._isReady.set(true);
           const d = ev.target.getDuration();

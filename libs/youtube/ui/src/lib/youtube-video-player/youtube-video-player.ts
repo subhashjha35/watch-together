@@ -35,6 +35,7 @@ import { IconComponent } from '@watch-together/shared';
     '[attr.aria-live]': 'player.isPlaying() ? "off" : "polite"',
     '[attr.aria-label]':
       'player.watchUrl() ? `YouTube video player for ${player.watchUrl()}` : "YouTube video player"',
+    '[class.is-fullscreen]': 'isFullscreen()',
     class: 'youtube-video-player'
   }
 })
