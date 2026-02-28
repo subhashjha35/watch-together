@@ -10,6 +10,13 @@ const app = express();
 
 applyCorsMiddleware(app, config.corsOrigin);
 
+app.get('/api/ice-servers', (_req, res) => {
+  res.json({
+    iceServers: config.iceServers,
+    iceCandidatePoolSize: 10
+  });
+});
+
 const { server, io } = createServer(app, config);
 
 registerSocketHandlers(io);

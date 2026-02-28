@@ -1,7 +1,12 @@
 // Ambient global typings for YouTube IFrame API
 // Ensures window.YT and window.onYouTubeIframeAPIReady are recognized by the Angular compiler
 
-import type { YTOnErrorEvent, YTOnReadyEvent, YTOnStateChangeEvent, YTPlayer } from './youtube.types';
+import type {
+  YTOnErrorEvent,
+  YTOnReadyEvent,
+  YTOnStateChangeEvent,
+  YTPlayer
+} from './youtube.types';
 
 declare global {
   interface Window {

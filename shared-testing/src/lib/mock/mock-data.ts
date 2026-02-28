@@ -16,9 +16,11 @@ export class RTCPeerConnectionMock {
   // ...other methods
 }
 export class CallServiceMock {
+  remoteStreams = signal<ReadonlyMap<string, MediaStream>>(new Map());
   setRoomId = () => {
     console.log('empty method');
   };
+  loadIceConfig = () => Promise.resolve();
   initializeStreams = () => {
     console.log('empty method');
   };

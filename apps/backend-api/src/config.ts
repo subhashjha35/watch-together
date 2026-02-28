@@ -2,12 +2,65 @@ import path from 'node:path';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'node:url';
 
+export interface IceServer {
+  urls: string | string[];
+  username?: string;
+  credential?: string;
+}
+
 export interface ServerConfig {
   port: number;
   ip: string;
   useHttps: boolean;
   corsOrigin: string;
   baseDir: string;
+  iceServers: IceServer[];
+}
+
+const DEFAULT_ICE_SERVERS: IceServer[] = [
+  {
+    urls: [
+      'stun:stun.l.google.com:19302',
+      'stun:stun1.l.google.com:19302',
+      'stun:stun2.l.google.com:19302'
+    ]
+  },
+  {
+    urls: 'stun:stun.relay.metered.ca:80'
+  },
+  {
+    urls: 'turn:global.relay.metered.ca:80',
+    username: 'openrelayproject',
+    credential: 'openrelayproject'
+  },
+  {
+    urls: 'turn:global.relay.metered.ca:80?transport=tcp',
+    username: 'openrelayproject',
+    credential: 'openrelayproject'
+  },
+  {
+    urls: 'turn:global.relay.metered.ca:443',
+    username: 'openrelayproject',
+    credential: 'openrelayproject'
+  },
+  {
+    urls: 'turns:global.relay.metered.ca:443?transport=tcp',
+    username: 'openrelayproject',
+    credential: 'openrelayproject'
+  }
+];
+
+function parseIceServers(): IceServer[] {
+  const raw = process.env.ICE_SERVERS;
+  if (!raw) return DEFAULT_ICE_SERVERS;
+  try {
+    const parsed = JSON.parse(raw) as IceServer[];
+    if (!Array.isArray(parsed) || parsed.length === 0) return DEFAULT_ICE_SERVERS;
+    return [...DEFAULT_ICE_SERVERS, ...parsed];
+  } catch {
+    console.warn('Failed to parse ICE_SERVERS env var, using defaults');
+    return DEFAULT_ICE_SERVERS;
+  }
 }
 
 export function loadConfig(): ServerConfig {
@@ -20,6 +73,7 @@ export function loadConfig(): ServerConfig {
     ip: process.env.IP || '0.0.0.0',
     useHttps: process.env.USE_HTTPS === 'true',
     corsOrigin: process.env.CORS_ORIGIN || '*',
-    baseDir
+    baseDir,
+    iceServers: parseIceServers()
   };
 }

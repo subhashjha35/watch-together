@@ -1,40 +1,17 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { SocketService } from './socket.service';
 import type { ICall } from './socket.type';
+import { IceConfigService } from './ice-config.service';
 
-export const rtcConfiguration: RTCConfiguration = {
+/** STUN-only fallback used until the server config is loaded. */
+const STUN_ONLY_FALLBACK: RTCConfiguration = {
   iceServers: [
     {
       urls: [
         'stun:stun.l.google.com:19302',
         'stun:stun1.l.google.com:19302',
-        'stun:stun2.l.google.com:19302',
-        'stun:stun3.l.google.com:19302',
-        'stun:stun4.l.google.com:19302'
+        'stun:stun2.l.google.com:19302'
       ]
-    },
-    {
-      urls: 'stun:stun.relay.metered.ca:80'
-    },
-    {
-      urls: 'turn:openrelay.metered.ca:80',
-      username: 'openrelayproject',
-      credential: 'openrelayproject'
-    },
-    {
-      urls: 'turn:openrelay.metered.ca:80?transport=tcp',
-      username: 'openrelayproject',
-      credential: 'openrelayproject'
-    },
-    {
-      urls: 'turn:openrelay.metered.ca:443',
-      username: 'openrelayproject',
-      credential: 'openrelayproject'
-    },
-    {
-      urls: 'turns:openrelay.metered.ca:443?transport=tcp',
-      username: 'openrelayproject',
-      credential: 'openrelayproject'
     }
   ],
   iceCandidatePoolSize: 10
@@ -48,7 +25,9 @@ export class CallService {
   private readonly peerConnections = new Map<string, RTCPeerConnection>();
   private readonly candidateQueues = new Map<string, RTCIceCandidateInit[]>();
   private readonly socketService: SocketService<ICall> = inject(SocketService<ICall>);
+  private readonly iceConfigService = inject(IceConfigService);
   private localStream: MediaStream | null = null;
+  private rtcConfig: RTCConfiguration = STUN_ONLY_FALLBACK;
 
   /** Reactive map of remote peer streams, keyed by socketId. */
   readonly remoteStreams = signal<ReadonlyMap<string, MediaStream>>(new Map());
@@ -88,6 +67,10 @@ export class CallService {
 
   public getRoomId(): string | null {
     return this.roomId;
+  }
+
+  public async loadIceConfig(): Promise<void> {
+    this.rtcConfig = await this.iceConfigService.getConfig();
   }
 
   public async initializeStreams(constraints?: MediaStreamConstraints): Promise<void> {
@@ -219,7 +202,7 @@ export class CallService {
   private getOrCreatePeerConnection(peerId: string): RTCPeerConnection {
     let pc = this.peerConnections.get(peerId);
     if (pc) return pc;
-    pc = new RTCPeerConnection(rtcConfiguration);
+    pc = new RTCPeerConnection(this.rtcConfig);
     this.peerConnections.set(peerId, pc);
     this.candidateQueues.set(peerId, []);
     this.registerConnectionListeners(peerId, pc);

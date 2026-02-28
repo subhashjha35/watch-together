@@ -59,8 +59,10 @@ export class MovieRoomComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit() {
-    void this.initializeVideoStreams().then(() => {
-      this.joinRoom();
+    void this.callService.loadIceConfig().then(() => {
+      void this.initializeVideoStreams().then(() => {
+        this.joinRoom();
+      });
     });
   }
 
