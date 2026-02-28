@@ -3,8 +3,8 @@ import { SocketService } from './socket.service';
 import type { ICall } from './socket.type';
 import { IceConfigService } from './ice-config.service';
 
-/** STUN-only fallback used until the server config is loaded. */
-const STUN_ONLY_FALLBACK: RTCConfiguration = {
+/** STUN-only config used for initial connection attempts (no TURN bandwidth cost). */
+const STUN_ONLY_CONFIG: RTCConfiguration = {
   iceServers: [
     {
       urls: [
@@ -27,7 +27,15 @@ export class CallService {
   private readonly socketService: SocketService<ICall> = inject(SocketService<ICall>);
   private readonly iceConfigService = inject(IceConfigService);
   private localStream: MediaStream | null = null;
-  private rtcConfig: RTCConfiguration = STUN_ONLY_FALLBACK;
+
+  /**
+   * Full ICE config including TURN servers (fetched from backend).
+   * Only used when STUN-only connection fails, to save TURN quota.
+   */
+  private fullRtcConfig: RTCConfiguration = STUN_ONLY_CONFIG;
+
+  /** Tracks which peers have already been promoted to use TURN. */
+  private readonly peersUsingTurn = new Set<string>();
 
   /** Reactive map of remote peer streams, keyed by socketId. */
   readonly remoteStreams = signal<ReadonlyMap<string, MediaStream>>(new Map());
@@ -70,14 +78,15 @@ export class CallService {
   }
 
   public async loadIceConfig(): Promise<void> {
-    this.rtcConfig = await this.iceConfigService.getConfig();
+    this.fullRtcConfig = await this.iceConfigService.getConfig();
     const turnCount =
-      this.rtcConfig.iceServers?.filter((s) => {
+      this.fullRtcConfig.iceServers?.filter((s) => {
         const urls = Array.isArray(s.urls) ? s.urls : [s.urls ?? ''];
         return urls.some((u) => u.startsWith('turn:') || u.startsWith('turns:'));
       }).length ?? 0;
     console.log(
-      `ICE config loaded: ${this.rtcConfig.iceServers?.length} server(s), ${turnCount} TURN server(s)`
+      `ICE config loaded: ${this.fullRtcConfig.iceServers?.length} server(s), ${turnCount} TURN server(s). ` +
+        'STUN-only will be tried first; TURN used only on failure.'
     );
     if (turnCount === 0) {
       console.warn(
@@ -200,6 +209,7 @@ export class CallService {
     }
     this.candidateQueues.delete(peerId);
     this.iceRestartAttempts.delete(peerId);
+    this.peersUsingTurn.delete(peerId);
     this.remoteStreams.update((current) => {
       if (!current.has(peerId)) return current;
       const next = new Map(current);
@@ -215,7 +225,9 @@ export class CallService {
   private getOrCreatePeerConnection(peerId: string): RTCPeerConnection {
     let pc = this.peerConnections.get(peerId);
     if (pc) return pc;
-    pc = new RTCPeerConnection(this.rtcConfig);
+    // Use STUN-only for initial attempt; TURN is added on ICE failure
+    const config = this.peersUsingTurn.has(peerId) ? this.fullRtcConfig : STUN_ONLY_CONFIG;
+    pc = new RTCPeerConnection(config);
     this.peerConnections.set(peerId, pc);
     this.candidateQueues.set(peerId, []);
     this.registerConnectionListeners(peerId, pc);
@@ -257,7 +269,33 @@ export class CallService {
       return;
     }
     this.iceRestartAttempts.set(peerId, attempts + 1);
-    console.warn(`[${peerId}] Attempting ICE restart (attempt ${attempts + 1}).`);
+
+    // On the first failure, promote to TURN if not already using it
+    if (!this.peersUsingTurn.has(peerId)) {
+      this.peersUsingTurn.add(peerId);
+      console.warn(
+        `[${peerId}] STUN-only connection failed. Upgrading to TURN (attempt ${attempts + 1}).`
+      );
+      // Close the STUN-only connection and recreate with TURN
+      pc.onconnectionstatechange = null;
+      pc.oniceconnectionstatechange = null;
+      pc.onicecandidate = null;
+      pc.ontrack = null;
+      pc.close();
+      this.peerConnections.delete(peerId);
+      this.candidateQueues.delete(peerId);
+      // Re-initiate the call — the new connection will include TURN servers
+      try {
+        await this.makeCall(peerId);
+      } catch (err) {
+        console.error(`[${peerId}] Failed to re-initiate call with TURN:`, err);
+        this.removePeer(peerId);
+      }
+      return;
+    }
+
+    // Already using TURN — do a standard ICE restart
+    console.warn(`[${peerId}] Attempting ICE restart with TURN (attempt ${attempts + 1}).`);
     try {
       const offer = await pc.createOffer({ iceRestart: true });
       await pc.setLocalDescription(offer);
