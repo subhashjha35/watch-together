@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node-terminal",
+      "name": "Serve API",
+      "request": "launch",
+      "command": "npx nx serve api",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Serve Web",
+      "request": "launch",
+      "command": "npx nx serve watch-together",
+      "cwd": "${workspaceFolder}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "🚀 Launch Both",
+      "configurations": [
+        "Serve API",
+        "Serve Web"
+      ]
+    }
+  ]
+}
