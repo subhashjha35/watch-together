@@ -14,7 +14,7 @@
         "outputPath": "dist/apps/backend-api",
         "format": ["esm"],
         "bundle": true,
-        "main": "apps/backend-api/src/index.ts",
+        "main": "apps/backend-api/src/main.ts",
         "tsConfig": "apps/backend-api/tsconfig.app.json",
         "assets": ["apps/backend-api/assets/**", "apps/backend-api/certs/**"],
         "generatePackageJson": true,
@@ -22,7 +22,8 @@
           "sourcemap": true,
           "outExtension": {
             ".js": ".js"
-          }
+          },
+          "external": ["@nestjs/*"]
         }
       },
       "configurations": {
@@ -32,7 +33,8 @@
             "sourcemap": false,
             "outExtension": {
               ".js": ".js"
-            }
+            },
+            "external": ["@nestjs/*"]
           }
         }
       }

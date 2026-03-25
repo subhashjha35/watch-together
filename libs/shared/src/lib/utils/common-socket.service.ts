@@ -19,6 +19,38 @@ export abstract class CommonSocketService {
 
   protected constructor() {
     const envData = this.envData;
-    this.socket = io(`${envData.HOST}`); // Connect to the backend server
+    
+    // Configure Socket.IO connection with proper options
+    const socketOptions: any = {
+      path: '/socket.io/',
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5,
+      // Use both websocket and polling transports
+      transports: ['websocket', 'polling'],
+      withCredentials: true
+    };
+
+    // Remove rejectUnauthorized - it's only for Node.js
+    // Browsers handle certificate validation differently
+    
+    console.log('Socket.IO options:', socketOptions);
+    console.log('Connecting to:', envData.HOST);
+    
+    this.socket = io(`${envData.HOST}`, socketOptions);
+
+    // Log connection events for debugging
+    this.socket.on('connect', () => {
+      console.log('Socket.IO connected:', this.socket.id);
+    });
+
+    this.socket.on('connect_error', (error) => {
+      console.error('Socket.IO connection error:', error);
+    });
+
+    this.socket.on('disconnect', (reason) => {
+      console.log('Socket.IO disconnected:', reason);
+    });
   }
 }
