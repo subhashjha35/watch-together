@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Logger } from '@nestjs/common';
-import { bootstrapBackendApplication } from '@watch-together/backend-server';
+import { bootstrapBackendApplication } from '@watch-together/backend-server/backend';
 import { AppModule } from './app.module';
 
 const logger = new Logger('Bootstrap');

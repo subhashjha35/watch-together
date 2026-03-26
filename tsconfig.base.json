@@ -25,10 +25,12 @@
       "@watch-together/shared-testing": ["shared-testing/src/index.ts"],
       "@watch-together/main-menu-ui": ["libs/main-menu/ui/src/index.ts"],
       "@watch-together/main-menu-common": ["libs/main-menu/common/src/index.ts"],
-      "@watch-together/backend-config": ["libs/backend-config/src/index.ts"],
-      "@watch-together/backend-server": ["libs/backend-server/src/index.ts"],
-      "@watch-together/backend-ice-servers": ["libs/backend-ice-servers/src/index.ts"],
-      "@watch-together/backend-socket": ["libs/backend-socket/src/index.ts"]
+      "@watch-together/backend-config/backend": ["libs/backend-config/backend/src/index.ts"],
+      "@watch-together/backend-config/common": ["libs/backend-config/common/src/index.ts"],
+      "@watch-together/backend-server/backend": ["libs/backend-server/backend/src/index.ts"],
+      "@watch-together/backend-ice-servers/backend": ["libs/backend-ice-servers/backend/src/index.ts"],
+      "@watch-together/backend-ice-servers/common": ["libs/backend-ice-servers/common/src/index.ts"],
+      "@watch-together/backend-socket/backend": ["libs/backend-socket/backend/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

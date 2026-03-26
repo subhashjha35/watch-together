@@ -1,0 +1,8 @@
+{
+  "name": "backend-config-common",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend-config/common/src",
+  "projectType": "library",
+  "tags": ["lib:common", "scope:watch-together", "layer:core"],
+  "targets": {}
+}
