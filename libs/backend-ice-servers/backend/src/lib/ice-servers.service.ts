@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import type { IceServer } from '@watch-together/backend-config/common';
 import { ServerConfigService } from '@watch-together/backend-config/backend';
 import type { IceServersResponse } from '@watch-together/backend-ice-servers/common';
@@ -17,7 +17,7 @@ const DEFAULT_STUN_SERVERS: IceServer[] = [
 export class IceServersService {
   private readonly logger = new Logger(IceServersService.name);
 
-  constructor(private readonly configService: ServerConfigService) {}
+  constructor(@Inject(ServerConfigService) private readonly configService: ServerConfigService) {}
 
   async getIceServers(): Promise<IceServersResponse> {
     try {

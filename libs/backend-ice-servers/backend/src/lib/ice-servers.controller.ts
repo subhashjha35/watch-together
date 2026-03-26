@@ -3,6 +3,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Inject,
   InternalServerErrorException,
   Logger
 } from '@nestjs/common';
@@ -13,7 +14,7 @@ import { IceServersService } from './ice-servers.service';
 export class IceServersController {
   private readonly logger = new Logger(IceServersController.name);
 
-  constructor(private readonly iceServersService: IceServersService) {}
+  constructor(@Inject(IceServersService) private readonly iceServersService: IceServersService) {}
 
   @Get('ice-servers')
   @HttpCode(HttpStatus.OK)
