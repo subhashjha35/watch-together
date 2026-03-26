@@ -1,6 +1,6 @@
 import type { Route } from '@angular/router';
 import { MovieRoomComponent } from '@watch-together/movie-room';
-import { HomeComponent } from '@watch-together/home';
+import { HomeComponent } from '@watch-together/home-ui';
 import { mainRoutes } from '@watch-together/main-menu-common';
 
 export const appRoutes: Route[] = [

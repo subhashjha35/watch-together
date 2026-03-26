@@ -1,8 +1,6 @@
 import nx from '@nx/eslint-plugin';
-import baseConfig from '../../../eslint.config.js';
 
 export default [
-  ...baseConfig,
   ...nx.configs['flat/angular'],
   ...nx.configs['flat/angular-template'],
   {
@@ -13,22 +11,21 @@ export default [
         {
           type: 'attribute',
           prefix: 'lib',
-          style: 'camelCase',
-        },
+          style: 'camelCase'
+        }
       ],
       '@angular-eslint/component-selector': [
         'error',
         {
           type: 'element',
           prefix: 'lib',
-          style: 'kebab-case',
-        },
-      ],
-    },
+          style: 'kebab-case'
+        }
+      ]
+    }
   },
   {
     files: ['**/*.html'],
-    // Override or add rules here
-    rules: {},
-  },
+    rules: {}
+  }
 ];
