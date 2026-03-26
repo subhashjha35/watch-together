@@ -3,13 +3,13 @@
   width: 50vw;
   background: #000;
 
-  /* YouTube player fills the wrapper width, height is automatic */
+  /* Embedded player fills the wrapper width, height is automatic */
   .player-wrapper {
     position: relative;
     z-index: 1;
     width: 100%;
 
-    lib-youtube-video-player {
+    lib-embedded-video-player {
       display: block;
       width: 100%;
     }
@@ -78,7 +78,7 @@
     width: 100%;
     height: 100%;
 
-    lib-youtube-video-player {
+    lib-embedded-video-player {
       height: 100%;
     }
   }

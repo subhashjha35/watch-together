@@ -20,7 +20,7 @@ import {
 } from '@watch-together/shared';
 import { VideoComponent } from '../video';
 import { RemoteVideoComponent } from '../remote-video';
-import { YoutubeVideoPlayerComponent } from '@watch-together/video-player-ui';
+import { EmbeddedVideoPlayerComponent } from '@watch-together/video-player-ui';
 
 @Component({
   selector: 'lib-movie-room',
@@ -28,7 +28,7 @@ import { YoutubeVideoPlayerComponent } from '@watch-together/video-player-ui';
     TextChatComponent,
     VideoComponent,
     RemoteVideoComponent,
-    YoutubeVideoPlayerComponent,
+    EmbeddedVideoPlayerComponent,
     DraggableDirective,
     ResizableDirective
   ],
