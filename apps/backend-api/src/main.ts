@@ -1,15 +1,37 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
-import { Logger, INestApplication } from '@nestjs/common';
+import { type INestApplication, Logger } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import { Server as SocketIOServer, type ServerOptions } from 'socket.io';
 import * as dotenv from 'dotenv';
 import * as fs from 'node:fs';
+import type * as https from 'node:https';
 import path from 'node:path';
 import { AppModule } from './app.module';
 import { ServerConfigService } from './config/config.service';
 import { ServerFactory } from './common/factories/server.factory';
 
 const logger = new Logger('Bootstrap');
+
+/**
+ * Custom IoAdapter that binds Socket.IO to an existing HTTPS server
+ * so that the NestJS gateway handlers are registered on the same
+ * Socket.IO instance that clients connect to.
+ */
+class HttpsSocketIoAdapter extends IoAdapter {
+  constructor(
+    app: INestApplication,
+    private readonly httpsServer: https.Server
+  ) {
+    super(app);
+  }
+
+  override createIOServer(_port: number, options?: ServerOptions) {
+    // Create Socket.IO server attached to the HTTPS server directly,
+    // bypassing the parent's createIOServer which would use the default HTTP server
+    return new SocketIOServer(this.httpsServer, options);
+  }
+}
 
 /**
  * Load environment variables from .local.env before anything else
@@ -29,6 +51,53 @@ function loadEnvironmentVariables(): void {
 }
 
 /**
+ * Build a CORS origin validator function from the config
+ */
+function buildCorsOriginValidator(corsOrigin: string | string[]) {
+  return (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) {
+      logger.log('CORS: No origin header (mobile/curl request) - ALLOWED');
+      callback(null, true);
+      return;
+    }
+
+    logger.debug(`CORS: Received origin "${origin}", configured as "${corsOrigin}"`);
+
+    if (corsOrigin === '*') {
+      logger.debug('CORS: Wildcard origin configured - ALLOWED');
+      callback(null, true);
+    } else if (Array.isArray(corsOrigin)) {
+      const allowed = corsOrigin.includes(origin);
+      if (allowed) {
+        logger.debug('CORS: Origin found in allowed list - ALLOWED');
+        callback(null, true);
+      } else {
+        logger.warn(`CORS: Origin "${origin}" not in allowed list: ${JSON.stringify(corsOrigin)}`);
+        callback(new Error('CORS not allowed'));
+      }
+    } else {
+      const allowed = origin === corsOrigin;
+      if (allowed) {
+        logger.debug('CORS: Origin matches configured origin - ALLOWED');
+        callback(null, true);
+      } else {
+        logger.warn(`CORS: Origin mismatch. Received: "${origin}", Expected: "${corsOrigin}"`);
+        // For development, allow if just the protocol differs (http vs https)
+        const receivedBase = origin.replace(/^https?:\/\//, '');
+        const configBase = String(corsOrigin).replace(/^https?:\/\//, '');
+        if (receivedBase === configBase) {
+          logger.log('CORS: Protocol mismatch but host matches - ALLOWING for development');
+          callback(null, true);
+          return;
+        }
+        callback(new Error('CORS not allowed'));
+      }
+    }
+  };
+}
+
+/**
  * Bootstrap the NestJS application
  * Sets up HTTP/HTTPS server, Socket.IO, and starts listening
  */
@@ -38,139 +107,53 @@ async function bootstrap(): Promise<void> {
 
   // Create NestJS app (always HTTP initially)
   const app = await NestFactory.create<INestApplication>(AppModule);
-  
+
   const configService = app.get(ServerConfigService);
   const config = configService.getServerConfig();
 
-  // Configure CORS for Express REST endpoints and Socket.IO
-  // Build the origin validator function
-  const buildOriginValidator = () => {
-    return (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) {
-        logger.log('CORS: No origin header (mobile/curl request) - ALLOWED');
-        callback(null, true);
-        return;
-      }
-
-      logger.debug(`CORS: Received origin "${origin}", configured as "${config.corsOrigin}"`);
-
-      if (config.corsOrigin === '*') {
-        // Allow all origins
-        logger.debug('CORS: Wildcard origin configured - ALLOWED');
-        callback(null, true);
-      } else if (Array.isArray(config.corsOrigin)) {
-        // Check if origin is in allowed list
-        const allowed = (config.corsOrigin as string[]).includes(origin);
-        if (allowed) {
-          logger.debug(`CORS: Origin found in allowed list - ALLOWED`);
-          callback(null, true);
-        } else {
-          logger.warn(`CORS: Origin "${origin}" not in allowed list: ${JSON.stringify(config.corsOrigin)}`);
-          callback(new Error('CORS not allowed'));
-        }
-      } else {
-        // Single origin string
-        const allowed = origin === config.corsOrigin;
-        if (allowed) {
-          logger.debug('CORS: Origin matches configured origin - ALLOWED');
-          callback(null, true);
-        } else {
-          logger.warn(`CORS: Origin mismatch. Received: "${origin}", Expected: "${config.corsOrigin}"`);
-          // For development, allow if just the protocol differs (http vs https)
-          const receivedBase = origin.replace(/^https?:\/\//, '');
-          const configBase = String(config.corsOrigin).replace(/^https?:\/\//, '');
-          if (receivedBase === configBase) {
-            logger.log('CORS: Protocol mismatch but host matches - ALLOWING for development');
-            callback(null, true);
-            return;
-          }
-          callback(new Error('CORS not allowed'));
-        }
-      }
-    };
-  };
-
   // Enable CORS using NestJS built-in method
   app.enableCors({
-    origin: buildOriginValidator(),
+    origin: buildCorsOriginValidator(config.corsOrigin),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
   });
 
-  // Configure Socket.IO adapter with CORS settings
-  // Socket.IO with credentials: true requires a validation function
-  let corsOriginValidator: ((origin: string | undefined) => boolean) | string;
-  
-  if (config.corsOrigin === '*') {
-    // Allow all origins when '*' is configured
-    corsOriginValidator = (origin: string | undefined) => true;
-  } else if (Array.isArray(config.corsOrigin)) {
-    // Validate against list of allowed origins
-    corsOriginValidator = (origin: string | undefined) => {
-      if (!origin) return false;
-      return (config.corsOrigin as string[]).includes(origin);
-    };
-  } else {
-    // Single origin - use a validator function
-    const allowedOrigin = config.corsOrigin;
-    corsOriginValidator = (origin: string | undefined) => {
-      if (!origin) return false;
-      return origin === allowedOrigin;
-    };
-  }
-
   // Handle HTTPS vs HTTP server initialization
   if (config.useHttps) {
-    // For HTTPS: Create the server first, then attach Socket.IO to it
+    // For HTTPS: Create a custom HTTPS server and bind Socket.IO to it
+    // via a custom adapter so NestJS gateway handlers are registered
+    // on the same Socket.IO instance that serves over WSS.
     const serverFactory = app.get(ServerFactory);
     const expressApp = app.getHttpAdapter().getInstance();
-    const httpsServer = serverFactory.createServer(expressApp, config);
+    const httpsServer = serverFactory.createServer(expressApp, config) as https.Server;
 
-    // Import Socket.IO to attach it to the HTTPS server
-    const { Server: SocketIOServer } = await import('socket.io');
-    
-    // Attach Socket.IO to the HTTPS server with proper CORS settings
-    new SocketIOServer(httpsServer, {
-      cors: {
-        origin: corsOriginValidator as any,
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        credentials: true,
-        allowedHeaders: ['Content-Type', 'Authorization']
-      }
-    });
+    // Use a custom adapter that attaches Socket.IO to the HTTPS server
+    app.useWebSocketAdapter(new HttpsSocketIoAdapter(app, httpsServer));
 
-    // Initialize the app
+    // Initialize the app (registers gateway handlers on our adapter)
     await app.init();
 
-    // Listen on the configured port and IP
+    // Start the HTTPS server listening
     await new Promise<void>((resolve) => {
       httpsServer.listen(config.port, config.ip, () => {
         resolve();
       });
     });
+
+    const protocol = 'https';
+    logger.log(`✓ Server is running on ${protocol}://${config.ip}:${config.port}`);
+    logger.log(`✓ CORS Origin: ${config.corsOrigin}`);
+    logger.log(`✓ WebSocket Server (WSS): Ready on wss://${config.ip}:${config.port}/socket.io/`);
   } else {
     // Use standard NestJS listen for HTTP (handles Socket.IO properly via adapter)
-    app.useWebSocketAdapter(
-      new IoAdapter({
-        cors: {
-          origin: corsOriginValidator as any,
-          methods: ['GET', 'POST', 'PUT', 'DELETE'],
-          credentials: true,
-          allowedHeaders: ['Content-Type', 'Authorization']
-        }
-      })
-    );
+    app.useWebSocketAdapter(new IoAdapter(app));
     await app.listen(config.port, config.ip);
-  }
 
-  const protocol = config.useHttps ? 'https' : 'http';
-  logger.log(
-    `✓ Server is running on ${protocol}://${config.ip}:${config.port}`
-  );
-  logger.log(`✓ CORS Origin: ${config.corsOrigin}`);
-  logger.log(`✓ WebSocket Server: Ready`);
+    logger.log(`✓ Server is running on http://${config.ip}:${config.port}`);
+    logger.log(`✓ CORS Origin: ${config.corsOrigin}`);
+    logger.log(`✓ WebSocket Server: Ready`);
+  }
 }
 
 bootstrap().catch((error) => {

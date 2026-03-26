@@ -19,7 +19,7 @@ export abstract class CommonSocketService {
 
   protected constructor() {
     const envData = this.envData;
-    
+
     // Configure Socket.IO connection with proper options
     const socketOptions: any = {
       path: '/socket.io/',
@@ -34,10 +34,10 @@ export abstract class CommonSocketService {
 
     // Remove rejectUnauthorized - it's only for Node.js
     // Browsers handle certificate validation differently
-    
+
     console.log('Socket.IO options:', socketOptions);
     console.log('Connecting to:', envData.HOST);
-    
+
     this.socket = io(`${envData.HOST}`, socketOptions);
 
     // Log connection events for debugging

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { Server, Socket } from 'socket.io';
+import type { Namespace, Socket } from 'socket.io';
 import type { RoomEvent, RoomPayload } from '../types/socket-events.types';
 
 /**
@@ -17,13 +17,13 @@ export class RoomService {
    * Handle socket joining a room
    * Broadcasts join event to existing peers and sends peer list to new joiner
    */
-  handleJoinRoom(socket: Socket, io: Server, data: RoomEvent): void {
+  handleJoinRoom(socket: Socket, io: Namespace, data: RoomEvent): void {
     const { roomId } = data;
     this.logger.log(`User ${socket.id} joining room: ${roomId}`);
 
     // Collect existing peers before this socket joins
     const existingPeers: string[] = [];
-    const room = io.sockets.adapter.rooms.get(roomId);
+    const room = io.adapter.rooms.get(roomId);
     if (room) {
       for (const id of room) {
         if (id !== socket.id) {
@@ -52,7 +52,7 @@ export class RoomService {
    * Handle socket leaving a room (disconnect or explicit leave)
    * Notifies other peers in the room about the departure
    */
-  handleLeaveRoom(socket: Socket, io: Server): void {
+  handleLeaveRoom(socket: Socket, _io: Namespace): void {
     const roomId = this.socketRooms.get(socket.id);
     if (!roomId) {
       this.logger.warn(`No room found for socket ${socket.id}`);

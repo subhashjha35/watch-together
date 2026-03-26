@@ -1,24 +1,13 @@
+import { Inject, Logger, UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import {
-  Logger,
-  UseFilters,
-  UseInterceptors,
-  UsePipes,
-  ValidationPipe
-} from '@nestjs/common';
-import {
-  WebSocketGateway,
-  WebSocketServer,
-  SubscribeMessage,
   OnGatewayConnection,
-  OnGatewayDisconnect
+  OnGatewayDisconnect,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer
 } from '@nestjs/websockets';
-import type { Server, Socket } from 'socket.io';
-import type {
-  RoomEvent,
-  CallData,
-  VideoEvent,
-  ChatMessage
-} from './types/socket-events.types';
+import type { Namespace, Socket } from 'socket.io';
+import type { CallData, ChatMessage, RoomEvent, VideoEvent } from './types/socket-events.types';
 import { RoomService } from './services/room.service';
 import { BroadcastService } from './services/broadcast.service';
 
@@ -41,13 +30,13 @@ import { BroadcastService } from './services/broadcast.service';
 @UsePipes(new ValidationPipe({ transform: true, whitelist: false }))
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server!: Server;
+  server!: Namespace;
 
   private readonly logger = new Logger(SocketGateway.name);
 
   constructor(
-    private readonly roomService: RoomService,
-    private readonly broadcastService: BroadcastService
+    @Inject(RoomService) private readonly roomService: RoomService,
+    @Inject(BroadcastService) private readonly broadcastService: BroadcastService
   ) {}
 
   handleConnection(socket: Socket): void {
@@ -65,9 +54,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
    */
   @SubscribeMessage('room')
   handleRoomEvent(socket: Socket, data: RoomEvent): void {
-    this.logger.log(
-      `Room event: ${data.event}, roomId: ${data.roomId}, socketId: ${socket.id}`
-    );
+    this.logger.log(`Room event: ${data.event}, roomId: ${data.roomId}, socketId: ${socket.id}`);
 
     if (data.event === 'join') {
       this.roomService.handleJoinRoom(socket, this.server, data);
@@ -85,9 +72,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const roomId = this.roomService.getSocketRoom(socket);
 
     if (!roomId) {
-      this.logger.warn(
-        `Call event from ${socket.id} ignored — not in any room`
-      );
+      this.logger.warn(`Call event from ${socket.id} ignored — not in any room`);
       return;
     }
 
@@ -103,9 +88,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const roomId = this.roomService.getSocketRoom(socket);
 
     if (!roomId) {
-      this.logger.warn(
-        `Video event from ${socket.id} ignored — not in any room`
-      );
+      this.logger.warn(`Video event from ${socket.id} ignored — not in any room`);
       return;
     }
 
@@ -121,9 +104,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const roomId = this.roomService.getSocketRoom(socket);
 
     if (!roomId) {
-      this.logger.warn(
-        `Chat event from ${socket.id} ignored — not in any room`
-      );
+      this.logger.warn(`Chat event from ${socket.id} ignored — not in any room`);
       return;
     }
 
