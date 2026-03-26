@@ -64,6 +64,12 @@
         "jestConfig": "apps/backend-api/jest.config.ts"
       }
     },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["apps/backend-api/src/main.ts", "apps/backend-api/src/app.module.ts"]
+      }
+    },
     "docker:build": {
       "dependsOn": ["build", "prune"]
     }

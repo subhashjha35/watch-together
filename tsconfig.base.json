@@ -24,7 +24,11 @@
       "@watch-together/youtube-ui": ["libs/youtube/ui/src/index.ts"],
       "@watch-together/shared-testing": ["shared-testing/src/index.ts"],
       "@watch-together/main-menu-ui": ["libs/main-menu/ui/src/index.ts"],
-      "@watch-together/main-menu-common": ["libs/main-menu/common/src/index.ts"]
+      "@watch-together/main-menu-common": ["libs/main-menu/common/src/index.ts"],
+      "@watch-together/backend-config": ["libs/backend-config/src/index.ts"],
+      "@watch-together/backend-server": ["libs/backend-server/src/index.ts"],
+      "@watch-together/backend-ice-servers": ["libs/backend-ice-servers/src/index.ts"],
+      "@watch-together/backend-socket": ["libs/backend-socket/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

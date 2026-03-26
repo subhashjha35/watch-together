@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from './config/config.module';
-import { SocketModule } from './socket/socket.module';
-import { IceServersModule } from './ice-servers/ice-servers.module';
+import { ConfigModule } from '@watch-together/backend-config';
+import { IceServersModule } from '@watch-together/backend-ice-servers';
+import { BackendServerModule } from '@watch-together/backend-server';
+import { SocketModule } from '@watch-together/backend-socket';
 
 /**
  * Root application module
  * Orchestrates all feature modules and configurations
  */
 @Module({
-  imports: [ConfigModule, SocketModule, IceServersModule],
+  imports: [ConfigModule, BackendServerModule, SocketModule, IceServersModule],
   controllers: [],
   providers: []
 })
