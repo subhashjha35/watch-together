@@ -1,4 +1,4 @@
-import { Logger, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Inject, Logger, UsePipes, ValidationPipe } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -23,8 +23,8 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(SocketGateway.name);
 
   constructor(
-    private readonly roomService: RoomService,
-    private readonly broadcastService: BroadcastService
+    @Inject(RoomService) private readonly roomService: RoomService,
+    @Inject(BroadcastService) private readonly broadcastService: BroadcastService
   ) {}
 
   handleConnection(socket: Socket): void {
