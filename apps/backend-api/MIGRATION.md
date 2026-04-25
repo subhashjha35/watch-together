@@ -41,37 +41,43 @@ src/
 ### Key Improvements
 
 #### 1. **Modular Design**
-   - Each feature is encapsulated in its own module
-   - Clear dependency injection using NestJS providers
-   - Easy to test, scale, and maintain
+
+- Each feature is encapsulated in its own module
+- Clear dependency injection using NestJS providers
+- Easy to test, scale, and maintain
 
 #### 2. **Configuration Management**
-   - Centralized `ServerConfigService` using `@nestjs/config`
-   - Type-safe configuration interfaces
-   - Support for environment variables and `.local.env` files
+
+- Centralized `ServerConfigService` using `@nestjs/config`
+- Type-safe configuration interfaces
+- Support for environment variables and `.local.env` files
 
 #### 3. **WebSocket Architecture**
-   - **SocketGateway**: Handles WebSocket connections and events
-   - **RoomService**: Manages room operations and peer discovery
-   - **BroadcastService**: Handles event distribution across peers
-   - Clean type definitions for all socket events
+
+- **SocketGateway**: Handles WebSocket connections and events
+- **RoomService**: Manages room operations and peer discovery
+- **BroadcastService**: Handles event distribution across peers
+- Clean type definitions for all socket events
 
 #### 4. **REST API**
-   - **IceServersController**: Exposes `/api/ice-servers` endpoint
-   - **IceServersService**: Manages ICE server configuration
-   - Supports both static and dynamic TURN credentials from Metered API
+
+- **IceServersController**: Exposes `/api/ice-servers` endpoint
+- **IceServersService**: Manages ICE server configuration
+- Supports both static and dynamic TURN credentials from Metered API
 
 #### 5. **Clean Code Practices**
-   - Single Responsibility Principle: Each service has one clear purpose
-   - Dependency Injection: All dependencies are provided through NestJS containers
-   - Error Handling: Proper logging and error propagation
-   - Type Safety: Full TypeScript with strict type checking
+
+- Single Responsibility Principle: Each service has one clear purpose
+- Dependency Injection: All dependencies are provided through NestJS containers
+- Error Handling: Proper logging and error propagation
+- Type Safety: Full TypeScript with strict type checking
 
 ---
 
 ## Module Breakdown
 
 ### Config Module
+
 ```typescript
 // Provides centralized configuration
 - Loads environment variables from .local.env and .env
@@ -80,78 +86,87 @@ src/
 ```
 
 **Services:**
+
 - `ServerConfigService`: Provides all server configuration
 
 ### Socket Module
+
 ```typescript
 // Handles real-time WebSocket communication
 ```
 
 **Gateway:**
+
 - `SocketGateway`: Manages Socket.IO connections and events
-  - `handleConnection()`: Logs new connections
-  - `handleDisconnect()`: Cleans up on disconnect
-  - `@SubscribeMessage('room')`: Join/leave room events
-  - `@SubscribeMessage('call')`: Call signaling (offer/answer/candidate)
-  - `@SubscribeMessage('video')`: Video sync events
-  - `@SubscribeMessage('chat')`: Chat messages
+    - `handleConnection()`: Logs new connections
+    - `handleDisconnect()`: Cleans up on disconnect
+    - `@SubscribeMessage('room')`: Join/leave room events
+    - `@SubscribeMessage('call')`: Call signaling (offer/answer/candidate)
+    - `@SubscribeMessage('video')`: Video sync events
+    - `@SubscribeMessage('chat')`: Chat messages
 
 **Services:**
-- `RoomService`: 
-  - `handleJoinRoom()`: Manages socket joining a room
-  - `handleLeaveRoom()`: Notifies peers on departure
-  - `getSocketRoom()`: Retrieves socket's current room
-  - Socket-to-room mapping tracking
+
+- `RoomService`:
+    - `handleJoinRoom()`: Manages socket joining a room
+    - `handleLeaveRoom()`: Notifies peers on departure
+    - `getSocketRoom()`: Retrieves socket's current room
+    - Socket-to-room mapping tracking
 
 - `BroadcastService`:
-  - `broadcastCallEvent()`: Distributes call events
-  - `broadcastVideoEvent()`: Distributes video sync events
-  - `broadcastChatMessage()`: Distributes chat messages
+    - `broadcastCallEvent()`: Distributes call events
+    - `broadcastVideoEvent()`: Distributes video sync events
+    - `broadcastChatMessage()`: Distributes chat messages
 
 **Types:**
+
 ```typescript
 interface RoomEvent {
-  event: string;
-  roomId: string;
+    event: string;
+    roomId: string;
 }
 
 interface CallData {
-  event: 'offer' | 'answer' | 'candidate';
-  data: RTCSessionDescriptionInit | RTCIceCandidateInit;
-  roomId?: string;
-  targetSocketId?: string;
+    event: 'offer' | 'answer' | 'candidate';
+    data: RTCSessionDescriptionInit | RTCIceCandidateInit;
+    roomId?: string;
+    targetSocketId?: string;
 }
 
 interface VideoEvent {
-  event: string;
-  time: number;
+    event: string;
+    time: number;
 }
 
 interface ChatMessage {
-  user: string;
-  text: string;
+    user: string;
+    text: string;
 }
 ```
 
 ### Ice Servers Module
+
 ```typescript
 // REST API for WebRTC ICE server configuration
 ```
 
 **Controller:**
+
 - `IceServersController`:
-  - `GET /api/ice-servers`: Returns ICE server configuration
+    - `GET /api/ice-servers`: Returns ICE server configuration
 
 **Services:**
+
 - `IceServersService`:
-  - `getIceServers()`: Fetches ICE servers with fallback logic
-  - `fetchMeteredTurnCredentials()`: Calls Metered API for fresh credentials
+    - `getIceServers()`: Fetches ICE servers with fallback logic
+    - `fetchMeteredTurnCredentials()`: Calls Metered API for fresh credentials
 
 ---
 
 ## Event Flow Comparison
 
 ### Express.js (Old)
+
 ```
 Express app
   ├── CORS middleware
@@ -162,6 +177,7 @@ Express app
 ```
 
 ### NestJS (New)
+
 ```
 NestJS App
   ├── ConfigModule
@@ -181,19 +197,21 @@ NestJS App
 ## Service Responsibilities
 
 ### Before (Express)
+
 - **SocketHandler class**: Mixed concerns
-  - Connection management
-  - Room logic
-  - Event broadcasting
-  - Socket tracking
+    - Connection management
+    - Room logic
+    - Event broadcasting
+    - Socket tracking
 
 - **index.ts**: Mixed concerns
-  - Server creation
-  - Middleware setup
-  - Route definition
-  - Socket registration
+    - Server creation
+    - Middleware setup
+    - Route definition
+    - Socket registration
 
 ### After (NestJS)
+
 - **SocketGateway**: Connection management & routing
 - **RoomService**: Room operations only
 - **BroadcastService**: Event distribution only
@@ -242,8 +260,9 @@ console.log(config.port);
 ## Event Types
 
 ### Room Events
+
 ```typescript
-socket.emit('room', { 
+socket.emit('room', {
   event: 'join' | 'leave' | 'peers',
   roomId?: string,
   socketId?: string,
@@ -252,6 +271,7 @@ socket.emit('room', {
 ```
 
 ### Call Events (WebRTC Signaling)
+
 ```typescript
 socket.emit('call', {
   event: 'offer' | 'answer' | 'candidate',
@@ -263,19 +283,21 @@ socket.emit('call', {
 ```
 
 ### Video Events
+
 ```typescript
 socket.emit('video', {
-  event: string,
-  time: number  // Timestamp for sync
-})
+    event: string,
+    time: number // Timestamp for sync
+});
 ```
 
 ### Chat Events
+
 ```typescript
 socket.emit('chat', {
-  user: string,
-  text: string
-})
+    user: string,
+    text: string
+});
 ```
 
 ---
@@ -283,17 +305,20 @@ socket.emit('chat', {
 ## Testing the Application
 
 ### Build
+
 ```bash
 yarn install
 npx nx build api
 ```
 
 ### Serve (Development)
+
 ```bash
 npx nx serve api
 ```
 
 ### Output
+
 ```
 ✓ Server is running on http://0.0.0.0:3000
 ✓ CORS Origin: *
@@ -305,19 +330,21 @@ npx nx serve api
 ## Dependency Injection Example
 
 ### Before (Express)
+
 ```typescript
 class SocketHandler {
-  constructor(private readonly io: Server) {}
+    constructor(private readonly io: Server) {}
 }
 
 const handler = new SocketHandler(io);
 ```
 
 ### After (NestJS)
+
 ```typescript
 @Injectable()
 export class RoomService {
-  constructor(private readonly logger: Logger) {}
+    constructor(private readonly logger: Logger) {}
 }
 // Automatically injected by NestJS
 ```
@@ -327,6 +354,7 @@ export class RoomService {
 ## Error Handling
 
 ### Logging Pattern
+
 ```typescript
 private readonly logger = new Logger(ServiceName.name);
 
@@ -336,12 +364,13 @@ this.logger.error('Error message', error);
 ```
 
 ### Exception Handling
+
 ```typescript
 try {
-  // operation
+    // operation
 } catch (error) {
-  this.logger.error('Operation failed', error);
-  throw new InternalServerErrorException('User-friendly message');
+    this.logger.error('Operation failed', error);
+    throw new InternalServerErrorException('User-friendly message');
 }
 ```
 
@@ -387,14 +416,14 @@ try {
 
 ## File Mapping (Old → New)
 
-| Old File | New Location | New Structure |
-|----------|--------------|---------------|
-| index.ts | main.ts | Bootstrap function |
-| config.ts | config/config.service.ts | ConfigService |
-| middleware.ts | IoAdapter config | Built-in NestJS |
-| server-factory.ts | common/factories/server.factory.ts | ServerFactory |
-| socket-handlers.ts | socket/socket.gateway.ts + services | SocketGateway + RoomService + BroadcastService |
-| socket-handlers.types.ts | socket/types/socket-events.types.ts | Enhanced types |
+| Old File                 | New Location                        | New Structure                                  |
+| ------------------------ | ----------------------------------- | ---------------------------------------------- |
+| index.ts                 | main.ts                             | Bootstrap function                             |
+| config.ts                | config/config.service.ts            | ConfigService                                  |
+| middleware.ts            | IoAdapter config                    | Built-in NestJS                                |
+| server-factory.ts        | common/factories/server.factory.ts  | ServerFactory                                  |
+| socket-handlers.ts       | socket/socket.gateway.ts + services | SocketGateway + RoomService + BroadcastService |
+| socket-handlers.types.ts | socket/types/socket-events.types.ts | Enhanced types                                 |
 
 ---
 
@@ -412,12 +441,15 @@ try {
 ## Troubleshooting
 
 ### Issue: "Cannot find module" errors
+
 **Solution**: Ensure all imports use relative paths from the current file location.
 
 ### Issue: Socket.IO gateway not connecting
+
 **Solution**: Verify CORS_ORIGIN environment variable matches client origin.
 
 ### Issue: Build fails with esbuild
+
 **Solution**: Clear dist folder and rebuild: `rm -rf dist && npx nx build api`
 
 ---

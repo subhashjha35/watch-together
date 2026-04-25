@@ -1,19 +1,19 @@
 :host {
-  display: block;
+    display: block;
 }
 
 .nav-link {
-  &:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: 2px;
-  }
+    &:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+    }
 
-  &.active {
-    font-weight: 600;
-  }
+    &.active {
+        font-weight: 600;
+    }
 }
 
 .navbar-brand:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
+    outline: 2px solid #fff;
+    outline-offset: 2px;
 }

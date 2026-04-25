@@ -5,21 +5,25 @@ Real-time WebRTC video conferencing backend built with **NestJS**, **Socket.IO**
 ## Quick Start
 
 ### Installation
+
 ```bash
 yarn install
 ```
 
 ### Development
+
 ```bash
 npx nx serve api --configuration development
 ```
 
 ### Build
+
 ```bash
 npx nx build api
 ```
 
 ### Production Start
+
 ```bash
 node dist/apps/backend-api/main.js
 ```
@@ -50,17 +54,19 @@ METERED_APP_NAME=your_app_name
 ## API Endpoints
 
 ### GET /api/ice-servers
+
 Returns available ICE servers for WebRTC peer connection establishment.
 
 **Response:**
+
 ```json
 {
-  "iceServers": [
-    {
-      "urls": ["stun:stun.l.google.com:19302"]
-    }
-  ],
-  "iceCandidatePoolSize": 10
+    "iceServers": [
+        {
+            "urls": ["stun:stun.l.google.com:19302"]
+        }
+    ],
+    "iceCandidatePoolSize": 10
 }
 ```
 
@@ -69,6 +75,7 @@ Returns available ICE servers for WebRTC peer connection establishment.
 ## WebSocket Events
 
 ### Room Management
+
 ```typescript
 // Join room
 socket.emit('room', { event: 'join', roomId: 'room-123' });
@@ -78,68 +85,71 @@ socket.emit('room', { event: 'leave' });
 
 // Receive: List of peers in room
 socket.on('room', (data) => {
-  if (data.event === 'peers') {
-    console.log('Existing peers:', data.peers);
-  }
+    if (data.event === 'peers') {
+        console.log('Existing peers:', data.peers);
+    }
 });
 ```
 
 ### WebRTC Signaling
+
 ```typescript
 // Offer
 socket.emit('call', {
-  event: 'offer',
-  data: sessionDescription,
-  roomId: 'room-123'
+    event: 'offer',
+    data: sessionDescription,
+    roomId: 'room-123'
 });
 
 // Answer
 socket.emit('call', {
-  event: 'answer',
-  data: sessionDescription,
-  roomId: 'room-123',
-  targetSocketId: 'peer-socket-id'
+    event: 'answer',
+    data: sessionDescription,
+    roomId: 'room-123',
+    targetSocketId: 'peer-socket-id'
 });
 
 // ICE Candidate
 socket.emit('call', {
-  event: 'candidate',
-  data: iceCandidate,
-  roomId: 'room-123'
+    event: 'candidate',
+    data: iceCandidate,
+    roomId: 'room-123'
 });
 
 // Receive calls
 socket.on('call', (data) => {
-  console.log('Received event:', data.event);
-  console.log('From:', data.socketId);
-  console.log('Payload:', data.data);
+    console.log('Received event:', data.event);
+    console.log('From:', data.socketId);
+    console.log('Payload:', data.data);
 });
 ```
 
 ### Video Playback Sync
+
 ```typescript
 // Notify peers of time position
 socket.emit('video', {
-  event: 'play',
-  time: 42.5  // seconds
+    event: 'play',
+    time: 42.5 // seconds
 });
 
 socket.on('video', (data) => {
-  console.log('Video sync:', data.time);
+    console.log('Video sync:', data.time);
 });
 ```
 
 ### Chat
+
 ```typescript
 // Send message
 socket.emit('chat', {
-  user: 'username',
-  text: 'Hello, everyone!'
+    user: 'username',
+    text: 'Hello, everyone!'
 });
 
 // Receive message
 socket.on('chat', (message) => {
-  console.log(`${message.user}: ${message.text}`);
+    console.log(`${message.user}: ${message.text}`);
 });
 ```
 
@@ -175,6 +185,7 @@ AppModule
 ## Development
 
 ### Project Structure
+
 ```
 src/
 ├── main.ts                    # Application bootstrap
@@ -188,20 +199,22 @@ src/
 ### Adding a New Feature
 
 1. Create a feature module:
+
 ```typescript
 @Module({
-  imports: [],
-  controllers: [MyController],
-  providers: [MyService],
-  exports: [MyService]
+    imports: [],
+    controllers: [MyController],
+    providers: [MyService],
+    exports: [MyService]
 })
 export class MyModule {}
 ```
 
 2. Import in `AppModule`:
+
 ```typescript
 @Module({
-  imports: [ConfigModule, SocketModule, IceServersModule, MyModule]
+    imports: [ConfigModule, SocketModule, IceServersModule, MyModule]
 })
 export class AppModule {}
 ```
@@ -213,11 +226,11 @@ import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class MyService {
-  private readonly logger = new Logger(MyService.name);
+    private readonly logger = new Logger(MyService.name);
 
-  doSomething() {
-    this.logger.log('Doing something');
-  }
+    doSomething() {
+        this.logger.log('Doing something');
+    }
 }
 ```
 
@@ -228,12 +241,12 @@ import { Controller, Get } from '@nestjs/common';
 
 @Controller('api/my-endpoint')
 export class MyController {
-  constructor(private readonly myService: MyService) {}
+    constructor(private readonly myService: MyService) {}
 
-  @Get()
-  getMyData() {
-    return this.myService.doSomething();
-  }
+    @Get()
+    getMyData() {
+        return this.myService.doSomething();
+    }
 }
 ```
 
@@ -242,11 +255,13 @@ export class MyController {
 ## Testing
 
 ### Unit Tests
+
 ```bash
 npx nx test api
 ```
 
 ### E2E Tests
+
 ```bash
 npx nx e2e api-e2e
 ```
@@ -274,10 +289,10 @@ All errors are caught and logged:
 
 ```typescript
 try {
-  await operation();
+    await operation();
 } catch (error) {
-  this.logger.error('Operation failed', error);
-  throw new InternalServerErrorException('User message');
+    this.logger.error('Operation failed', error);
+    throw new InternalServerErrorException('User message');
 }
 ```
 
@@ -305,16 +320,19 @@ docker run -p 3000:3000 watch-together-api
 ```
 
 ### Environment Variables
+
 Set these before running:
+
 - `PORT`: Server port (default: 3000)
 - `IP`: Bind address (default: 0.0.0.0)
-- `CORS_ORIGIN`: Allowed origin (default: *)
+- `CORS_ORIGIN`: Allowed origin (default: \*)
 - `USE_HTTPS`: Enable HTTPS (default: false)
 - `METERED_API_KEY`: TURN credentials API key
 
 ### SSL/TLS
 
 To use HTTPS:
+
 1. Place `key.pem` and `cert.pem` in `certs/` directory
 2. Set `USE_HTTPS=true`
 
@@ -323,19 +341,25 @@ To use HTTPS:
 ## Common Issues
 
 ### Issue: WebSocket connection refused
+
 **Check:**
+
 - Server is running on correct port
 - Client is connecting to correct URL
 - CORS_ORIGIN matches client origin
 
 ### Issue: Peers cannot see each other
+
 **Check:**
+
 - Both sockets joined same room
 - Socket.IO events are properly emitted
 - No firewall blocking connections
 
 ### Issue: TURN servers not working
+
 **Check:**
+
 - Metered API key is valid
 - Network allows access to turn servers
 - ICE servers configuration is correct
@@ -345,6 +369,7 @@ To use HTTPS:
 ## Monitoring
 
 ### Logs
+
 ```bash
 # View real-time logs
 npx nx serve api
@@ -354,7 +379,9 @@ npx nx build api --verbose
 ```
 
 ### Health Check
+
 The application logs on startup:
+
 ```
 ✓ Server is running on http://0.0.0.0:3000
 ✓ CORS Origin: *

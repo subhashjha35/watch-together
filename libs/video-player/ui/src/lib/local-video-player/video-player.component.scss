@@ -1,16 +1,15 @@
 .video-container {
-  video {
-    min-width: 40vw;
-  }
+    video {
+        min-width: 40vw;
+    }
 
-  .file-picker {
-    display: none;
-  }
+    .file-picker {
+        display: none;
+    }
 
-  .custom-file-upload {
-    display: block;
-    border: 2px solid #c2c2c2;
-    padding: 5px;
-  }
+    .custom-file-upload {
+        display: block;
+        border: 2px solid #c2c2c2;
+        padding: 5px;
+    }
 }
-

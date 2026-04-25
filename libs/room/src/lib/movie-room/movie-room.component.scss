@@ -1,113 +1,113 @@
 .movie-room {
-  position: relative;
-  width: 50vw;
-  background: #000;
-
-  /* Embedded player fills the wrapper width, height is automatic */
-  .player-wrapper {
     position: relative;
-    z-index: 1;
-    width: 100%;
+    width: 50vw;
+    background: #000;
 
-    lib-embedded-video-player {
-      display: block;
-      width: 100%;
+    /* Embedded player fills the wrapper width, height is automatic */
+    .player-wrapper {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+
+        lib-embedded-video-player {
+            display: block;
+            width: 100%;
+        }
     }
-  }
 
-  /* Chat videos float as a draggable/resizable overlay */
-  .chat-overlay {
-    position: absolute;
-    right: 1rem;
-    bottom: 5rem; /* above the player controls */
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 200px;
-
-    .chat-video {
-      position: relative;
-      background: #1f4165;
-      border-radius: 0.5rem;
-      overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
-
-      &.my-video {
-        padding: 0;
-      }
-
-      video {
-        display: block;
-        width: 100%;
-        height: auto;
-        object-fit: contain;
-      }
-
-      lib-video,
-      lib-remote-video {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-
-      /* Visual resize-handle hint */
-      &::after {
-        content: '';
+    /* Chat videos float as a draggable/resizable overlay */
+    .chat-overlay {
         position: absolute;
-        right: 2px;
-        bottom: 2px;
-        width: 12px;
-        height: 12px;
-        border-right: 2px solid rgba(255, 255, 255, 0.5);
-        border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-        pointer-events: none;
-      }
+        right: 1rem;
+        bottom: 5rem; /* above the player controls */
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 200px;
+
+        .chat-video {
+            position: relative;
+            background: #1f4165;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+
+            &.my-video {
+                padding: 0;
+            }
+
+            video {
+                display: block;
+                width: 100%;
+                height: auto;
+                object-fit: contain;
+            }
+
+            lib-video,
+            lib-remote-video {
+                display: block;
+                width: 100%;
+                height: auto;
+            }
+
+            /* Visual resize-handle hint */
+            &::after {
+                content: '';
+                position: absolute;
+                right: 2px;
+                bottom: 2px;
+                width: 12px;
+                height: 12px;
+                border-right: 2px solid rgba(255, 255, 255, 0.5);
+                border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+                pointer-events: none;
+            }
+        }
     }
-  }
 }
 
 /* ── Fullscreen layout ───────────────────────────────────────────────── */
 .is-fullscreen.movie-room {
-  width: 100%;
-  height: 100%;
-
-  .player-wrapper {
-    position: absolute;
-    inset: 0;
     width: 100%;
     height: 100%;
 
-    lib-embedded-video-player {
-      height: 100%;
-    }
-  }
+    .player-wrapper {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
 
-  .chat-overlay {
-    bottom: 4rem;
-  }
+        lib-embedded-video-player {
+            height: 100%;
+        }
+    }
+
+    .chat-overlay {
+        bottom: 4rem;
+    }
 }
 
 .text-chat-container {
-  position: fixed;
-  right: 10px;
-  bottom: 10px;
-  min-width: 320px;
-  z-index: 20;
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    min-width: 320px;
+    z-index: 20;
 }
 
 @media screen and (width < 768px) {
-  .text-chat-container {
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    max-height: 100vh;
-    overflow: auto;
-  }
+    .text-chat-container {
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        max-height: 100vh;
+        overflow: auto;
+    }
 
-  .movie-room .chat-overlay {
-    width: 120px;
-    right: 0.5rem;
-    bottom: 3rem;
-  }
+    .movie-room .chat-overlay {
+        width: 120px;
+        right: 0.5rem;
+        bottom: 3rem;
+    }
 }

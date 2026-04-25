@@ -1,16 +1,16 @@
 export interface IceServer {
-  urls: string | string[];
-  username?: string;
-  credential?: string;
+    urls: string | string[];
+    username?: string;
+    credential?: string;
 }
 
 export interface ServerConfig {
-  port: number;
-  ip: string;
-  useHttps: boolean;
-  corsOrigin: string | string[];
-  baseDir: string;
-  iceServers: IceServer[];
-  meteredApiKey?: string;
-  meteredAppName?: string;
+    port: number;
+    ip: string;
+    useHttps: boolean;
+    corsOrigin: string | string[];
+    baseDir: string;
+    iceServers: IceServer[];
+    meteredApiKey?: string;
+    meteredAppName?: string;
 }

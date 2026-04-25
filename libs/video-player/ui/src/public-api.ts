@@ -1,5 +1,5 @@
 export {
-  EmbeddedVideoPlayerComponent,
-  EmbeddedVideoPlayerService,
-  VideoPlayerComponent
+    EmbeddedVideoPlayerComponent,
+    EmbeddedVideoPlayerService,
+    VideoPlayerComponent
 } from './index';

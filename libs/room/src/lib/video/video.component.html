@@ -1,29 +1,29 @@
 <div class="video-container">
-  <div class="video">
-    <Video #localVideo autoplay playsinline></Video>
-  </div>
-  <div class="video-setting">
-    <button (click)="openVideoSettings(mediaSettings)" class="btn btn-secondary">
-      <fa-icon [icon]="faEdit"></fa-icon>
-    </button>
-  </div>
+    <div class="video">
+        <Video #localVideo autoplay playsinline></Video>
+    </div>
+    <div class="video-setting">
+        <button (click)="openVideoSettings(mediaSettings)" class="btn btn-secondary">
+            <fa-icon [icon]="faEdit"></fa-icon>
+        </button>
+    </div>
 </div>
 
 <ng-template #mediaSettings>
-  <div class="modal-header">
-    <h5 class="modal-title">Select Input Devices</h5>
-    <button (click)="close()" aria-label="Close" class="btn-close" type="button"></button>
-  </div>
+    <div class="modal-header">
+        <h5 class="modal-title">Select Input Devices</h5>
+        <button (click)="close()" aria-label="Close" class="btn-close" type="button"></button>
+    </div>
 
-  <div class="modal-body">
-    <lib-media-configuration
-      [audioDevices]="audioDevices()"
-      [videoDevices]="videoDevices()"
-    ></lib-media-configuration>
-  </div>
+    <div class="modal-body">
+        <lib-media-configuration
+            [audioDevices]="audioDevices()"
+            [videoDevices]="videoDevices()"
+        ></lib-media-configuration>
+    </div>
 
-  <div class="modal-footer">
-    <button (click)="close()" class="btn btn-secondary" type="button">Cancel</button>
-    <button class="btn btn-primary" type="button">Save changes</button>
-  </div>
+    <div class="modal-footer">
+        <button (click)="close()" class="btn btn-secondary" type="button">Cancel</button>
+        <button class="btn btn-primary" type="button">Save changes</button>
+    </div>
 </ng-template>

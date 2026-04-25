@@ -7,4 +7,3 @@ Shared backend bootstrap and server infrastructure for the NestJS API.
 - `BackendServerModule`
 - `ServerFactory`
 - `bootstrapBackendApplication`
-

@@ -15,8 +15,8 @@ const ip = envConfig['IP'] || '127.0.0.1';
 const backendPort = envConfig['BACKEND_PORT'] || '3000';
 
 const environmentFilePath = path.resolve(
-  __dirname,
-  '../apps/watch-together/src/environments/environment.ts'
+    __dirname,
+    '../apps/watch-together/src/environments/environment.ts'
 );
 
 const environmentContent = `export const environment = {

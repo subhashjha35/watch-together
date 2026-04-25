@@ -1,6 +1,6 @@
 {
-  "/config": {
-    "target": "https://localhost:3000",
-    "secure": false
-  }
+    "/config": {
+        "target": "https://localhost:3000",
+        "secure": false
+    }
 }

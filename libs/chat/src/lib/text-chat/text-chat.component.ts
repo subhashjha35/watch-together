@@ -1,122 +1,122 @@
 import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  ElementRef,
-  inject,
-  Injector,
-  OnInit,
-  QueryList,
-  runInInjectionContext,
-  signal,
-  viewChild,
-  ViewChildren
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    effect,
+    ElementRef,
+    inject,
+    Injector,
+    OnInit,
+    QueryList,
+    runInInjectionContext,
+    signal,
+    viewChild,
+    ViewChildren
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatService, IChatDataExtended } from '../chat.service';
 import { startWith, Subject } from 'rxjs';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    ReactiveFormsModule,
+    Validators
 } from '@angular/forms';
 import { ExpandableContainerComponent, IChat } from '@watch-together/shared';
 import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'lib-text-chat',
-  imports: [CommonModule, ReactiveFormsModule, ExpandableContainerComponent],
-  standalone: true,
-  templateUrl: './text-chat.component.html',
-  styleUrl: './text-chat.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'lib-text-chat',
+    imports: [CommonModule, ReactiveFormsModule, ExpandableContainerComponent],
+    standalone: true,
+    templateUrl: './text-chat.component.html',
+    styleUrl: './text-chat.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TextChatComponent implements OnInit, AfterViewInit {
-  readonly scrollFrame = viewChild.required<ElementRef<HTMLDivElement>>('scrollFrame');
-  @ViewChildren('item') itemElements!: QueryList<any>;
+    readonly scrollFrame = viewChild.required<ElementRef<HTMLDivElement>>('scrollFrame');
+    @ViewChildren('item') itemElements!: QueryList<any>;
 
-  public readonly ecComponent = viewChild.required<ExpandableContainerComponent>(
-    'expandableContainerComponent'
-  );
+    public readonly ecComponent = viewChild.required<ExpandableContainerComponent>(
+        'expandableContainerComponent'
+    );
 
-  public chatForm!: FormGroup;
-  public registrationForm!: FormGroup;
-  public readonly chatHistory = signal<IChatDataExtended[]>([]);
-  public readonly chat = signal<IChat['dataType'] | null>(null);
-  public readonly name = signal<string | undefined>(undefined);
+    public chatForm!: FormGroup;
+    public registrationForm!: FormGroup;
+    public readonly chatHistory = signal<IChatDataExtended[]>([]);
+    public readonly chat = signal<IChat['dataType'] | null>(null);
+    public readonly name = signal<string | undefined>(undefined);
 
-  private readonly injector = inject(Injector);
-  private scrollContainer!: HTMLDivElement;
-  private readonly chatService = inject(ChatService);
-  private readonly formBuilder = inject(FormBuilder);
-  private readonly chatSubject = new Subject<IChat['dataType']>();
+    private readonly injector = inject(Injector);
+    private scrollContainer!: HTMLDivElement;
+    private readonly chatService = inject(ChatService);
+    private readonly formBuilder = inject(FormBuilder);
+    private readonly chatSubject = new Subject<IChat['dataType']>();
 
-  public constructor() {
-    effect(() => {
-      const data = this.chat();
-      if (data?.text) {
-        this.chatHistory.update((history) => [...history, data]);
-      }
-    });
-  }
-
-  public ngOnInit() {
-    this.chatService.on('chat', (data) => {
-      this.chat.update(() => data);
-      const audio: HTMLAudioElement = new Audio('./assets/audio/pop-sound.wav');
-      void audio.play();
-    });
-
-    this.chatForm = this.formBuilder.group({
-      textMessage: new FormControl(null, [Validators.required])
-    });
-
-    this.registrationForm = this.formBuilder.group({
-      username: new FormControl(null, [Validators.required])
-    });
-  }
-
-  public sendMessage(event: Event): void {
-    event.preventDefault();
-    const data: IChat['dataType'] = {
-      user: this.name() ?? 'Anonymous',
-      text: this.chatForm.controls['textMessage'].value
-    };
-    this.chatSubject.next(data);
-    this.chatService.emit('chat', data);
-
-    this.chatForm.controls['textMessage'].reset();
-  }
-
-  public ngAfterViewInit() {
-    runInInjectionContext(this.injector, () => {
-      toObservable(this.ecComponent().isOpen)
-        .pipe(startWith(false))
-        .subscribe((isOpen) => {
-          if (isOpen) {
-            this.scrollContainer = this.scrollFrame().nativeElement;
-            this.itemElements.changes.subscribe(() => this.onItemElementsChanged());
-          }
+    public constructor() {
+        effect(() => {
+            const data = this.chat();
+            if (data?.text) {
+                this.chatHistory.update((history) => [...history, data]);
+            }
         });
-    });
-  }
+    }
 
-  public setName(): void {
-    this.name.set(this.registrationForm.controls['username'].value || 'Anonymous');
-  }
+    public ngOnInit() {
+        this.chatService.on('chat', (data) => {
+            this.chat.update(() => data);
+            const audio: HTMLAudioElement = new Audio('./assets/audio/pop-sound.wav');
+            void audio.play();
+        });
 
-  private onItemElementsChanged(): void {
-    this.scrollToBottom();
-  }
+        this.chatForm = this.formBuilder.group({
+            textMessage: new FormControl(null, [Validators.required])
+        });
 
-  private scrollToBottom(): void {
-    this.scrollContainer?.scroll({
-      top: this.scrollContainer.scrollHeight,
-      left: 0,
-      behavior: 'instant'
-    });
-  }
+        this.registrationForm = this.formBuilder.group({
+            username: new FormControl(null, [Validators.required])
+        });
+    }
+
+    public sendMessage(event: Event): void {
+        event.preventDefault();
+        const data: IChat['dataType'] = {
+            user: this.name() ?? 'Anonymous',
+            text: this.chatForm.controls['textMessage'].value
+        };
+        this.chatSubject.next(data);
+        this.chatService.emit('chat', data);
+
+        this.chatForm.controls['textMessage'].reset();
+    }
+
+    public ngAfterViewInit() {
+        runInInjectionContext(this.injector, () => {
+            toObservable(this.ecComponent().isOpen)
+                .pipe(startWith(false))
+                .subscribe((isOpen) => {
+                    if (isOpen) {
+                        this.scrollContainer = this.scrollFrame().nativeElement;
+                        this.itemElements.changes.subscribe(() => this.onItemElementsChanged());
+                    }
+                });
+        });
+    }
+
+    public setName(): void {
+        this.name.set(this.registrationForm.controls['username'].value || 'Anonymous');
+    }
+
+    private onItemElementsChanged(): void {
+        this.scrollToBottom();
+    }
+
+    private scrollToBottom(): void {
+        this.scrollContainer?.scroll({
+            top: this.scrollContainer.scrollHeight,
+            left: 0,
+            behavior: 'instant'
+        });
+    }
 }

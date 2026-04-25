@@ -3,21 +3,21 @@ import { TextChatComponent } from './text-chat.component';
 import { ENV_DATA } from '@watch-together/shared';
 
 describe('TextChatComponent', () => {
-  let component: TextChatComponent;
-  let fixture: ComponentFixture<TextChatComponent>;
+    let component: TextChatComponent;
+    let fixture: ComponentFixture<TextChatComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [TextChatComponent],
-      providers: [{ provide: ENV_DATA, useValue: {} }]
-    }).compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [TextChatComponent],
+            providers: [{ provide: ENV_DATA, useValue: {} }]
+        }).compileComponents();
 
-    fixture = TestBed.createComponent(TextChatComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture = TestBed.createComponent(TextChatComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

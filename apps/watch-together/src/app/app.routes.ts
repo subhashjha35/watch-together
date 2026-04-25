@@ -4,8 +4,8 @@ import { HomeComponent } from '@watch-together/home-ui';
 import { mainRoutes } from '@watch-together/main-menu-common';
 
 export const appRoutes: Route[] = [
-  { path: '', component: HomeComponent },
-  { path: mainRoutes.home.path, component: HomeComponent },
-  { path: `${mainRoutes.room.path}/:roomId`, component: MovieRoomComponent },
-  { path: '**', redirectTo: '' }
+    { path: '', component: HomeComponent },
+    { path: mainRoutes.home.path, component: HomeComponent },
+    { path: `${mainRoutes.room.path}/:roomId`, component: MovieRoomComponent },
+    { path: '**', redirectTo: '' }
 ];

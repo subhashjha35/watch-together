@@ -1,21 +1,21 @@
 {
-  "name": "video-player-ui",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/video-player/ui/src",
-  "prefix": "lib",
-  "projectType": "library",
-  "tags": ["lib:ui", "scope:watch-together"],
-  "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "libs/video-player/ui/jest.config.cts",
-        "tsConfig": "libs/video-player/ui/tsconfig.spec.json"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
+    "name": "video-player-ui",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/video-player/ui/src",
+    "prefix": "lib",
+    "projectType": "library",
+    "tags": ["lib:ui", "scope:watch-together"],
+    "targets": {
+        "test": {
+            "executor": "@nx/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "jestConfig": "libs/video-player/ui/jest.config.cts",
+                "tsConfig": "libs/video-player/ui/tsconfig.spec.json"
+            }
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint"
+        }
     }
-  }
 }

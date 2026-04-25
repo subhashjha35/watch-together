@@ -1,8 +1,8 @@
 {
-  "name": "backend-ice-servers-common",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/backend-ice-servers/common/src",
-  "projectType": "library",
-  "tags": ["lib:common", "scope:watch-together", "layer:feature"],
-  "targets": {}
+    "name": "backend-ice-servers-common",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/backend-ice-servers/common/src",
+    "projectType": "library",
+    "tags": ["lib:common", "scope:watch-together", "layer:feature"],
+    "targets": {}
 }

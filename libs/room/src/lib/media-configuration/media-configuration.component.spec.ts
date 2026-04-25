@@ -4,21 +4,21 @@ import { MediaService } from '@watch-together/shared';
 import { MediaServiceMock } from '@watch-together/shared-testing';
 
 describe('MediaConfigurationComponent', () => {
-  let component: MediaConfigurationComponent;
-  let fixture: ComponentFixture<MediaConfigurationComponent>;
+    let component: MediaConfigurationComponent;
+    let fixture: ComponentFixture<MediaConfigurationComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MediaConfigurationComponent],
-      providers: [{ provide: MediaService, useValue: MediaServiceMock }]
-    }).compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [MediaConfigurationComponent],
+            providers: [{ provide: MediaService, useValue: MediaServiceMock }]
+        }).compileComponents();
 
-    fixture = TestBed.createComponent(MediaConfigurationComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture = TestBed.createComponent(MediaConfigurationComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -1,25 +1,25 @@
 .text-chat-container {
-  background-color: #c2c2c2;
-  min-width: 320px;
-  min-height: 320px;
-  position: relative;
+    background-color: #c2c2c2;
+    min-width: 320px;
+    min-height: 320px;
+    position: relative;
 
-  .chat-history {
-    min-height: 200px;
-  }
+    .chat-history {
+        min-height: 200px;
+    }
 
-  .form {
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
+    .form {
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
 }
 
 @media screen and (width < '768px') {
-  .text-chat-container {
-    .chat-history {
-      height: calc(100svh - 40px);
-      z-index: 100;
+    .text-chat-container {
+        .chat-history {
+            height: calc(100svh - 40px);
+            z-index: 100;
+        }
     }
-  }
 }

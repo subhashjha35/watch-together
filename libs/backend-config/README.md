@@ -8,4 +8,3 @@ Shared backend configuration library for the NestJS API.
 - `ServerConfigService`
 - `ServerConfig`
 - `IceServer`
-

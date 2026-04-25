@@ -6,21 +6,21 @@
  *          `ResizeObserver` is not supported.
  */
 export function observeFrameSize(
-  target: HTMLElement,
-  host: HTMLElement,
-  widthProp = '--embedded-frame-width',
-  heightProp = '--embedded-frame-height'
+    target: HTMLElement,
+    host: HTMLElement,
+    widthProp = '--embedded-frame-width',
+    heightProp = '--embedded-frame-height'
 ): ResizeObserver | null {
-  if (!('ResizeObserver' in window)) return null;
+    if (!('ResizeObserver' in window)) return null;
 
-  const observer = new ResizeObserver((entries) => {
-    const rect = entries[0]?.contentRect;
-    if (rect) {
-      host.style.setProperty(widthProp, `${rect.width}px`);
-      host.style.setProperty(heightProp, `${rect.height}px`);
-    }
-  });
+    const observer = new ResizeObserver((entries) => {
+        const rect = entries[0]?.contentRect;
+        if (rect) {
+            host.style.setProperty(widthProp, `${rect.width}px`);
+            host.style.setProperty(heightProp, `${rect.height}px`);
+        }
+    });
 
-  observer.observe(target);
-  return observer;
+    observer.observe(target);
+    return observer;
 }

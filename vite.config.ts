@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  server: {
-    hmr: {
-      host: 'subhash.local'
+    server: {
+        hmr: {
+            host: 'subhash.local'
+        }
     }
-  }
 });

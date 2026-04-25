@@ -1,21 +1,23 @@
 <div class="movie-room">
-  <div class="player-wrapper">
-    <lib-embedded-video-player [fullscreenMode]="'closest'"
-                               [fullscreenClosestSelector]="'.movie-room'"></lib-embedded-video-player>
-  </div>
-
-  <div class="chat-overlay" libResizable libDraggable>
-    <div class="chat-video my-video">
-      <lib-video #myVideo></lib-video>
+    <div class="player-wrapper">
+        <lib-embedded-video-player
+            [fullscreenMode]="'closest'"
+            [fullscreenClosestSelector]="'.movie-room'"
+        ></lib-embedded-video-player>
     </div>
-    @for (entry of remoteStreams(); track entry[0]) {
-      <div class="chat-video">
-        <lib-remote-video [stream]="entry[1]" />
-      </div>
-    }
-  </div>
+
+    <div class="chat-overlay" libResizable libDraggable>
+        <div class="chat-video my-video">
+            <lib-video #myVideo></lib-video>
+        </div>
+        @for (entry of remoteStreams(); track entry[0]) {
+            <div class="chat-video">
+                <lib-remote-video [stream]="entry[1]" />
+            </div>
+        }
+    </div>
 </div>
 
 <div class="text-chat-container">
-  <lib-text-chat></lib-text-chat>
+    <lib-text-chat></lib-text-chat>
 </div>

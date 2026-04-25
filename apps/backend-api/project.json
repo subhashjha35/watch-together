@@ -1,77 +1,80 @@
 {
-  "name": "api",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/backend-api/src",
-  "projectType": "application",
-  "tags": ["app:backend", "scope:watch-together"],
-  "targets": {
-    "build": {
-      "executor": "@nx/esbuild:esbuild",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
-      "options": {
-        "platform": "node",
-        "outputPath": "dist/apps/backend-api",
-        "format": ["esm"],
-        "bundle": true,
-        "main": "apps/backend-api/src/main.ts",
-        "tsConfig": "apps/backend-api/tsconfig.app.json",
-        "assets": ["apps/backend-api/assets/**", "apps/backend-api/certs/**"],
-        "generatePackageJson": true,
-        "esbuildOptions": {
-          "sourcemap": true,
-          "outExtension": {
-            ".js": ".js"
-          },
-          "external": ["@nestjs/*"]
-        }
-      },
-      "configurations": {
-        "development": {},
-        "production": {
-          "esbuildOptions": {
-            "sourcemap": false,
-            "outExtension": {
-              ".js": ".js"
+    "name": "api",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/backend-api/src",
+    "projectType": "application",
+    "tags": ["app:backend", "scope:watch-together"],
+    "targets": {
+        "build": {
+            "executor": "@nx/esbuild:esbuild",
+            "outputs": ["{options.outputPath}"],
+            "defaultConfiguration": "production",
+            "options": {
+                "platform": "node",
+                "outputPath": "dist/apps/backend-api",
+                "format": ["esm"],
+                "bundle": true,
+                "main": "apps/backend-api/src/main.ts",
+                "tsConfig": "apps/backend-api/tsconfig.app.json",
+                "assets": ["apps/backend-api/assets/**", "apps/backend-api/certs/**"],
+                "generatePackageJson": true,
+                "esbuildOptions": {
+                    "sourcemap": true,
+                    "outExtension": {
+                        ".js": ".js"
+                    },
+                    "external": ["@nestjs/*"]
+                }
             },
-            "external": ["@nestjs/*"]
-          }
-        }
-      }
-    },
-    "serve": {
-      "executor": "@nx/js:node",
-      "defaultConfiguration": "development",
-      "dependsOn": ["build"],
-      "options": {
-        "buildTarget": "api:build",
-        "runBuildTargetDependencies": false,
-        "host": "0.0.0.0"
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "api:build:development"
+            "configurations": {
+                "development": {},
+                "production": {
+                    "esbuildOptions": {
+                        "sourcemap": false,
+                        "outExtension": {
+                            ".js": ".js"
+                        },
+                        "external": ["@nestjs/*"]
+                    }
+                }
+            }
         },
-        "production": {
-          "buildTarget": "api:build:production"
+        "serve": {
+            "executor": "@nx/js:node",
+            "defaultConfiguration": "development",
+            "dependsOn": ["build"],
+            "options": {
+                "buildTarget": "api:build",
+                "runBuildTargetDependencies": false,
+                "host": "0.0.0.0"
+            },
+            "configurations": {
+                "development": {
+                    "buildTarget": "api:build:development"
+                },
+                "production": {
+                    "buildTarget": "api:build:production"
+                }
+            }
+        },
+        "test": {
+            "executor": "@nx/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "jestConfig": "apps/backend-api/jest.config.ts"
+            }
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "lintFilePatterns": [
+                    "apps/backend-api/src/main.ts",
+                    "apps/backend-api/src/app.module.ts"
+                ]
+            }
+        },
+        "docker:build": {
+            "dependsOn": ["build", "prune"]
         }
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "apps/backend-api/jest.config.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "lintFilePatterns": ["apps/backend-api/src/main.ts", "apps/backend-api/src/app.module.ts"]
-      }
-    },
-    "docker:build": {
-      "dependsOn": ["build", "prune"]
     }
-  }
 }

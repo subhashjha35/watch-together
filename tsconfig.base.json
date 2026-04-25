@@ -1,36 +1,40 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "rootDir": ".",
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "bundler",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "ES2022",
-    "module": "ESNext",
-    "lib": ["ES2020", "dom"],
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "@watch-together/chat": ["libs/chat/src/index.ts"],
-      "@watch-together/expandable-container": ["libs/expandable-container/src/index.ts"],
-      "@watch-together/home-ui": ["libs/home/ui/src/index.ts"],
-      "@watch-together/movie-room": ["libs/room/src/index.ts"],
-      "@watch-together/shared": ["libs/shared/src/index.ts"],
-      "@watch-together/video-player-ui": ["libs/video-player/ui/src/index.ts"],
-      "@watch-together/shared-testing": ["shared-testing/src/index.ts"],
-      "@watch-together/main-menu-ui": ["libs/main-menu/ui/src/index.ts"],
-      "@watch-together/main-menu-common": ["libs/main-menu/common/src/index.ts"],
-      "@watch-together/backend-config/backend": ["libs/backend-config/backend/src/index.ts"],
-      "@watch-together/backend-config/common": ["libs/backend-config/common/src/index.ts"],
-      "@watch-together/backend-server/backend": ["libs/backend-server/backend/src/index.ts"],
-      "@watch-together/backend-ice-servers/backend": ["libs/backend-ice-servers/backend/src/index.ts"],
-      "@watch-together/backend-ice-servers/common": ["libs/backend-ice-servers/common/src/index.ts"],
-      "@watch-together/backend-socket/backend": ["libs/backend-socket/backend/src/index.ts"]
-    }
-  },
-  "exclude": ["node_modules", "tmp"]
+    "compileOnSave": false,
+    "compilerOptions": {
+        "rootDir": ".",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "bundler",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "target": "ES2022",
+        "module": "ESNext",
+        "lib": ["ES2020", "dom"],
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "baseUrl": ".",
+        "paths": {
+            "@watch-together/chat": ["libs/chat/src/index.ts"],
+            "@watch-together/expandable-container": ["libs/expandable-container/src/index.ts"],
+            "@watch-together/home-ui": ["libs/home/ui/src/index.ts"],
+            "@watch-together/movie-room": ["libs/room/src/index.ts"],
+            "@watch-together/shared": ["libs/shared/src/index.ts"],
+            "@watch-together/video-player-ui": ["libs/video-player/ui/src/index.ts"],
+            "@watch-together/shared-testing": ["shared-testing/src/index.ts"],
+            "@watch-together/main-menu-ui": ["libs/main-menu/ui/src/index.ts"],
+            "@watch-together/main-menu-common": ["libs/main-menu/common/src/index.ts"],
+            "@watch-together/backend-config/backend": ["libs/backend-config/backend/src/index.ts"],
+            "@watch-together/backend-config/common": ["libs/backend-config/common/src/index.ts"],
+            "@watch-together/backend-server/backend": ["libs/backend-server/backend/src/index.ts"],
+            "@watch-together/backend-ice-servers/backend": [
+                "libs/backend-ice-servers/backend/src/index.ts"
+            ],
+            "@watch-together/backend-ice-servers/common": [
+                "libs/backend-ice-servers/common/src/index.ts"
+            ],
+            "@watch-together/backend-socket/backend": ["libs/backend-socket/backend/src/index.ts"]
+        }
+    },
+    "exclude": ["node_modules", "tmp"]
 }

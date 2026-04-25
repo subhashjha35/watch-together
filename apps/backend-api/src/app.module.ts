@@ -9,8 +9,8 @@ import { SocketModule } from '@watch-together/backend-socket/backend';
  * Orchestrates all feature modules and configurations
  */
 @Module({
-  imports: [ConfigModule, BackendServerModule, SocketModule, IceServersModule],
-  controllers: [],
-  providers: []
+    imports: [ConfigModule, BackendServerModule, SocketModule, IceServersModule],
+    controllers: [],
+    providers: []
 })
 export class AppModule {}
