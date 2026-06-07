@@ -367,6 +367,14 @@
   optionalDependencies:
     lmdb "3.5.4"
 
+"@angular/cdk@22.0.0":
+  version "22.0.0"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-22.0.0.tgz#30a73dfffa0b901556a5eac81815bd36ec5c448e"
+  integrity sha512-mahXlRD4V8Tj2NtttRNFfuTru5HmMgJt8ny/SJ/Bx1NCOymxLEqxREACNpuwMf/3q1XUe33/oh++mvJQ2JYkgw==
+  dependencies:
+    parse5 "^8.0.0"
+    tslib "^2.3.0"
+
 "@angular/cli@22.0.0":
   version "22.0.0"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-22.0.0.tgz#92efdcafc9622bd5fb2b388227217ee9308f8476"
@@ -439,6 +447,13 @@
   version "22.0.0"
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-22.0.0.tgz#34451e26803b350299a3766a3cfc75dd43fd94a0"
   integrity sha512-ZcAuY0Jnn5Suk4/QlFw/4J12htbumFA6562Up4QrVzBiaTcnSC16AeEqgGGY8Mz1Ye3pPUDV52LTuyVKlfjs+g==
+
+"@angular/material@22.0.0":
+  version "22.0.0"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-22.0.0.tgz#723fc3dfa68493f0dba5a8cd8676f676a226884a"
+  integrity sha512-sRxbEEgmaVqbwcT65PWfZV/cIpLsZ8vD+yc6rH83L83jDJWVABpqDWFg8Hl88iFMOts8iffml6GddvXhsNHAEQ==
+  dependencies:
+    tslib "^2.3.0"
 
 "@angular/platform-browser-dynamic@22.0.0":
   version "22.0.0"
@@ -13150,13 +13165,6 @@ ng-packagr@22.0.0:
     tinyglobby "^0.2.12"
   optionalDependencies:
     rollup "^4.24.0"
-
-ngx-bootstrap@21.0.1:
-  version "21.0.1"
-  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-21.0.1.tgz#d876ca625f3671332f4dcf110788a59cf7db45d1"
-  integrity sha512-PhIkcNT97NfM456UEFvTWOhTM+/NSKvUMx+hLhOYM0B4e0RXzb6mUbg1f90jdE3kiNEJGFHlwOhfHa46SxbTdA==
-  dependencies:
-    tslib "^2.3.0"
 
 node-abort-controller@^3.0.1:
   version "3.1.1"

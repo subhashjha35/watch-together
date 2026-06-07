@@ -9,18 +9,17 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { faEdit } from '@fortawesome/free-regular-svg-icons';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { MatDialog, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MediaConfigurationComponent } from '../media-configuration';
 import { MediaService } from '@watch-together/shared';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
     selector: 'lib-video',
-    imports: [CommonModule, MediaConfigurationComponent, FontAwesomeModule],
+    imports: [CommonModule, MediaConfigurationComponent, FontAwesomeModule, MatDialogModule],
     standalone: true,
     templateUrl: './video.component.html',
     styleUrl: './video.component.scss',
-    providers: [BsModalService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VideoComponent {
@@ -31,8 +30,8 @@ export class VideoComponent {
     protected readonly faEdit = faEdit;
 
     private readonly mediaService = inject(MediaService);
-    private modalRef = inject(BsModalRef);
-    private readonly modalService = inject(BsModalService);
+    private modalRef: MatDialogRef<any> | undefined;
+    private readonly dialog = inject(MatDialog);
 
     public setVideo(stream: MediaStream): void {
         const videoElement = this.localVideo().nativeElement;
@@ -41,10 +40,11 @@ export class VideoComponent {
     }
 
     public openVideoSettings(templateRef: TemplateRef<any>): void {
-        this.modalRef = this.modalService.show(templateRef);
+        // open the provided template in a Material dialog
+        this.modalRef = this.dialog.open(templateRef);
     }
 
     public close(): void {
-        this.modalRef.hide();
+        this.modalRef?.close();
     }
 }
